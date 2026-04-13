@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Admin User - Kepala Bengkel
+        // 1. Create Admin User - Kepala Bengkel
         User::create([
             'name' => 'Kepala Bengkel',
             'email' => 'admin@bengkel.com',
@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // Create Mekanik User
+        // 2. Create Mekanik Users
         User::create([
             'name' => 'Budi Mekanik',
             'email' => 'mekanik@bengkel.com',
@@ -35,7 +35,6 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // Create Mekanik User 2
         User::create([
             'name' => 'Anto Bengkel',
             'email' => 'mekanik2@bengkel.com',
@@ -46,7 +45,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // Create Customer Users
+        // 3. Create Customer Users
         User::create([
             'name' => 'Pelanggan Setia',
             'email' => 'pelanggan@bengkel.com',
@@ -75,6 +74,13 @@ class DatabaseSeeder extends Seeder
             'no_telp' => '+62812345683',
             'alamat' => 'Jl. Hayam Wuruk No. 50, Jakarta',
             'email_verified_at' => now(),
+        ]);
+
+        // 4. Test User untuk keperluan debugging sistem
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'role' => 'pelanggan', // Pastikan role ini ada agar tidak error
         ]);
     }
 }

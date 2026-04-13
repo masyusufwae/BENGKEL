@@ -87,7 +87,7 @@
                         <!-- WO Chart -->
                         <div>
                             <h3 class="text-sm font-medium text-gray-700 mb-4">Work Order</h3>
-                            <div class="flex items-end justify-between h-48 space-x-2">
+                            <div class="flex items-end justify-between h-48 space-x-2 overflow-hidden">
                                 @foreach($chart_data['wo'] as $index => $value)
                                     <div class="flex flex-col items-center flex-1">
                                         <div class="w-full bg-blue-200 rounded-t" style="height: {{ ($value / 50) * 100 }}px; background-color: #3b82f6;"></div>
@@ -103,7 +103,7 @@
                             <div class="flex items-end justify-between h-48 space-x-2">
                                 @foreach($chart_data['pendapatan'] as $index => $value)
                                     <div class="flex flex-col items-center flex-1">
-                                        <div class="w-full bg-green-200 rounded-t" style="height: {{ ($value / 800000) * 100 }}px; background-color: #10b981;"></div>
+                                        <div class="w-full bg-green-200 rounded-t" style="height: {{ ($value / 80000000) * 100 }}px; background-color: #10b981;"></div>
                                         <p class="text-xs text-gray-600 mt-2">{{ $chart_data['bulan'][$index] }}</p>
                                     </div>
                                 @endforeach
