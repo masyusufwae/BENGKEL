@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WorkOrder;
+use App\Models\KendaraanPelanggan;
+use App\Models\InvoiceServis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -69,22 +72,90 @@ class DashboardController extends Controller
 
     private function pelangganDashboard()
     {
-        // Data dummy untuk dashboard pelanggan
+        $user = Auth::user();
+
+        // Ambil data Work Order aktif pelanggan dari database
+        $wo_aktif = WorkOrder::where(function($query) use ($user) {
+            // Ambil WO untuk kendaraan pelanggan ini yang masih aktif
+            $query->whereHas('kendaraan', function($q) use ($user) {
+                $q->where('id_pelanggan', $user->id);
+            })->whereIn('status', ['antrian', 'dikerjakan', 'menunggu part']);
+        })->with(['kendaraan', 'mekanik'])
+        ->orderBy('tanggal_masuk', 'desc')
+        ->get()
+        ->map(function($wo) {
+            return [
+                'id_wo' => $wo->nomor_wo,
+                'kendaraan' => $wo->kendaraan->merek . ' ' . $wo->kendaraan->model . ' (' . $wo->kendaraan->nomor_polisi . ')',
+                'tanggal_masuk' => $wo->tanggal_masuk->format('Y-m-d H:i'),
+                'status' => $wo->status,
+                'estimasi' => $wo->estimasi_selesai ? $wo->estimasi_selesai->format('d M Y H:i') : 'Belum ditentukan',
+            ];
+        })->toArray();
+
+        // Ambil riwayat servis (Work Order yang sudah selesai)
+        $riwayat_servis = WorkOrder::where(function($query) use ($user) {
+            $query->whereHas('kendaraan', function($q) use ($user) {
+                $q->where('id_pelanggan', $user->id);
+            })->where('status', 'selesai');
+        })->with(['kendaraan', 'invoice'])
+        ->orderBy('tanggal_selesai', 'desc')
+        ->limit(10)
+        ->get()
+        ->map(function($wo) {
+            $invoice = $wo->invoice->first();
+            return [
+                'id_wo' => $wo->nomor_wo,
+                'tanggal' => $wo->tanggal_selesai->format('Y-m-d'),
+                'kendaraan' => $wo->kendaraan->merek . ' ' . $wo->kendaraan->model,
+                'jenis' => $wo->keluhan,
+                'total' => $invoice ? $invoice->total_bayar : 0,
+                'status_bayar' => $invoice ? $invoice->status_bayar : 'belum',
+            ];
+        })->toArray();
+
+        // Ambil kendaraan terdaftar milik pelanggan
+        $kendaraan_terdaftar = KendaraanPelanggan::where('id_pelanggan', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($kendaraan) {
+                return [
+                    'nomor_polisi' => $kendaraan->nomor_polisi,
+                    'merek' => $kendaraan->merek,
+                    'model' => $kendaraan->model,
+                    'tahun' => $kendaraan->tahun,
+                ];
+            })->toArray();
+
+        // Hitung total kendaraan
+        $total_kendaraan = count($kendaraan_terdaftar);
+
+        // Hitung total servis
+        $total_servis = WorkOrder::whereHas('kendaraan', function($q) use ($user) {
+            $q->where('id_pelanggan', $user->id);
+        })->count();
+
+        // Jadwal servis berikutnya (estimasi dari WO terdekat)
+        $jadwal_berikutnya = WorkOrder::whereHas('kendaraan', function($q) use ($user) {
+            $q->where('id_pelanggan', $user->id);
+        })->where('estimasi_selesai', '>', now())
+        ->orderBy('estimasi_selesai', 'asc')
+        ->first();
+
+        $jadwal_servis_berikutnya = $jadwal_berikutnya
+            ? $jadwal_berikutnya->estimasi_selesai->format('Y-m-d') . ' (dalam ' . now()->diffInDays($jadwal_berikutnya->estimasi_selesai) . ' hari)'
+            : 'Belum ada jadwal';
+
         $data = [
-            'wo_aktif' => [
-                ['id_wo' => 'WO-001', 'kendaraan' => 'Honda Civic (B 1234 ABC)', 'tanggal_masuk' => '2024-04-12 08:00', 'status' => 'dikerjakan', 'estimasi' => '14 April 10:00'],
-            ],
-            'riwayat_servis' => [
-                ['id_wo' => 'WO-501', 'tanggal' => '2024-03-20', 'kendaraan' => 'Honda Civic', 'jenis' => 'Service Berkala', 'total' => 750000, 'status_bayar' => 'lunas'],
-                ['id_wo' => 'WO-492', 'tanggal' => '2024-03-10', 'kendaraan' => 'Honda Civic', 'jenis' => 'Ganti Oli', 'total' => 250000, 'status_bayar' => 'lunas'],
-                ['id_wo' => 'WO-483', 'tanggal' => '2024-02-28', 'kendaraan' => 'Honda Civic', 'jenis' => 'Perbaikan Mesin', 'total' => 1500000, 'status_bayar' => 'lunas'],
-            ],
-            'kendaraan_terdaftar' => [
-                ['nomor_polisi' => 'B 1234 ABC', 'merek' => 'Honda', 'model' => 'Civic', 'tahun' => 2020],
-            ],
-            'jadwal_servis_berikutnya' => '2024-05-12 (dalam 29 hari)',
+            'wo_aktif' => $wo_aktif,
+            'riwayat_servis' => $riwayat_servis,
+            'kendaraan_terdaftar' => $kendaraan_terdaftar,
+            'jadwal_servis_berikutnya' => $jadwal_servis_berikutnya,
+            'total_kendaraan' => $total_kendaraan,
+            'total_servis' => $total_servis,
+            'total_wo_aktif' => count($wo_aktif),
         ];
 
-        return view('dashboard.pelanggan', $data);
+        return view('customer.dashboard.index', $data);
     }
 }
