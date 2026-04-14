@@ -82,5 +82,24 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'role' => 'pelanggan', // Pastikan role ini ada agar tidak error
         ]);
+
+
+        $this->call([
+            // Master
+            JenisServisSeeder::class,
+            SparepartSeeder::class,
+
+            // Relasi User
+            MekanikSeeder::class,
+            KendaraanPelangganSeeder::class,
+
+            // Transaksi
+            WorkOrderSeeder::class,
+            DetailServisWoSeeder::class,
+            PenggunaanSparepartSeeder::class,
+
+            // Final Document
+            InvoiceServisSeeder::class, // Tambahkan ini
+        ]);
     }
 }
