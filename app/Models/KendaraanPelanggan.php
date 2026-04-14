@@ -23,17 +23,11 @@ class KendaraanPelanggan extends Model
         'jenis_bahan_bakar',
     ];
 
-    /**
-     * Relasi dengan User (Pelanggan)
-     */
     public function pelanggan(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_pelanggan', 'id');
+        return $this->belongsTo(User::class, 'id_pelanggan');
     }
 
-    /**
-     * Relasi dengan WorkOrder
-     */
     public function workOrders(): HasMany
     {
         return $this->hasMany(WorkOrder::class, 'id_kendaraan', 'id_kendaraan');

@@ -21,17 +21,16 @@ class Mekanik extends Model
         'status',
     ];
 
-    /**
-     * Relasi dengan User
-     */
+    protected $casts = [
+        'jam_masuk' => 'datetime:H:i:s',
+        'jam_keluar' => 'datetime:H:i:s',
+    ];
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return $this->belongsTo(User::class, 'id_user');
     }
 
-    /**
-     * Relasi dengan WorkOrder
-     */
     public function workOrders(): HasMany
     {
         return $this->hasMany(WorkOrder::class, 'id_mekanik', 'id_mekanik');

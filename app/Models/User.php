@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -50,19 +51,13 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Relasi dengan KendaraanPelanggan (jika user adalah pelanggan)
-     */
-    public function kendaraan(): HasMany
+    public function mekanik(): HasOne
     {
-        return $this->hasMany(KendaraanPelanggan::class, 'id_pelanggan', 'id');
+        return $this->hasOne(Mekanik::class, 'id_user');
     }
 
-    /**
-     * Relasi dengan Mekanik (jika user adalah mekanik)
-     */
-    public function mekanik()
+    public function kendaraanPelanggan(): HasMany
     {
-        return $this->hasOne(Mekanik::class, 'id_user', 'id');
+        return $this->hasMany(KendaraanPelanggan::class, 'id_pelanggan');
     }
 }

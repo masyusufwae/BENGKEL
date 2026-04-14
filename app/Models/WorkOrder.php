@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WorkOrder extends Model
 {
@@ -29,27 +30,28 @@ class WorkOrder extends Model
         'estimasi_selesai' => 'datetime',
     ];
 
-    /**
-     * Relasi dengan KendaraanPelanggan
-     */
     public function kendaraan(): BelongsTo
     {
         return $this->belongsTo(KendaraanPelanggan::class, 'id_kendaraan', 'id_kendaraan');
     }
 
-    /**
-     * Relasi dengan Mekanik
-     */
     public function mekanik(): BelongsTo
     {
         return $this->belongsTo(Mekanik::class, 'id_mekanik', 'id_mekanik');
     }
 
-    /**
-     * Relasi dengan InvoiceServis
-     */
-    public function invoice(): HasMany
+    public function detailServis(): HasMany
     {
-        return $this->hasMany(InvoiceServis::class, 'id_wo', 'id_wo');
+        return $this->hasMany(DetailServisWo::class, 'id_wo', 'id_wo');
+    }
+
+    public function penggunaanSparepart(): HasMany
+    {
+        return $this->hasMany(PenggunaanSparepart::class, 'id_wo', 'id_wo');
+    }
+
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(InvoiceServis::class, 'id_wo', 'id_wo');
     }
 }

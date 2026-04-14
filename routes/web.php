@@ -11,7 +11,7 @@ Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->intended('/dashboard');
     }
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // 2. Dashboard Route (Menggunakan DashboardController sesuai kode kamu)

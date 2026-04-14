@@ -26,9 +26,6 @@ class InvoiceServis extends Model
         'tanggal_bayar' => 'datetime',
     ];
 
-    /**
-     * Relasi dengan WorkOrder
-     */
     public function workOrder(): BelongsTo
     {
         return $this->belongsTo(WorkOrder::class, 'id_wo', 'id_wo');
