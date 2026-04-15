@@ -58,4 +58,5 @@ class JenisServisController extends Controller
         JenisServis::destroy($id);
         return back()->with('success', 'Data berhasil dihapus');
     }
+    
 }

@@ -10,8 +10,8 @@ class SparepartController extends Controller
 {
     public function index()
     {
-        $data = Sparepart::all();
-        return view('admin.sparepart.index', compact('data'));
+        $spareparts = Sparepart::latest()->paginate(10);
+        return view('admin.sparepart.index', compact('spareparts'));
     }
 
     public function create()
@@ -21,41 +21,52 @@ class SparepartController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_part' => 'required',
-            'stok' => 'required',
-            'harga_jual' => 'required',
+        $validated = $request->validate([
+            'kode_part' => 'required|unique:sparepart|max:50',
+            'nama_part' => 'required|string|max:255',
+            'satuan' => 'required|string|max:20',
+            'stok' => 'required|integer|min:0',
+            'stok_minimum' => 'required|integer|min:0',
+            'harga_beli' => 'required|numeric|min:0',
+            'harga_jual' => 'required|numeric|min:0',
         ]);
 
-        Sparepart::create($request->all());
-
-        return redirect()->route('sparepart.index')
-            ->with('success', 'Data berhasil ditambahkan');
+        Sparepart::create($validated);
+        return redirect()->route('admin.sparepart.index')->with('success', 'Sparepart berhasil ditambahkan');
     }
 
     public function edit($id)
     {
-        $data = Sparepart::findOrFail($id);
-        return view('admin.sparepart.edit', compact('data'));
+        $sparepart = Sparepart::findOrFail($id);
+        return view('admin.sparepart.edit', compact('sparepart'));
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_part' => 'required',
-            'stok' => 'required',
-            'harga_jual' => 'required',
+        $sparepart = Sparepart::findOrFail($id);
+        $validated = $request->validate([
+            'kode_part' => 'required|max:50|unique:sparepart,kode_part,' . $id . ',id_part',
+            'nama_part' => 'required|string|max:255',
+            'satuan' => 'required|string|max:20',
+            'stok' => 'required|integer|min:0',
+            'stok_minimum' => 'required|integer|min:0',
+            'harga_beli' => 'required|numeric|min:0',
+            'harga_jual' => 'required|numeric|min:0',
         ]);
 
-        Sparepart::findOrFail($id)->update($request->all());
-
-        return redirect()->route('sparepart.index')
-            ->with('success', 'Data berhasil diupdate');
+        $sparepart->update($validated);
+        return redirect()->route('admin.sparepart.index')->with('success', 'Sparepart berhasil diupdate');
     }
 
     public function destroy($id)
     {
-        Sparepart::destroy($id);
-        return back()->with('success', 'Data berhasil dihapus');
+        $sparepart = Sparepart::findOrFail($id);
+        $sparepart->delete();
+        return redirect()->route('admin.sparepart.index')->with('success', 'Sparepart berhasil dihapus');
     }
+     public function show($id)
+{
+    $sparepart = Sparepart::findOrFail($id);
+    return view('admin.sparepart.show', compact('sparepart'));
+}
 }

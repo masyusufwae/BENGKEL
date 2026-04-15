@@ -5,6 +5,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+//crud admin
+use App\Http\Controllers\Admin\MekanikController;
+use App\Http\Controllers\Admin\ServisController;
+use App\Http\Controllers\Admin\SparepartController;
+use App\Http\Controllers\Admin\WorkOrderController;
+use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\LaporanController;
 
 // 1. Halaman Utama dengan Logic Redirect jika sudah login
 Route::get('/', function () {
@@ -45,6 +52,19 @@ Route::middleware('auth')->group(function () {
 
     // Logout (Opsional: Breeze sudah punya ini di auth.php, tapi jika ingin tetap pakai logic manualmu)
     // Route::post('/logout', ...);
+});
+
+// Admin crud routes
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('mekanik', MekanikController::class);
+    Route::resource('servis', ServisController::class);
+    Route::resource('sparepart', SparepartController::class);
+    Route::resource('work-order', WorkOrderController::class);
+    Route::get('invoice', [InvoiceController::class, 'index'])->name('invoice.index');
+    Route::get('invoice/cetak/{id}', [InvoiceController::class, 'cetak'])->name('invoice.cetak');
+    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::post('laporan/generate', [LaporanController::class, 'generate'])->name('laporan.generate');
 });
 
 // 4. Memanggil Routes Autentikasi Breeze (Login, Register, Reset Password, dll)

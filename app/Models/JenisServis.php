@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JenisServis extends Model
 {
+    use HasFactory;
+
     protected $table = 'jenis_servis';
     protected $primaryKey = 'id_jenis';
-
     protected $fillable = [
-        'nama_servis',
-        'deskripsi',
-        'harga_jasa',
-        'estimasi_waktu',
-        'kategori',
+        'nama_servis', 'deskripsi', 'estimasi_waktu', 'harga_jasa', 'kategori'
     ];
 
-    public function detailServis(): HasMany
+    public function workOrders()
     {
-        return $this->hasMany(\App\Models\DetailServisWo::class, 'id_jenis', 'id_jenis');
+        return $this->belongsToMany(WorkOrder::class, 'detail_wo_servis', 'id_jenis', 'id_wo')
+                    ->withPivot('harga_satuan')
+                    ->withTimestamps();
     }
 }
