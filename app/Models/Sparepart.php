@@ -2,26 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sparepart extends Model
 {
+    use HasFactory;
+
     protected $table = 'sparepart';
     protected $primaryKey = 'id_part';
-
     protected $fillable = [
-        'kode_part',
-        'nama_part',
-        'satuan',
-        'stok',
-        'stok_minimum',
-        'harga_beli',
-        'harga_jual',
+        'kode_part', 'nama_part', 'satuan', 'stok',
+        'stok_minimum', 'harga_beli', 'harga_jual'
     ];
 
-    public function penggunaanSparepart(): HasMany
+    public function workOrders()
     {
-        return $this->hasMany(PenggunaanSparepart::class, 'id_part', 'id_part');
+        return $this->belongsToMany(WorkOrder::class, 'detail_wo_sparepart', 'id_part', 'id_wo')
+                    ->withPivot('jumlah', 'harga_satuan')
+                    ->withTimestamps();
     }
 }
