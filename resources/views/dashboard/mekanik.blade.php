@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('mekanik.layouts.app')
 
 @section('title', 'Dashboard - Mekanik')
 
@@ -69,7 +69,7 @@
                             <p class="text-gray-500 text-sm font-medium">WO Hari Ini</p>
                             <p class="text-3xl font-bold text-green-600 mt-2">{{ $total_wo_hari_ini }}</p>
                             <p class="text-gray-400 text-xs mt-2">
-                                {{ $wo_selesai_hari_ini }} selesai, 
+                                {{ $wo_selesai_hari_ini }} selesai,
                                 {{ $total_wo_hari_ini - $wo_selesai_hari_ini }} diproses
                             </p>
                         </div>
