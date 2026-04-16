@@ -2,26 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WorkOrder extends Model
 {
+    use HasFactory;
+
     protected $table = 'work_order';
     protected $primaryKey = 'id_wo';
-
     protected $fillable = [
-        'id_kendaraan',
-        'id_mekanik',
-        'nomor_wo',
-        'keluhan',
-        'tanggal_masuk',
-        'tanggal_selesai',
-        'estimasi_selesai',
-        'status',
-        'catatan_mekanik',
+        'id_kendaraan', 'id_mekanik', 'nomor_wo', 'keluhan',
+        'tanggal_masuk', 'tanggal_selesai', 'estimasi_selesai',
+        'status', 'catatan_mekanik'
     ];
 
     protected $casts = [
@@ -30,28 +23,46 @@ class WorkOrder extends Model
         'estimasi_selesai' => 'datetime',
     ];
 
-    public function kendaraan(): BelongsTo
+    public function mekanik()
     {
-        return $this->belongsTo(KendaraanPelanggan::class, 'id_kendaraan', 'id_kendaraan');
+        return $this->belongsTo(Mekanik::class, 'id_mekanik');
     }
 
-    public function mekanik(): BelongsTo
+    public function kendaraan()
     {
-        return $this->belongsTo(Mekanik::class, 'id_mekanik', 'id_mekanik');
+        return $this->belongsTo(KendaraanPelanggan::class, 'id_kendaraan');
     }
 
-    public function detailServis(): HasMany
+    public function jenisServis()
     {
-        return $this->hasMany(DetailServisWo::class, 'id_wo', 'id_wo');
+        return $this->belongsToMany(JenisServis::class, 'detail_wo_servis', 'id_wo', 'id_jenis')
+                    ->withPivot('harga_satuan');
     }
 
-    public function penggunaanSparepart(): HasMany
+    public function spareparts()
     {
-        return $this->hasMany(PenggunaanSparepart::class, 'id_wo', 'id_wo');
+        return $this->belongsToMany(Sparepart::class, 'detail_wo_sparepart', 'id_wo', 'id_part')
+                    ->withPivot('jumlah', 'harga_satuan');
     }
 
-    public function invoice(): HasOne
+    // Hitung total harga
+    public function getTotalHargaAttribute()
     {
-        return $this->hasOne(InvoiceServis::class, 'id_wo', 'id_wo');
+        $totalServis = $this->jenisServis->sum('pivot.harga_satuan');
+        $totalSparepart = $this->spareparts->sum(function($sp) {
+            return $sp->pivot->jumlah * $sp->pivot->harga_satuan;
+        });
+        return $totalServis + $totalSparepart;
+    }
+
+    // Auto generate nomor WO
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($wo) {
+            if (!$wo->nomor_wo) {
+                $wo->nomor_wo = 'WO-' . date('Ymd') . '-' . str_pad(static::max('id_wo') + 1, 4, '0', STR_PAD_LEFT);
+            }
+        });
     }
 }
