@@ -67,5 +67,57 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('laporan/generate', [LaporanController::class, 'generate'])->name('laporan.generate');
 });
 
+// Mekanik Work Order Routes
+
+  Route::prefix('mekanik')->name('mekanik.')->group(function () {
+
+    Route::get('work-order', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'index'])->name('work-order.index');
+
+    // Route::get('work-order/create', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'create'])->name('work-order.create');
+
+    // Route::post('work-order', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'store'])->name('work-order.store');
+
+    Route::get('work-order/{id}', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'detail'])->name('work-order.detail');
+
+    Route::get('work-order/{id}/edit', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'edit'])->name('work-order.edit');
+
+    Route::put('work-order/{id}', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'update'])->name('work-order.update');
+
+    Route::put('work-order/{id}/status', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'updateStatus'])->name('work-order.updateStatus');
+
+
+
+    Route::put('work-order/{id}/catatan', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'updateCatatan'])->name('work-order.updateCatatan');
+
+    Route::post('detail-servis', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'storeDetailServis'])->name('detail-servis.store');
+
+    Route::post('penggunaan-part', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'storePenggunaanPart'])->name('penggunaan-part.store');
+
+
+
+    // Riwayat Arsip Servis
+
+    Route::get('riwayat', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'riwayat'])->name('riwayat');
+
+
+
+    // Mekanik Sparepart Routes
+
+    Route::get('sparepart', [\App\Http\Controllers\Mekanik\SparepartController::class, 'index'])->name('sparepart.index');
+
+    Route::get('sparepart/tambah', [\App\Http\Controllers\Mekanik\SparepartController::class, 'create'])->name('sparepart.create');
+
+    Route::get('sparepart/{id}', [\App\Http\Controllers\Mekanik\SparepartController::class, 'detail'])->name('sparepart.detail');
+
+    Route::get('sparepart/{id}/edit', [\App\Http\Controllers\Mekanik\SparepartController::class, 'edit'])->name('sparepart.edit');
+
+    Route::post('sparepart', [\App\Http\Controllers\Mekanik\SparepartController::class, 'store'])->name('sparepart.store');
+
+    Route::put('sparepart/{id}', [\App\Http\Controllers\Mekanik\SparepartController::class, 'update'])->name('sparepart.update');
+
+    Route::put('sparepart/update-stok', [\App\Http\Controllers\Mekanik\SparepartController::class, 'updateStok'])->name('sparepart.updateStok');
+
+  });
+
 // 4. Memanggil Routes Autentikasi Breeze (Login, Register, Reset Password, dll)
 require __DIR__.'/auth.php';

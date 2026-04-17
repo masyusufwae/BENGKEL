@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mekanik;
 use App\Http\Controllers\Controller;
 use App\Models\Sparepart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SparepartController extends Controller
 {
@@ -30,12 +31,24 @@ class SparepartController extends Controller
             'stok_minimum' => 'required|integer|min:0',
             'stok' => 'required|integer|min:0',
             'harga_jual' => 'required|numeric|min:0',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        Sparepart::create($request->only([
-            'kode_part', 'nama_part', 'satuan', 'stok_minimum',
-            'stok', 'harga_jual'
-        ]));
+        $data = $request->only([
+            'kode_part',
+            'nama_part',
+            'satuan',
+            'stok_minimum',
+            'stok',
+            'harga_jual'
+        ]);
+
+        // 🔥 Upload gambar
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')->store('sparepart', 'public');
+        }
+
+        Sparepart::create($data);
 
         return redirect()->route('mekanik.sparepart.index')
             ->with('success', 'Sparepart berhasil ditambahkan');
@@ -55,26 +68,40 @@ class SparepartController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $sparepart = Sparepart::findOrFail($id);
+{
+    $sparepart = Sparepart::findOrFail($id);
 
-        $request->validate([
-            'kode_part' => 'required|unique:sparepart,kode_part,' . $id,
-            'nama_part' => 'required|string|max:255',
-            'satuan' => 'nullable|string|max:50',
-            'stok_minimum' => 'required|integer|min:0',
-            'stok' => 'required|integer|min:0',
-            'harga_jual' => 'required|numeric|min:0',
-        ]);
+    $request->validate([
+        'kode_part' => 'required|unique:sparepart,kode_part,' . $id . ',id_part',
+        'nama_part' => 'required|string|max:255',
+        'satuan' => 'nullable|string|max:50',
+        'stok_minimum' => 'required|integer|min:0',
+        'stok' => 'required|integer|min:0',
+        'harga_jual' => 'required|numeric|min:0',
+        'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
 
-        $sparepart->update($request->only([
-            'kode_part', 'nama_part', 'satuan', 'stok_minimum',
-            'stok', 'harga_jual'
-        ]));
+    $data = $request->only([
+        'kode_part', 'nama_part', 'satuan', 'stok_minimum',
+        'stok', 'harga_jual'
+    ]);
 
-        return redirect()->route('mekanik.sparepart.index')
-            ->with('success', 'Sparepart berhasil diupdate');
+    // 🔥 Upload gambar baru
+    if ($request->hasFile('gambar')) {
+
+        // Hapus gambar lama (opsional tapi bagus)
+        if ($sparepart->gambar) {
+            Storage::disk('public')->delete($sparepart->gambar);
+        }
+
+        $data['gambar'] = $request->file('gambar')->store('sparepart', 'public');
     }
+
+    $sparepart->update($data);
+
+    return redirect()->route('mekanik.sparepart.index')
+        ->with('success', 'Sparepart berhasil diupdate');
+}
 
     public function updateStok(Request $request)
     {
@@ -88,5 +115,3 @@ class SparepartController extends Controller
         return redirect()->route('mekanik.sparepart.index')->with('success', 'Stok berhasil diupdate');
     }
 }
-
-

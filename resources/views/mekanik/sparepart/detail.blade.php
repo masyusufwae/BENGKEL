@@ -117,7 +117,7 @@
                     <div class="md:w-7/12 w-full flex flex-col">
                         <div class="bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-6 h-full flex-1">
                             <h3 class="font-bold text-lg mb-4">Riwayat Penggunaan</h3>
-                            @if($sparepart->penggunaanSparepart->count() > 0)
+@if($sparepart->workOrders->count() > 0)
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
@@ -129,7 +129,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($sparepart->penggunaanSparepart->take(10) as $ps)
+@foreach($sparepart->penggunaanSparepart->take(10) as $ps)
                                                 <tr class="border-b hover:bg-gray-100">
                                                     <td class="py-3 px-4 font-medium">
                                                         <a href="{{ route('mekanik.work-order.detail', $ps->workOrder->id_wo) }}"

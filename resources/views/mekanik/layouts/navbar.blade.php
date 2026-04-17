@@ -20,7 +20,7 @@
 					Sparepart
 				</a>
 				<div class="flex items-center space-x-2">
-					<span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
+					<span class="text-sm text-gray-600">{{ auth()->user()->name ?? 'Mekanik' }}</span>
 					<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
 						Mekanik
 					</span>

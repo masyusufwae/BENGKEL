@@ -52,8 +52,8 @@
                             <th class="py-4 px-4 font-bold">Kode Part</th>
                             <th class="py-4 px-4 font-bold">Nama Part</th>
                             <th class="py-4 px-4 font-bold">Satuan</th>
-                            <th class="py-4 px-4 font-bold">Harga Beli</th>
-                            <th class="py-4 px-4 font-bold">Harga Jual</th>
+                            <th class="py-4 px-4 font-bold">Gambar</th>
+                            <th class="py-4 px-4 font-bold">Harga</th>
                             <th class="py-4 px-4 font-bold">Stok</th>
                             <th class="py-4 px-4 text-center font-bold">Aksi</th>
                         </tr>
@@ -84,7 +84,11 @@
                                 </td>
 
                                 <td class="py-3 px-4">
-                                    Rp{{ number_format($sp->harga_beli) }}
+                                    @if($sp->gambar)
+                                        <img src="{{ Storage::url($sp->gambar) }}" alt="{{ $sp->nama_part }}" class="w-16 h-16 object-cover">
+                                    @else
+                                        <span class="text-gray-500">Tidak ada gambar</span>
+                                    @endif
                                 </td>
 
                                 <td class="py-3 px-4 font-mono">

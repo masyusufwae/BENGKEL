@@ -27,6 +27,13 @@ class KendaraanPelanggan extends Model
     {
         return $this->belongsTo(User::class, 'id_pelanggan');
     }
+    public function user(): BelongsTo
+
+  {
+
+    return $this->belongsTo(User::class, 'id_pelanggan');
+
+  }
 
     public function workOrders(): HasMany
     {

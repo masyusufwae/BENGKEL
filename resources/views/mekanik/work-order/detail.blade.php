@@ -114,6 +114,23 @@
                                     </ul>
                                 </div>
                             </div>
+                            {{-- Gambar Work Order --}}
+                            @if ($wo->gambar)
+                                <div class="mb-6">
+                                    <h4 class="font-bold text-gray-800 mb-3 flex items-center">
+                                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 16l4-4a3 3 0 014 0l4 4m-2-2l1-1a3 3 0 014 0l3 3m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        Gambar Kendaraan
+                                    </h4>
+
+                                    <img src="{{ asset('storage/' . $wo->gambar) }}"
+                                        class="w-full max-h-64 object-cover rounded-xl border shadow">
+                                </div>
+                            @endif
 
                             {{-- Section: Keluhan --}}
                             <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
@@ -140,7 +157,8 @@
                                         <p class="font-semibold text-gray-800">{{ $wo->kendaraan->user->name ?? '-' }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Status Saat
+                                        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Status
+                                            Saat
                                             Ini</p>
                                         <span
                                             class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-tighter">
@@ -184,6 +202,23 @@
                                     Simpan Perubahan
                                 </button>
                             </div>
+                        </form>
+                    </div>
+
+                    {{-- Upload Gambar --}}
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                        <h5 class="font-bold text-gray-800 mb-4">Upload Gambar</h5>
+
+                        <form action="{{ route('mekanik.work-order.update', $wo->id_wo) }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+
+                            <input type="file" name="gambar" class="w-full border rounded-lg px-3 py-2 mb-3">
+
+                            <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">
+                                Upload
+                            </button>
                         </form>
                     </div>
 

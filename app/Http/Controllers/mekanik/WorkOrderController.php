@@ -10,46 +10,47 @@ use App\Models\Sparepart;
 use App\Models\DetailServisWo;
 use App\Models\PenggunaanSparepart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class WorkOrderController extends Controller
 {
     // =========================
     // CREATE
     // =========================
-    public function create()
-    {
-        $kendaraans = KendaraanPelanggan::all();
-        return view('mekanik.work-order.create', compact('kendaraans'));
-    }
+    // public function create()
+    // {
+    //     $kendaraans = KendaraanPelanggan::all();
+    //     return view('mekanik.work-order.create', compact('kendaraans'));
+    // }
 
     // =========================
     // STORE
     // =========================
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'nomor_wo' => 'required|string|max:50|unique:work_order,nomor_wo',
-            'status' => 'required|in:antrian,dikerjakan,menunggu_part,selesai',
-            'id_kendaraan' => 'required|exists:kendaraan_pelanggan,id_kendaraan',
-            'estimasi_selesai' => 'nullable|date',
-            'keluhan' => 'required|string|max:500',
-            'catatan_mekanik' => 'nullable|string|max:1000',
-        ]);
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'nomor_wo' => 'required|string|max:50|unique:work_order,nomor_wo',
+    //         'status' => 'required|in:antrian,dikerjakan,menunggu_part,selesai',
+    //         'id_kendaraan' => 'required|exists:kendaraan_pelanggan,id_kendaraan',
+    //         'estimasi_selesai' => 'nullable|date',
+    //         'keluhan' => 'required|string|max:500',
+    //         'catatan_mekanik' => 'nullable|string|max:1000',
+    //     ]);
 
-        WorkOrder::create([
-            'id_mekanik' => auth()->id(),
-            'nomor_wo' => $validated['nomor_wo'],
-            'status' => $validated['status'],
-            'id_kendaraan' => $validated['id_kendaraan'],
-            'estimasi_selesai' => $validated['estimasi_selesai'] ?? null,
-            'keluhan' => $validated['keluhan'],
-            'catatan_mekanik' => $validated['catatan_mekanik'] ?? null,
-            'tanggal_masuk' => now(),
-        ]);
+    //     WorkOrder::create([
+    //         'id_mekanik' => auth()->id(),
+    //         'nomor_wo' => $validated['nomor_wo'],
+    //         'status' => $validated['status'],
+    //         'id_kendaraan' => $validated['id_kendaraan'],
+    //         'estimasi_selesai' => $validated['estimasi_selesai'] ?? null,
+    //         'keluhan' => $validated['keluhan'],
+    //         'catatan_mekanik' => $validated['catatan_mekanik'] ?? null,
+    //         'tanggal_masuk' => now(),
+    //     ]);
 
-        return redirect()->route('mekanik.work-order.index')
-            ->with('success', 'Work Order berhasil ditambahkan!');
-    }
+    //     return redirect()->route('mekanik.work-order.index')
+    //         ->with('success', 'Work Order berhasil ditambahkan!');
+    // }
 
     // =========================
     // INDEX + SEARCH
@@ -148,7 +149,14 @@ class WorkOrderController extends Controller
             'nomor_wo' => 'required|string|max:50|unique:work_order,nomor_wo,' . $id . ',id_wo',
             'estimasi_selesai' => 'nullable|date',
             'catatan_mekanik' => 'nullable|string|max:1000',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
+
+        // Upload gambar
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('work-order', 'public');
+            $validated['gambar'] = $path;
+        }
 
         $wo->update($validated);
 

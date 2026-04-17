@@ -12,10 +12,17 @@ class WorkOrder extends Model
     protected $table = 'work_order';
     protected $primaryKey = 'id_wo';
     protected $fillable = [
-        'id_kendaraan', 'id_mekanik', 'nomor_wo', 'keluhan',
-        'tanggal_masuk', 'tanggal_selesai', 'estimasi_selesai',
-        'status', 'catatan_mekanik'
-    ];
+    'id_kendaraan',
+    'id_mekanik',
+    'nomor_wo',
+    'keluhan',
+    'gambar', 
+    'tanggal_masuk',
+    'tanggal_selesai',
+    'estimasi_selesai',
+    'status',
+    'catatan_mekanik'
+];
 
     protected $casts = [
         'tanggal_masuk' => 'datetime',
@@ -33,27 +40,35 @@ class WorkOrder extends Model
         return $this->belongsTo(KendaraanPelanggan::class, 'id_kendaraan');
     }
 
-    public function jenisServis()
-    {
-        return $this->belongsToMany(JenisServis::class, 'detail_wo_servis', 'id_wo', 'id_jenis')
-                    ->withPivot('harga_satuan');
-    }
+    // public function jenisServis()
+    // {
+    //     return $this->belongsToMany(JenisServis::class, 'detail_wo_servis', 'id_wo', 'id_jenis')
+    //                 ->withPivot('harga_satuan');
+    // }
 
-    public function spareparts()
-    {
-        return $this->belongsToMany(Sparepart::class, 'detail_wo_sparepart', 'id_wo', 'id_part')
-                    ->withPivot('jumlah', 'harga_satuan');
-    }
+    // public function spareparts()
+    // {
+    //     return $this->belongsToMany(Sparepart::class, 'detail_wo_sparepart', 'id_wo', 'id_part')
+    //                 ->withPivot('jumlah', 'harga_satuan');
+    // }
+    public function detailServis()
+{
+    return $this->hasMany(\App\Models\DetailServisWo::class, 'id_wo', 'id_wo');
+}
+
+public function penggunaanSparepart()
+{
+    return $this->hasMany(\App\Models\PenggunaanSparepart::class, 'id_wo', 'id_wo');
+}
 
     // Hitung total harga
     public function getTotalHargaAttribute()
-    {
-        $totalServis = $this->jenisServis->sum('pivot.harga_satuan');
-        $totalSparepart = $this->spareparts->sum(function($sp) {
-            return $sp->pivot->jumlah * $sp->pivot->harga_satuan;
-        });
-        return $totalServis + $totalSparepart;
-    }
+{
+    $totalServis = $this->detailServis->sum('harga_jasa');
+    $totalSparepart = $this->penggunaanSparepart->sum('subtotal');
+
+    return $totalServis + $totalSparepart;
+}
 
     // Auto generate nomor WO
     protected static function boot()
