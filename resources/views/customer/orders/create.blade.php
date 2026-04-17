@@ -1,16 +1,12 @@
-@extends('layouts.app')
+@extends('customer.layouts.app')
 
 @section('title', 'Pesan Service - Pelanggan')
 
-@section('content')
-<div class="min-h-screen bg-gray-100">
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <a href="{{ route('customer.orders.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                    ← Kembali
-                </a>
+@section('page-content')
+<div class="mb-8">
+    <a href="{{ route('customer.orders.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+        ← Kembali
+    </a>
                 <h1 class="text-3xl font-bold text-gray-900 mt-4">Pesan Service</h1>
                 <p class="text-gray-600 mt-2">Buat pesanan service untuk kendaraan Anda</p>
             </div>
@@ -93,7 +89,4 @@
                     </div>
                 @endif
             </div>
-        </div>
-    </div>
-</div>
 @endsection

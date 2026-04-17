@@ -40,11 +40,16 @@ class WorkOrder extends Model
         return $this->belongsTo(KendaraanPelanggan::class, 'id_kendaraan');
     }
 
-    // public function jenisServis()
-    // {
-    //     return $this->belongsToMany(JenisServis::class, 'detail_wo_servis', 'id_wo', 'id_jenis')
-    //                 ->withPivot('harga_satuan');
-    // }
+    public function invoice()
+    {
+        return $this->hasMany(InvoiceServis::class, 'id_wo', 'id_wo');
+    }
+
+    public function jenisServis()
+    {
+        return $this->belongsToMany(JenisServis::class, 'detail_wo_servis', 'id_wo', 'id_jenis')
+                    ->withPivot('harga_satuan');
+    }
 
     // public function spareparts()
     // {

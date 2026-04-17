@@ -1,13 +1,10 @@
-@extends('layouts.app')
+@extends('customer.layouts.app')
 
 @section('title', 'Kendaraan Saya - Pelanggan')
 
-@section('content')
-<div class="min-h-screen bg-gray-100">
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Header -->
-            <div class="mb-8 flex justify-between items-center">
+@section('page-content')
+<!-- Header -->
+<div class="mb-8 flex justify-between items-center">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Kendaraan Saya</h1>
                     <p class="text-gray-600 mt-2">Kelola kendaraan yang terdaftar</p>
@@ -20,7 +17,7 @@
                 </a>
             </div>
 
-            <!-- Vehicles List -->
+<!-- Vehicles List -->
             @if(count($kendaraan_terdaftar) > 0)
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     @foreach($kendaraan_terdaftar as $kendaraan)
@@ -37,15 +34,15 @@
                                         <p class="text-sm text-gray-500">{{ $kendaraan['merek'] }} {{ $kendaraan['model'] }}</p>
                                     </div>
                                 </div>
-                                <div class="relative group">
-                                    <button class="text-gray-400 hover:text-gray-600">
+                                <div class="relative" x-data="{ open{{ $kendaraan['id_kendaraan'] }}: false }">
+                                    <button onclick="toggleDropdown({{ $kendaraan['id_kendaraan'] }})" class="text-gray-400 hover:text-gray-600">
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
                                         </svg>
                                     </button>
-                                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-10">
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Hapus</a>
+                                    <div id="dropdown-{{ $kendaraan['id_kendaraan'] }}" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible transition-all duration-200 z-10" style="display: none;">
+                                        <a href="{{ route('customer.vehicles.edit', $kendaraan['id_kendaraan']) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
+                                        <button onclick="openDeleteConfirm({{ $kendaraan['id_kendaraan'] }})" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Hapus</button>
                                     </div>
                                 </div>
                             </div>
@@ -68,6 +65,12 @@
                             <button class="w-full mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
                                 Lihat Riwayat Service
                             </button>
+
+                            <!-- Hidden Delete Form -->
+                            <form id="delete-form-{{ $kendaraan['id_kendaraan'] }}" action="{{ route('customer.vehicles.destroy', $kendaraan['id_kendaraan']) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                         </div>
                     @endforeach
                 </div>
@@ -86,7 +89,61 @@
                     </a>
                 </div>
             @endif
-        </div>
-    </div>
-</div>
+
+<!-- JavaScript for Dropdown and Delete Functionality -->
+<script>
+    let currentOpenDropdown = null;
+
+    function toggleDropdown(vehicleId) {
+        const dropdown = document.getElementById('dropdown-' + vehicleId);
+        const isCurrentlyOpen = currentOpenDropdown === vehicleId;
+
+        // Close previously open dropdown
+        if (currentOpenDropdown !== null && currentOpenDropdown !== vehicleId) {
+            const prevDropdown = document.getElementById('dropdown-' + currentOpenDropdown);
+            if (prevDropdown) {
+                prevDropdown.style.display = 'none';
+                prevDropdown.classList.add('opacity-0', 'invisible');
+                prevDropdown.classList.remove('opacity-100', 'visible');
+            }
+        }
+
+        // Toggle current dropdown
+        if (isCurrentlyOpen) {
+            dropdown.style.display = 'none';
+            dropdown.classList.add('opacity-0', 'invisible');
+            dropdown.classList.remove('opacity-100', 'visible');
+            currentOpenDropdown = null;
+        } else {
+            dropdown.style.display = 'block';
+            dropdown.classList.remove('opacity-0', 'invisible');
+            dropdown.classList.add('opacity-100', 'visible');
+            currentOpenDropdown = vehicleId;
+        }
+    }
+
+    function openDeleteConfirm(vehicleId) {
+        if (confirm('Apakah Anda yakin ingin menghapus kendaraan ini? Semua data service akan ikut terhapus.')) {
+            document.getElementById('delete-form-' + vehicleId).submit();
+        }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (currentOpenDropdown !== null) {
+            const dropdown = document.getElementById('dropdown-' + currentOpenDropdown);
+            const button = event.target.closest('button');
+
+            if (!dropdown.contains(event.target) && !button) {
+                const allDropdowns = document.querySelectorAll('[id^="dropdown-"]');
+                allDropdowns.forEach(dd => {
+                    dd.style.display = 'none';
+                    dd.classList.add('opacity-0', 'invisible');
+                    dd.classList.remove('opacity-100', 'visible');
+                });
+                currentOpenDropdown = null;
+            }
+        }
+    });
+</script>
 @endsection

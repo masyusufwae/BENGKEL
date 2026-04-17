@@ -1,18 +1,15 @@
-@extends('layouts.app')
+@extends('customer.layouts.app')
 
 @section('title', 'Invoice Service - Pelanggan')
 
-@section('content')
-<div class="min-h-screen bg-gray-100">
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">Invoice Service</h1>
+@section('page-content')
+<!-- Header -->
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Invoice Service</h1>
                 <p class="text-gray-600 mt-2">Daftar tagihan untuk layanan yang telah diterima</p>
             </div>
 
-            <!-- Invoices List -->
+<!-- Invoices List -->
             @if(count($riwayat_servis) > 0)
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <table class="min-w-full">
@@ -86,12 +83,12 @@
                 </div>
             @endif
 
-            <!-- Summary Card -->
+<!-- Summary Card -->
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white rounded-lg shadow p-6">
                     <p class="text-gray-600 text-sm font-medium">Total Biaya</p>
                     <p class="text-3xl font-bold text-gray-900 mt-2">
-                        Rp {{ number_format($riwayat_servis->sum('total') ?? 0, 0, ',', '.') }}
+                        Rp {{ number_format(collect($riwayat_servis)->sum('total') ?? 0, 0, ',', '.') }}
                     </p>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6">
@@ -113,7 +110,4 @@
                     </p>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 @endsection

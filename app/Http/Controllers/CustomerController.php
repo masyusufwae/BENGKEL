@@ -22,6 +22,7 @@ class CustomerController extends Controller
             ->get()
             ->map(function($kendaraan) {
                 return [
+                    'id_kendaraan' => $kendaraan->id_kendaraan,
                     'nomor_polisi' => $kendaraan->nomor_polisi,
                     'merek' => $kendaraan->merek,
                     'model' => $kendaraan->model,
@@ -69,6 +70,71 @@ class CustomerController extends Controller
     }
 
     /**
+     * Vehicles Edit - Form edit kendaraan
+     */
+    public function vehiclesEdit($id)
+    {
+        $user = Auth::user();
+
+        $kendaraan = KendaraanPelanggan::where('id_kendaraan', $id)
+            ->where('id_pelanggan', $user->id)
+            ->firstOrFail();
+
+        return view('customer.vehicles.edit', [
+            'kendaraan' => $kendaraan,
+        ]);
+    }
+
+    /**
+     * Vehicles Update - Update kendaraan
+     */
+    public function vehiclesUpdate(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $kendaraan = KendaraanPelanggan::where('id_kendaraan', $id)
+            ->where('id_pelanggan', $user->id)
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'nomor_polisi' => 'required|unique:kendaraan_pelanggan,nomor_polisi,' . $id . ',id_kendaraan',
+            'merek' => 'required',
+            'model' => 'required',
+            'tahun' => 'required|numeric',
+            'warna' => 'nullable',
+            'nomor_rangka' => 'nullable',
+            'nomor_mesin' => 'nullable',
+            'jenis_bahan_bakar' => 'nullable',
+        ]);
+
+        $kendaraan->update($validated);
+
+        return redirect()->route('customer.vehicles.index')
+            ->with('success', 'Kendaraan berhasil diperbarui');
+    }
+
+    /**
+     * Vehicles Destroy - Hapus kendaraan
+     */
+    public function vehiclesDestroy($id)
+    {
+        $user = Auth::user();
+
+        $kendaraan = KendaraanPelanggan::where('id_kendaraan', $id)
+            ->where('id_pelanggan', $user->id)
+            ->firstOrFail();
+
+        // Hapus semua work order terkait
+        WorkOrder::where('id_kendaraan', $id)->delete();
+
+        // Hapus kendaraan
+        $kendaraan->delete();
+
+        return redirect()->route('customer.vehicles.index')
+            ->with('success', 'Kendaraan berhasil dihapus');
+    }
+
+    /**
      * Orders Index - Tampilkan daftar pesanan service
      */
     public function ordersIndex()
@@ -83,7 +149,7 @@ class CustomerController extends Controller
         ->orderBy('tanggal_masuk', 'desc')
         ->get()
         ->map(function($wo) {
-            $invoice = $wo->invoice->first();
+            $invoice = $wo->invoice && is_iterable($wo->invoice) ? collect($wo->invoice)->first() : null;
             return [
                 'id_wo' => $wo->nomor_wo,
                 'tanggal' => $wo->tanggal_selesai ? $wo->tanggal_selesai->format('Y-m-d') : '-',
@@ -154,7 +220,7 @@ class CustomerController extends Controller
         ->orderBy('tanggal_selesai', 'desc')
         ->get()
         ->map(function($wo) {
-            $invoice = $wo->invoice->first();
+            $invoice = $wo->invoice && is_iterable($wo->invoice) ? collect($wo->invoice)->first() : null;
             return [
                 'id_wo' => $wo->nomor_wo,
                 'tanggal' => $wo->tanggal_selesai ? $wo->tanggal_selesai->format('Y-m-d') : '-',

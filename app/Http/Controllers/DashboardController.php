@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\WorkOrder;
 use App\Models\KendaraanPelanggan;
 use App\Models\InvoiceServis;
+use App\Helpers\ServiceScheduleHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -119,13 +121,41 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function($kendaraan) {
+                // Ambil service terakhir yang selesai untuk kendaraan ini
+                $lastService = WorkOrder::where('id_kendaraan', $kendaraan->id_kendaraan)
+                    ->where('status', 'selesai')
+                    ->orderBy('tanggal_selesai', 'desc')
+                    ->first();
+
+                // Hitung jadwal servis berikutnya
+                $nextServiceDate = $lastService
+                    ? $lastService->tanggal_selesai
+                    : $kendaraan->created_at;
+
+                $scheduleInfo = ServiceScheduleHelper::calculateNextService($kendaraan->merek, $nextServiceDate);
+
                 return [
+                    'id_kendaraan' => $kendaraan->id_kendaraan,
                     'nomor_polisi' => $kendaraan->nomor_polisi,
                     'merek' => $kendaraan->merek,
                     'model' => $kendaraan->model,
                     'tahun' => $kendaraan->tahun,
+                    'jadwal_servis' => $scheduleInfo['text'],
+                    'jadwal_tanggal' => $scheduleInfo['date']->format('Y-m-d'),
+                    'jadwal_status' => $scheduleInfo['status'],
+                    'jadwal_is_overdue' => $scheduleInfo['is_overdue'],
+                    'jadwal_icon' => ServiceScheduleHelper::getStatusIcon($scheduleInfo['status']),
+                    'days_remaining' => $scheduleInfo['days_remaining'],
                 ];
-            })->toArray();
+            })
+            // Sort berdasarkan urgency (overdue/urgent/warning/normal) dan days remaining
+            ->sortBy(function($item) {
+                $priority = ['overdue' => 0, 'urgent' => 1, 'warning' => 2, 'normal' => 3];
+                return [$priority[$item['jadwal_status']] ?? 99, $item['days_remaining']];
+            })
+            // Ambil hanya 2 kendaraan yang paling urgent
+            ->slice(0, 2)
+            ->toArray();
 
         // Hitung total kendaraan
         $total_kendaraan = count($kendaraan_terdaftar);
@@ -135,16 +165,35 @@ class DashboardController extends Controller
             $q->where('id_pelanggan', $user->id);
         })->count();
 
-        // Jadwal servis berikutnya (estimasi dari WO terdekat)
-        $jadwal_berikutnya = WorkOrder::whereHas('kendaraan', function($q) use ($user) {
-            $q->where('id_pelanggan', $user->id);
-        })->where('estimasi_selesai', '>', now())
-        ->orderBy('estimasi_selesai', 'asc')
-        ->first();
+        // Jadwal servis berikutnya (dari semua kendaraan, cari yang paling urgent)
+        $allNextServices = [];
+        $vehicles = KendaraanPelanggan::where('id_pelanggan', $user->id)->get();
 
-        $jadwal_servis_berikutnya = $jadwal_berikutnya
-            ? $jadwal_berikutnya->estimasi_selesai->format('Y-m-d') . ' (dalam ' . now()->diffInDays($jadwal_berikutnya->estimasi_selesai) . ' hari)'
-            : 'Belum ada jadwal';
+        foreach ($vehicles as $vehicle) {
+            $lastService = WorkOrder::where('id_kendaraan', $vehicle->id_kendaraan)
+                ->where('status', 'selesai')
+                ->orderBy('tanggal_selesai', 'desc')
+                ->first();
+
+            $serviceDate = $lastService ? $lastService->tanggal_selesai : $vehicle->created_at;
+            $scheduleInfo = ServiceScheduleHelper::calculateNextService($vehicle->merek, $serviceDate);
+
+            $allNextServices[] = [
+                'vehicle' => $vehicle->merek . ' ' . $vehicle->model,
+                'next_date' => $scheduleInfo['date'],
+                'text' => $scheduleInfo['text'],
+                'status' => $scheduleInfo['status'],
+            ];
+        }
+
+        // Urutkan berdasarkan tanggal (paling dekat dulu)
+        usort($allNextServices, function($a, $b) {
+            return $a['next_date'] <=> $b['next_date'];
+        });
+
+        $jadwal_servis_berikutnya = count($allNextServices) > 0
+            ? $allNextServices[0]['text'] . ' (' . $allNextServices[0]['vehicle'] . ')'
+            : 'Belum ada data kendaraan';
 
         $data = [
             'wo_aktif' => $wo_aktif,

@@ -15,42 +15,14 @@
     @endif
 </head>
 <body class="bg-gray-100 font-sans antialiased">
-    <div class="min-h-screen">
-        <!-- Header Navigation -->
-        <nav class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <!-- Logo -->
-                    <div class="flex items-center">
-                        <a href="{{ route('dashboard') }}" class="text-xl font-bold text-blue-600">
-                            🔧 Bengkel Management
-                        </a>
-                    </div>
-                    <!-- Navigation Links -->
-                    <div class="flex items-center space-x-4">
-                        @auth
-                            <div class="flex items-center space-x-2">
-                                <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ ucfirst(auth()->user()->role) }}
-                                </span>
-                            </div>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="text-gray-600 hover:text-gray-900 text-sm font-medium">
-                                    Logout
-                                </button>
-                            </form>
-                        @endauth
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <!-- Main Content -->
-        <main>
-            @yield('content')
-        </main>
+    <!-- Include Navbar Component -->
+    @include('components.navbar')
+
+    <!-- Main Layout Container (Offset for Header) -->
+    <div class="pt-16">
+        @yield('content')
     </div>
+
     <!-- Footer -->
     <footer class="bg-white shadow-sm mt-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-6">

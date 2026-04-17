@@ -1,20 +1,21 @@
 @extends('customer.layouts.app')
 
-@section('title', 'Tambah Kendaraan - Pelanggan')
+@section('title', 'Edit Kendaraan - Pelanggan')
 
 @section('page-content')
 <div class="mb-8">
     <a href="{{ route('customer.vehicles.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
         ← Kembali
     </a>
-                <h1 class="text-3xl font-bold text-gray-900 mt-4">Daftar Kendaraan Baru</h1>
-                <p class="text-gray-600 mt-2">Tambahkan kendaraan untuk mulai service</p>
+                <h1 class="text-3xl font-bold text-gray-900 mt-4">Edit Kendaraan</h1>
+                <p class="text-gray-600 mt-2">Perbarui data kendaraan Anda</p>
             </div>
 
             <!-- Form -->
             <div class="bg-white rounded-lg shadow p-6">
-                <form action="{{ route('customer.vehicles.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('customer.vehicles.update', $kendaraan->id_kendaraan) }}" method="POST" class="space-y-6">
                     @csrf
+                    @method('PATCH')
 
                     <!-- Nomor Polisi -->
                     <div>
@@ -24,7 +25,7 @@
                         <input type="text" id="nomor_polisi" name="nomor_polisi"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                             placeholder="Contoh: B 1234 ABC"
-                            value="{{ old('nomor_polisi') }}"
+                            value="{{ old('nomor_polisi', $kendaraan->nomor_polisi) }}"
                             required>
                         @error('nomor_polisi')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -40,7 +41,7 @@
                             <input type="text" id="merek" name="merek"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Contoh: Honda"
-                                value="{{ old('merek') }}"
+                                value="{{ old('merek', $kendaraan->merek) }}"
                                 required>
                             @error('merek')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -53,7 +54,7 @@
                             <input type="text" id="model" name="model"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Contoh: Civic"
-                                value="{{ old('model') }}"
+                                value="{{ old('model', $kendaraan->model) }}"
                                 required>
                             @error('model')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -70,7 +71,7 @@
                             <input type="number" id="tahun" name="tahun" min="1950"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Contoh: 2020"
-                                value="{{ old('tahun') }}"
+                                value="{{ old('tahun', $kendaraan->tahun) }}"
                                 required>
                             @error('tahun')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -83,7 +84,7 @@
                             <input type="text" id="warna" name="warna"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Contoh: Hitam"
-                                value="{{ old('warna') }}">
+                                value="{{ old('warna', $kendaraan->warna) }}">
                         </div>
                     </div>
 
@@ -96,7 +97,7 @@
                             <input type="text" id="nomor_rangka" name="nomor_rangka"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Nomor rangka kendaraan"
-                                value="{{ old('nomor_rangka') }}">
+                                value="{{ old('nomor_rangka', $kendaraan->nomor_rangka) }}">
                         </div>
                         <div>
                             <label for="nomor_mesin" class="block text-sm font-medium text-gray-700 mb-2">
@@ -105,7 +106,7 @@
                             <input type="text" id="nomor_mesin" name="nomor_mesin"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Nomor mesin kendaraan"
-                                value="{{ old('nomor_mesin') }}">
+                                value="{{ old('nomor_mesin', $kendaraan->nomor_mesin) }}">
                         </div>
                     </div>
 
@@ -117,10 +118,10 @@
                         <select id="jenis_bahan_bakar" name="jenis_bahan_bakar"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Pilih jenis bahan bakar</option>
-                            <option value="Bensin" {{ old('jenis_bahan_bakar') == 'Bensin' ? 'selected' : '' }}>Bensin</option>
-                            <option value="Diesel" {{ old('jenis_bahan_bakar') == 'Diesel' ? 'selected' : '' }}>Diesel</option>
-                            <option value="Hybrid" {{ old('jenis_bahan_bakar') == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
-                            <option value="Listrik" {{ old('jenis_bahan_bakar') == 'Listrik' ? 'selected' : '' }}>Listrik</option>
+                            <option value="Bensin" {{ old('jenis_bahan_bakar', $kendaraan->jenis_bahan_bakar) == 'Bensin' ? 'selected' : '' }}>Bensin</option>
+                            <option value="Diesel" {{ old('jenis_bahan_bakar', $kendaraan->jenis_bahan_bakar) == 'Diesel' ? 'selected' : '' }}>Diesel</option>
+                            <option value="Hybrid" {{ old('jenis_bahan_bakar', $kendaraan->jenis_bahan_bakar) == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
+                            <option value="Listrik" {{ old('jenis_bahan_bakar', $kendaraan->jenis_bahan_bakar) == 'Listrik' ? 'selected' : '' }}>Listrik</option>
                         </select>
                     </div>
 
@@ -130,10 +131,20 @@
                             Batal
                         </a>
                         <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
-                            Daftar Kendaraan
+                            Simpan Perubahan
                         </button>
                     </div>
                 </form>
-            </div>
 
+                <!-- Delete Button -->
+                <div class="border-t border-gray-200 mt-6 pt-6">
+                    <form action="{{ route('customer.vehicles.destroy', $kendaraan->id_kendaraan) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kendaraan ini? Semua data service akan ikut terhapus.')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">
+                            Hapus Kendaraan
+                        </button>
+                    </form>
+                </div>
+            </div>
 @endsection
