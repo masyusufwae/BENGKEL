@@ -146,12 +146,12 @@
     $logged_in_user = Auth::user();
     $active_jobs_count = 0;
     $total_logs_count = 0;
-    
+
     if ($logged_in_user) {
         $active_jobs_count = isset($wo_aktif) ? count($wo_aktif) : \App\Models\WorkOrder::whereHas('kendaraan', function($q) use ($logged_in_user) {
             $q->where('id_pelanggan', $logged_in_user->id);
         })->whereIn('status', ['antrian', 'dikerjakan', 'menunggu part'])->count();
-        
+
         $total_logs_count = isset($riwayat_servis) ? count($riwayat_servis) : \App\Models\WorkOrder::whereHas('kendaraan', function($q) use ($logged_in_user) {
             $q->where('id_pelanggan', $logged_in_user->id);
         })->where('status', 'selesai')->count();
