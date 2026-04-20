@@ -16,7 +16,7 @@ class WorkOrder extends Model
     'id_mekanik',
     'nomor_wo',
     'keluhan',
-    'gambar', 
+    'gambar',
     'tanggal_masuk',
     'tanggal_selesai',
     'estimasi_selesai',
@@ -67,13 +67,14 @@ public function penggunaanSparepart()
 }
 
     // Hitung total harga
-    public function getTotalHargaAttribute()
+ public function getTotalHargaAttribute()
 {
-    $totalServis = $this->detailServis->sum('harga_jasa');
-    $totalSparepart = $this->penggunaanSparepart->sum('subtotal');
+    $jasa = $this->detailServis->sum('harga_jasa');
+    $part = $this->penggunaanSparepart->sum('subtotal');
 
-    return $totalServis + $totalSparepart;
+    return $jasa + $part;
 }
+
 
     // Auto generate nomor WO
     protected static function boot()

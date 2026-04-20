@@ -87,6 +87,15 @@
                             @enderror
                         </div>
                         <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+        Harga Beli <span class="text-red-500">*</span>
+    </label>
+    <input type="number" name="harga_beli"
+        value="{{ old('harga_beli', $sparepart->harga_beli) }}"
+        min="0" required
+        class="w-full border rounded-lg px-3 py-2">
+</div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Harga Jual <span
                                     class="text-red-500">*</span></label>
                             <input type="number" name="harga_jual" value="{{ old('harga_jual', $sparepart->harga_jual) }}"

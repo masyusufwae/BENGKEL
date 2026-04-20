@@ -117,7 +117,21 @@
                                                 class="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm hover:bg-blue-100 transition shadow w-full text-center">
                                                 Lanjutkan
                                             </a>
+                                            <a href="{{ route('mekanik.work-order.servis', $wo->id_wo) }}"
+    class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition w-full text-center">
+    Servis
+</a>
                                         @endif
+                                        <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
+    @csrf
+    @method('PUT')
+
+    <input type="hidden" name="status" value="selesai">
+
+    <button class="bg-green-600 text-white px-4 py-2 rounded">
+        Selesaikan Servis
+    </button>
+</form>
                                     </td>
 
 

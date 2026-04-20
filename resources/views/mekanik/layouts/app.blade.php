@@ -49,6 +49,48 @@
     </footer>
 
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+@if (session('success'))
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil!',
+    text: '{{ session('success') }}',
+    timer: 4000,
+    showConfirmButton: false,
+    toast: true,
+    position: 'top-end',
+    background: '#10b981',
+    color: 'white'
+});
+@endif
+
+@if (session('error'))
+Swal.fire({
+    icon: 'error',
+    title: 'Gagal!',
+    text: '{{ session('error') }}',
+    timer: 5000,
+    showConfirmButton: false,
+    toast: true,
+    position: 'top-end',
+    background: '#ef4444',
+    color: 'white'
+});
+@endif
+
+@if (session('warning'))
+Swal.fire({
+    icon: 'warning',
+    title: 'Peringatan!',
+    text: '{{ session('warning') }}',
+    timer: 4000,
+    showConfirmButton: false,
+    toast: true,
+    position: 'top-end'
+});
+@endif
+</script>
 </body>
 </html>

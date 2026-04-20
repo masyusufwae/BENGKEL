@@ -140,7 +140,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
 // Mekanik Work Order Routes
 
-  Route::prefix('mekanik')->name('mekanik.')->group(function () {
+Route::prefix('mekanik')->name('mekanik.')->group(function () {
 
     Route::get('work-order', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'index'])->name('work-order.index');
 
@@ -188,7 +188,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     Route::put('sparepart/update-stok', [\App\Http\Controllers\Mekanik\SparepartController::class, 'updateStok'])->name('sparepart.updateStok');
 
-  });
+   Route::get('work-order/{id}/servis', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'servis'])
+    ->name('work-order.servis');
+
+Route::post('work-order/{id}/servis', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'storeServis'])
+    ->name('work-order.servis.store');
+});
 
 // 4. Memanggil Routes Autentikasi Breeze (Login, Register, Reset Password, dll)
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -4,54 +4,16 @@ namespace App\Http\Controllers\Mekanik;
 
 use App\Http\Controllers\Controller;
 use App\Models\WorkOrder;
-use App\Models\KendaraanPelanggan;
 use App\Models\JenisServis;
 use App\Models\Sparepart;
 use App\Models\DetailServisWo;
 use App\Models\PenggunaanSparepart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class WorkOrderController extends Controller
 {
-    // =========================
-    // CREATE
-    // =========================
-    // public function create()
-    // {
-    //     $kendaraans = KendaraanPelanggan::all();
-    //     return view('mekanik.work-order.create', compact('kendaraans'));
-    // }
-
-    // =========================
-    // STORE
-    // =========================
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'nomor_wo' => 'required|string|max:50|unique:work_order,nomor_wo',
-    //         'status' => 'required|in:antrian,dikerjakan,menunggu_part,selesai',
-    //         'id_kendaraan' => 'required|exists:kendaraan_pelanggan,id_kendaraan',
-    //         'estimasi_selesai' => 'nullable|date',
-    //         'keluhan' => 'required|string|max:500',
-    //         'catatan_mekanik' => 'nullable|string|max:1000',
-    //     ]);
-
-    //     WorkOrder::create([
-    //         'id_mekanik' => auth()->id(),
-    //         'nomor_wo' => $validated['nomor_wo'],
-    //         'status' => $validated['status'],
-    //         'id_kendaraan' => $validated['id_kendaraan'],
-    //         'estimasi_selesai' => $validated['estimasi_selesai'] ?? null,
-    //         'keluhan' => $validated['keluhan'],
-    //         'catatan_mekanik' => $validated['catatan_mekanik'] ?? null,
-    //         'tanggal_masuk' => now(),
-    //     ]);
-
-    //     return redirect()->route('mekanik.work-order.index')
-    //         ->with('success', 'Work Order berhasil ditambahkan!');
-    // }
-
     // =========================
     // INDEX + SEARCH
     // =========================
@@ -70,39 +32,6 @@ class WorkOrderController extends Controller
 
         return view('mekanik.work-order.index', compact('workOrders'));
     }
-
-    // =========================
-    // RIWAYAT - ARSIP SERVICE SELESAI
-    // =========================
-    public function riwayat(Request $request)
-    {
-        $query = WorkOrder::with('kendaraan')
-            ->where('status', 'selesai')
-            ->orderByDesc('tanggal_selesai');
-
-        // Filter tanggal
-        if ($tanggalDari = $request->tanggal_dari) {
-            $query->whereDate('tanggal_masuk', '>=', $tanggalDari);
-        }
-        if ($tanggalSampai = $request->tanggal_sampai) {
-            $query->whereDate('tanggal_masuk', '<=', $tanggalSampai);
-        }
-
-        // Filter plat nomor
-        if ($plat = $request->plat) {
-            $query->whereHas('kendaraan', function ($q) use ($plat) {
-                $q->where('nomor_polisi', 'like', "%{$plat}%");
-            });
-        }
-
-        $workOrdersSelesai = $query->paginate(15);
-
-        return view('mekanik.riwayat.index', compact('workOrdersSelesai'));
-    }
-
-    // =========================
-    // DETAIL
-    // =========================
 
     // =========================
     // DETAIL
@@ -132,10 +61,7 @@ class WorkOrderController extends Controller
             'penggunaanSparepart.sparepart',
         ])->findOrFail($id);
 
-        $jenisServis = JenisServis::all();
-        $spareparts = Sparepart::all();
-
-        return view('mekanik.work-order.edit', compact('wo', 'jenisServis', 'spareparts'));
+        return view('mekanik.work-order.edit', compact('wo'));
     }
 
     // =========================
@@ -199,7 +125,7 @@ class WorkOrderController extends Controller
     }
 
     // =========================
-    // TAMBAH JASA
+    // TAMBAH JASA SERVIS
     // =========================
     public function storeDetailServis(Request $request)
     {
@@ -234,12 +160,18 @@ class WorkOrderController extends Controller
 
         $sparepart = Sparepart::findOrFail($request->id_part);
 
+        // Validasi stok
+        if ($request->jumlah > $sparepart->stok) {
+            return back()->with('error', 'Stok tidak mencukupi!');
+        }
+
         $subtotal = $sparepart->harga_jual * $request->jumlah;
 
         PenggunaanSparepart::create([
             'id_wo' => $request->id_wo,
             'id_part' => $request->id_part,
             'jumlah' => $request->jumlah,
+            'harga_satuan' => $sparepart->harga_jual,
             'subtotal' => $subtotal,
         ]);
 
@@ -248,5 +180,106 @@ class WorkOrderController extends Controller
 
         return redirect()->route('mekanik.work-order.detail', $request->id_wo)
             ->with('success', 'Sparepart ditambahkan');
+    }
+
+    // =========================
+    // HALAMAN SERVIS
+    // =========================
+    public function servis($id)
+    {
+        $wo = WorkOrder::with([
+            'kendaraan',
+            'detailServis.jenisServis',
+            'penggunaanSparepart.sparepart'
+        ])->findOrFail($id);
+
+        $jenisServis = JenisServis::all();
+        $spareparts = Sparepart::where('stok', '>', 0)->get();
+
+        return view('mekanik.work-order.servis', compact('wo', 'jenisServis', 'spareparts'));
+    }
+
+    // =========================
+    // SIMPAN SERVIS (TRANSACTION)
+    // =========================
+    public function storeServis(Request $request, $id)
+    {
+        DB::transaction(function () use ($request, $id) {
+
+            $wo = WorkOrder::findOrFail($id);
+
+            // JASA SERVIS
+            if ($request->jenis_servis) {
+                foreach ($request->jenis_servis as $servis) {
+                    $jenis = JenisServis::findOrFail($servis);
+
+                    DetailServisWo::create([
+                        'id_wo' => $wo->id_wo,
+                        'id_jenis' => $servis,
+                        'harga_jasa' => $jenis->harga_jasa,
+                    ]);
+                }
+            }
+
+            // SPAREPART
+            if ($request->sparepart) {
+                foreach ($request->sparepart as $partId => $qty) {
+
+                    $part = Sparepart::find($partId);
+
+                    if ($part && $qty > 0) {
+
+                        if ($qty > $part->stok) {
+                            throw new \Exception("Stok {$part->nama_part} tidak cukup!");
+                        }
+
+                        PenggunaanSparepart::create([
+                            'id_wo' => $wo->id_wo,
+                            'id_part' => $partId,
+                            'jumlah' => $qty,
+                            'harga_satuan' => $part->harga_jual,
+                            'subtotal' => $qty * $part->harga_jual,
+                        ]);
+
+                        $part->decrement('stok', $qty);
+                    }
+                }
+            }
+
+            // Update status
+            $wo->update([
+                'status' => 'dikerjakan'
+            ]);
+        });
+
+        return back()->with('success', 'Data servis berhasil disimpan!');
+    }
+
+    // =========================
+    // RIWAYAT SERVIS
+    // =========================
+    public function riwayat(Request $request)
+    {
+        $query = WorkOrder::with('kendaraan')
+            ->where('status', 'selesai')
+            ->orderByDesc('tanggal_selesai');
+
+        if ($request->tanggal_dari) {
+            $query->whereDate('tanggal_masuk', '>=', $request->tanggal_dari);
+        }
+
+        if ($request->tanggal_sampai) {
+            $query->whereDate('tanggal_masuk', '<=', $request->tanggal_sampai);
+        }
+
+        if ($request->plat) {
+            $query->whereHas('kendaraan', function ($q) use ($request) {
+                $q->where('nomor_polisi', 'like', "%{$request->plat}%");
+            });
+        }
+
+        $workOrdersSelesai = $query->paginate(15);
+
+        return view('mekanik.riwayat.index', compact('workOrdersSelesai'));
     }
 }

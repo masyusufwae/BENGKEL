@@ -1,6 +1,5 @@
 @extends('mekanik.layouts.app')
 @section('content')
-
     {{-- Header --}}
     <header class="bg-white py-6 border-b">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -9,7 +8,8 @@
             </h2>
 
             {{-- Tombol Tambah --}}
-            <a href="{{ route('mekanik.sparepart.create') }}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow font-medium">
+            <a href="{{ route('mekanik.sparepart.create') }}"
+                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow font-medium">
                 + Tambah Sparepart
             </a>
 
@@ -61,14 +61,10 @@
 
                     <tbody>
                         @forelse ($spareparts as $sp)
-                            <tr class="border-b hover:bg-gray-50"
-                                data-id="{{ $sp->id_part }}"
-                                data-kode="{{ $sp->kode_part }}"
-                                data-nama="{{ $sp->nama_part }}"
-                                data-satuan="{{ $sp->satuan }}"
-                                data-stok="{{ $sp->stok }}"
-                                data-stok-min="{{ $sp->stok_minimum }}"
-                                data-harga-beli="{{ $sp->harga_beli }}"
+                            <tr class="border-b hover:bg-gray-50" data-id="{{ $sp->id_part }}"
+                                data-kode="{{ $sp->kode_part }}" data-nama="{{ $sp->nama_part }}"
+                                data-satuan="{{ $sp->satuan }}" data-stok="{{ $sp->stok }}"
+                                data-stok-min="{{ $sp->stok_minimum }}" data-harga-beli="{{ $sp->harga_beli }}"
                                 data-harga-jual="{{ $sp->harga_jual }}">
 
                                 <td class="py-3 px-4 font-semibold">
@@ -84,8 +80,9 @@
                                 </td>
 
                                 <td class="py-3 px-4">
-                                    @if($sp->gambar)
-                                        <img src="{{ Storage::url($sp->gambar) }}" alt="{{ $sp->nama_part }}" class="w-16 h-16 object-cover">
+                                    @if ($sp->gambar)
+                                        <img src="{{ asset('storage/' . $sp->gambar) }}"
+                                        alt="{{ $sp->nama_part }}"class="w-16 h-16 object-cover">
                                     @else
                                         <span class="text-gray-500">Tidak ada gambar</span>
                                     @endif
@@ -97,7 +94,7 @@
 
                                 {{-- STOK + INDIKATOR --}}
                                 <td class="py-3 px-4">
-                                    @if($sp->stok <= $sp->stok_minimum)
+                                    @if ($sp->stok <= $sp->stok_minimum)
                                         <span class="text-red-600 font-bold">
                                             {{ $sp->stok }} ⚠️
                                         </span>
@@ -146,7 +143,4 @@
 
         </div>
     </div>
-
-
 @endsection
-

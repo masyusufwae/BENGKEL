@@ -117,7 +117,7 @@
                     <div class="md:w-7/12 w-full flex flex-col">
                         <div class="bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-6 h-full flex-1">
                             <h3 class="font-bold text-lg mb-4">Riwayat Penggunaan</h3>
-@if($sparepart->workOrders->count() > 0)
+@if($sparepart->penggunaanSparepart->count() > 0)
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
