@@ -29,6 +29,7 @@ class CustomerController extends Controller
                     'tahun' => $kendaraan->tahun,
                     'warna' => $kendaraan->warna,
                     'jenis_bahan_bakar' => $kendaraan->jenis_bahan_bakar,
+                    'foto_kendaraan' => $kendaraan->foto_kendaraan,
                 ];
             })->toArray();
 
@@ -59,9 +60,15 @@ class CustomerController extends Controller
             'nomor_rangka' => 'nullable',
             'nomor_mesin' => 'nullable',
             'jenis_bahan_bakar' => 'nullable',
+            'foto_kendaraan' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $validated['id_pelanggan'] = Auth::id();
+
+        if ($request->hasFile('foto_kendaraan')) {
+            $fotoPath = $request->file('foto_kendaraan')->store('kendaraan_pelanggan', 'public');
+            $validated['foto_kendaraan'] = $fotoPath;
+        }
 
         KendaraanPelanggan::create($validated);
 
@@ -105,7 +112,17 @@ class CustomerController extends Controller
             'nomor_rangka' => 'nullable',
             'nomor_mesin' => 'nullable',
             'jenis_bahan_bakar' => 'nullable',
+            'foto_kendaraan' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
+
+        if ($request->hasFile('foto_kendaraan')) {
+            // Hapus foto lama jika ada
+            if ($kendaraan->foto_kendaraan && \Illuminate\Support\Facades\Storage::disk('public')->exists($kendaraan->foto_kendaraan)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($kendaraan->foto_kendaraan);
+            }
+            $fotoPath = $request->file('foto_kendaraan')->store('kendaraan_pelanggan', 'public');
+            $validated['foto_kendaraan'] = $fotoPath;
+        }
 
         $kendaraan->update($validated);
 

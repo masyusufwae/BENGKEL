@@ -21,6 +21,7 @@ class KendaraanPelanggan extends Model
         'nomor_rangka',
         'nomor_mesin',
         'jenis_bahan_bakar',
+        'foto_kendaraan',
     ];
 
     public function pelanggan(): BelongsTo
