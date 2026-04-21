@@ -44,7 +44,8 @@
 
     <style>
         /* Resolving Framework Conflicts & Custom Styling */
-        body, html { height: 100vh; overflow: hidden; margin: 0; padding: 0; background-color: #f8fafc; }
+        body, html { height: 100vh; overflow-x: hidden; margin: 0; padding: 0; background-color: #f8fafc; }
+        body.modal-open { overflow-y: hidden !important; padding-right: var(--scrollbar-width, 0px); }
         a { text-decoration: none !important; }
 
         /* Isometric Cube Navy Motif */
@@ -210,7 +211,7 @@
     </nav>
 
     <!-- Main Layout Area Container -->
-    <div class="flex-1 flex overflow-hidden w-full bg-gray-100 relative">
+    <div class="flex-1 flex overflow-hidden w-full bg-gray-100 relative" id="main-scroll-container">
 
         <!-- Sidebar Navigation (Navy Blue style with motif and Animated Line) -->
         <aside class="w-[280px] bg-navy-motif flex-shrink-0 flex flex-col border-r-0 shadow-[4px_0_15px_rgba(0,0,0,0.3)] z-40 relative">
@@ -231,14 +232,14 @@
                         <span class="ml-2 tracking-wide text-sm font-semibold">DASHBOARD</span>
                     </a>
 
-                    <a href="{{ route('customer.orders.index') }}" class="list-group-item list-group-item-action border-0 mb-1 rounded flex items-center px-4 py-3 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-blue-400 transition-all border-l-[4px] @if(Route::currentRouteName() == 'customer.orders.index') border-blue-500 bg-blue-900/50 text-blue-400 font-bold @else border-transparent @endif">
-                        <i class="fas fa-history w-6 text-center @if(Route::currentRouteName() == 'customer.orders.index') text-blue-400 @endif"></i>
-                        <span class="ml-2 tracking-wide text-sm font-semibold">ORDER HISTORY</span>
-                    </a>
-
                     <a href="{{ route('customer.vehicles.index') }}" class="list-group-item list-group-item-action border-0 mb-1 rounded flex items-center px-4 py-3 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-blue-400 transition-all border-l-[4px] @if(Route::currentRouteName() == 'customer.vehicles.index') border-blue-500 bg-blue-900/50 text-blue-400 font-bold @else border-transparent @endif">
                         <i class="fas fa-car-side w-6 text-center @if(Route::currentRouteName() == 'customer.vehicles.index') text-blue-400 @endif"></i>
                         <span class="ml-2 tracking-wide text-sm font-semibold">KENDARAAN</span>
+                    </a>
+
+                    <a href="{{ route('customer.orders.index') }}" class="list-group-item list-group-item-action border-0 mb-1 rounded flex items-center px-4 py-3 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-blue-400 transition-all border-l-[4px] @if(Route::currentRouteName() == 'customer.orders.index') border-blue-500 bg-blue-900/50 text-blue-400 font-bold @else border-transparent @endif">
+                        <i class="fas fa-history w-6 text-center @if(Route::currentRouteName() == 'customer.orders.index') text-blue-400 @endif"></i>
+                        <span class="ml-2 tracking-wide text-sm font-semibold">ORDER HISTORY</span>
                     </a>
 
                     <a href="{{ route('customer.invoices.index') }}" class="list-group-item list-group-item-action border-0 mb-1 rounded flex items-center px-4 py-3 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-blue-400 transition-all border-l-[4px] @if(Route::currentRouteName() == 'customer.invoices.index') border-blue-500 bg-blue-900/50 text-blue-400 font-bold @else border-transparent @endif">
@@ -299,7 +300,7 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto bg-gray-50 relative z-10 w-full flex flex-col page-transition">
+        <main class="flex-1 overflow-y-auto bg-gray-50 relative z-10 w-full flex flex-col page-transition" id="main-content-scroll">
 
             <!-- Page Banner/Header (Clean Blue/White Style) -->
             <div class="w-full glass-header border-b border-gray-200 px-8 py-6 shadow-sm sticky top-0 z-30">

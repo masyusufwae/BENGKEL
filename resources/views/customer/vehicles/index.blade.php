@@ -36,38 +36,60 @@
                                         <div class="w-14 h-14 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0 border border-gray-100 overflow-hidden p-1">
                                             @php
                                                 $merek_awal = strtolower(explode(' ', trim($kendaraan['merek']))[0] ?? 'auto');
-                                                
+
                                                 // Mapping domain resmi brand kendaraan populer (lokal & global)
                                                 // Menggunakan domain global agar API Clearbit dapat menemukan logonya
                                                 $domainMap = [
+                                                    // Jepang
                                                     'toyota' => 'toyota.com',
                                                     'honda' => 'honda.com',
-                                                    'daihatsu' => 'daihatsu.com',
-                                                    'suzuki' => 'globalsuzuki.com',
-                                                    'mitsubishi' => 'mitsubishi-motors.com',
+                                                    'daihatsu' => 'daihatsu.co.id',
                                                     'nissan' => 'nissan-global.com',
-                                                    'hyundai' => 'hyundai.com',
-                                                    'kia' => 'kia.com',
-                                                    'wuling' => 'wulingmotors.com',
                                                     'mazda' => 'mazda.com',
-                                                    'isuzu' => 'isuzu.com',
-                                                    'chevrolet' => 'chevrolet.com',
+                                                    'lexus' => 'lexus.com',
+                                                    'subaru' => 'subaru.com',
+                                                    'infiniti' => 'infiniti.com',
+                                                    'acura' => 'acura.com',
+                                                    // Eropa
                                                     'bmw' => 'bmw.com',
                                                     'mercedes' => 'mercedes-benz.com',
-                                                    'yamaha' => 'yamaha-motor.com',
-                                                    'kawasaki' => 'kawasaki.com',
-                                                    'vespa' => 'vespa.com',
-                                                    'ktm' => 'ktm.com',
-                                                    'ducati' => 'ducati.com',
-                                                    'harley' => 'harley-davidson.com',
-                                                    'piaggio' => 'piaggio.com'
+                                                    'audi' => 'audi.com',
+                                                    'volkswagen' => 'volkswagen.com',
+                                                    'porsche' => 'porsche.com',
+                                                    'volvo' => 'volvo.com',
+                                                    'peugeot' => 'peugeot.com',
+                                                    'renault' => 'renault.com',
+                                                    'citroen' => 'citroen.com',
+                                                    'fiat' => 'fiat.com',
+                                                    'land' => 'landrover.com',
+                                                    'jaguar' => 'jaguar.com',
+                                                    'mini' => 'mini.com',
+                                                    'aston' => 'astonmartin.com',
+                                                    'bentley' => 'bentleymotors.com',
+                                                    'rolls' => 'rolls-roycemotorcars.com',
+                                                    'ferrari' => 'ferrari.com',
+                                                    'lamborghini' => 'lamborghini.com',
+                                                    'maserati' => 'maserati.com',
+                                                    'alfa' => 'alfaromeo.com',
+                                                    // Amerika
+                                                    'ford' => 'ford.com',
+                                                    'chevrolet' => 'chevrolet.com',
+                                                    'jeep' => 'jeep.com',
+                                                    'tesla' => 'tesla.com',
+                                                    'dodge' => 'dodge.com',
+                                                    'chrysler' => 'chrysler.com',
+                                                    'gmc' => 'gmc.com',
+                                                    // Korea & China
+                                                    'hyundai' => 'hyundai.com',
+                                                    'kia' => 'kia.com',
+                                                    'byd' => 'byd.com',
                                                 ];
-                                                
+
                                                 $domain = $domainMap[$merek_awal] ?? ($merek_awal . '.com');
                                             @endphp
-                                            <img src="https://logo.clearbit.com/{{ $domain }}" 
-                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($merek_awal) }}&background=eff6ff&color=1d4ed8&bold=true&size=128';" 
-                                                 class="w-full h-full object-contain mix-blend-multiply" 
+                                            <img src="https://www.google.com/s2/favicons?domain={{ $domain }}&sz=128"
+                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($merek_awal) }}&background=eff6ff&color=1d4ed8&bold=true&size=128';"
+                                                 class="w-full h-full object-contain mix-blend-multiply"
                                                  alt="Logo {{ $kendaraan['merek'] }}">
                                         </div>
                                         <div class="ml-4">
@@ -103,9 +125,9 @@
                                 </div>
                             </div>
 
-                            <button class="w-full mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
+                            <a href="{{ route('customer.orders.index') }}" class="w-full mt-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium flex justify-center items-center">
                                 Lihat Riwayat Service
-                            </button>
+                            </a>
 
                             <!-- Hidden Delete Form -->
                             <form id="delete-form-{{ $kendaraan['id_kendaraan'] }}" action="{{ route('customer.vehicles.destroy', $kendaraan['id_kendaraan']) }}" method="POST" style="display: none;">
