@@ -18,9 +18,10 @@
                     <select name="status" class="border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
                         <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
                         <option value="antrian" {{ request('status') == 'antrian' ? 'selected' : '' }}>Antrian</option>
-                        <option value="dikerjakan" {{ request('status') == 'dikerjakan' ? 'selected' : '' }}>Dikerjakan</option>
-                        <option value="menunggu_part" {{ request('status') == 'menunggu_part' ? 'selected' : '' }}>Menunggu Part</option>
+                        <option value="dikerjakan" {{ request('status') == 'dikerjakan' ? 'selected' : '' }}>Dikerjakan
+                        </option>
                         <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                        <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
 
                     {{-- Sort Filter --}}
@@ -30,7 +31,7 @@
                         <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
                     </select>
 
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <button class="bg-blue-600 text-black px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                         Filter
                     </button>
                 </form>
@@ -55,7 +56,7 @@
                                 <th class="py-4 px-4 font-bold text-black">Nomor</th>
                                 <th class="py-4 px-4 font-bold text-black">Status</th>
                                 <th class="py-4 px-4 font-bold text-black">Keluhan</th>
-                                <th class="py-4 px-4 font-bold text-black">Gambar</th>
+                                <th class="py-4 px-4 font-bold text-black">Foto Kendaraan</th>
                                 <th class="py-4 px-4 font-bold text-black">No Polisi</th>
                                 <th class="py-4 px-4 font-bold text-black">Model</th>
                                 <th class="py-4 px-4 text-center font-bold text-black">Aksi</th>
@@ -83,13 +84,13 @@
                                             <span class="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
                                                 Dikerjakan
                                             </span>
-                                        @elseif($wo->status == 'menunggu_part')
-                                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">
-                                                Menunggu Part
-                                            </span>
                                         @elseif($wo->status == 'selesai')
                                             <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
                                                 Selesai
+                                            </span>
+                                        @elseif($wo->status == 'ditolak')
+                                            <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                                                Ditolak
                                             </span>
                                         @endif
                                     </td>
@@ -101,7 +102,7 @@
 
 
                                     <td class="py-3 px-4">
-@if ($wo->kendaraan && $wo->kendaraan->foto_kendaraan)
+                                        @if ($wo->kendaraan && $wo->kendaraan->foto_kendaraan)
                                             <img src="{{ asset('storage/' . $wo->kendaraan->foto_kendaraan) }}"
                                                 class="w-16 h-16 object-cover rounded">
                                         @else
@@ -125,28 +126,43 @@
                                             class="bg-blue-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition shadow w-full text-center">
                                             Detail
                                         </a>
+
                                         @if ($wo->status == 'antrian')
+                                            {{-- Antrian: Setuju | Tolak --}}
+                                            <span
+                                                class="text-xs text-gray-500 py-2 px-4 rounded-lg bg-gray-100 w-full text-center block font-medium">Tindakan
+                                                di Detail</span>
+                                        @elseif ($wo->status == 'dikerjakan' && !$wo->servis_completed)
+                                            {{-- Dikerjakan (servis belum): Servis --}}
                                             <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
-                                                class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm hover:bg-emerald-200 transition shadow w-full text-center font-bold">
-                                                Kerjakan
+                                                class="w-full bg-blue-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition shadow font-bold text-center">
+                                                🔧 Servis
                                             </a>
-                                        @else
-                                            <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
-                                                class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm hover:bg-blue-200 transition shadow w-full text-center font-bold">
-                                                Servis
-                                            </a>
-                                        @endif
-                                        {{-- <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('PUT')
-
-                                            <input type="hidden" name="status" value="selesai">
-
-                                            <button class="bg-green-600 text-white px-4 py-2 rounded">
-                                                Selesaikan
+                                        @elseif ($wo->status == 'dikerjakan' && $wo->servis_completed)
+                                            {{-- Dikerjakan + servis selesai: [Selesai] clickable → status=selesai --}}
+                                            <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}"
+                                                method="POST" class="w-full">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="selesai">
+                                                <button type="submit"
+                                                    class="w-full bg-green-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition shadow font-bold">
+                                                    ✅ Selesai Servis
+                                                </button>
+                                            </form>
+                                        @elseif ($wo->status == 'ditolak')
+                                            {{-- Ditolak: Disabled --}}
+                                            <button disabled
+                                                class="w-full bg-gray-400 text-gray-200 px-4 py-2 rounded-lg text-sm shadow cursor-not-allowed">
+                                                ❌ Ditolak
                                             </button>
-                                        </form> --}}
+                                        @elseif ($wo->status == 'selesai')
+                                            {{-- Selesai: Disabled --}}
+                                            <button disabled
+                                                class="w-full bg-green-400 text-green-100 px-4 py-2 rounded-lg text-sm shadow cursor-not-allowed">
+                                                ✅ Selesai
+                                            </button>
+                                        @endif
                                     </td>
 
 
@@ -163,8 +179,8 @@
                     </table>
 
                     <div class="p-4">
-                    {{ $workOrders->links() }}
-                </div>
+                        {{ $workOrders->links() }}
+                    </div>
                 </div>
 
             </div>

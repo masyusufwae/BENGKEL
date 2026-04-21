@@ -144,6 +144,8 @@ Route::prefix('mekanik')->name('mekanik.')->group(function () {
 
     Route::get('work-order', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'index'])->name('work-order.index');
 
+    Route::get('api/antrian-count', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'apiAntrianCount'])->name('work-order.api.antrian-count');
+
     // Route::get('work-order/create', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'create'])->name('work-order.create');
 
     // Route::post('work-order', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'store'])->name('work-order.store');
@@ -193,6 +195,7 @@ Route::prefix('mekanik')->name('mekanik.')->group(function () {
 
 Route::post('work-order/{id}/servis', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'storeServis'])
     ->name('work-order.servis.store');
+    
 });
 
 // 4. Memanggil Routes Autentikasi Breeze (Login, Register, Reset Password, dll)

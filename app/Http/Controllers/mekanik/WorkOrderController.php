@@ -38,8 +38,8 @@ class WorkOrderController extends Controller
         }
 
         // Default sorting: status priority then newest
-        $statusOrder = ['antrian' => 1, 'dikerjakan' => 2, 'menunggu_part' => 3, 'selesai' => 4];
-        $query->orderByRaw("FIELD(status, 'antrian', 'dikerjakan', 'menunggu_part', 'selesai')")
+        $statusOrder = ['antrian' => 1, 'dikerjakan' => 2, 'selesai' => 3, 'ditolak' => 4];
+        $query->orderByRaw("FIELD(status, 'antrian', 'dikerjakan', 'selesai', 'ditolak')")
               ->orderBy('tanggal_masuk', 'desc');
 
         // Override sort if specified
@@ -118,7 +118,7 @@ class WorkOrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:antrian,dikerjakan,menunggu_part,selesai',
+'status' => 'required|in:antrian,dikerjakan,selesai,ditolak',
         ]);
 
         $wo = WorkOrder::findOrFail($id);
@@ -142,7 +142,7 @@ class WorkOrderController extends Controller
             'catatan_mekanik' => $request->catatan_mekanik
         ]);
 
-        return redirect()->route('mekanik.work-order.detail', $id)
+        return redirect()->route('mekanik.work-order.index')
             ->with('success', 'Catatan berhasil disimpan');
     }
 
@@ -284,18 +284,27 @@ public function storeServis(Request $request, $id)
                 }
             }
 
-            // 4. Update status ke dikerjakan
-            $wo->update(['status' => 'dikerjakan']);
+            // 4. Mark servis completed (status remains dikerjakan)
+            $wo->update(['servis_completed' => true]);
         });
 
         // REDIRECT KE INDEX setelah sukses
         return redirect()->route('mekanik.work-order.index')
-            ->with('success', 'Data servis berhasil disimpan dan status diperbarui menjadi Dikerjakan!');
+            ->with('success', 'Data servis berhasil disimpan! Status servis selesai.');
 
     } catch (\Exception $e) {
         return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
     }
 }
+
+    // =========================
+    // API: Count Antrian WO
+    // =========================
+    public function apiAntrianCount()
+    {
+        $count = WorkOrder::where('status', 'antrian')->count();
+        return response()->json(['count' => $count]);
+    }
 
     // =========================
     // RIWAYAT SERVIS
@@ -324,4 +333,5 @@ public function storeServis(Request $request, $id)
 
         return view('mekanik.riwayat.index', compact('workOrdersSelesai'));
     }
+
 }

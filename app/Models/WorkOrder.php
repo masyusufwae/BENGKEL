@@ -21,6 +21,7 @@ class WorkOrder extends Model
     'tanggal_selesai',
     'estimasi_selesai',
     'status',
+    'servis_completed',
     'catatan_mekanik'
 ];
 

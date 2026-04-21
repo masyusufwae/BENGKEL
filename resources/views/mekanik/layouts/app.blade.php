@@ -22,44 +22,59 @@
 
     <div class="min-h-screen flex flex-col">
 
-        {{-- Navbar Langsung di dalam App --}}
+        {{-- Navbar --}}
         <nav class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
+                    {{-- Logo & Brand --}}
                     <div class="flex items-center">
-                        <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition">
-                            <img src="{{ asset('storage/logo/icon.png') }}" alt="Logo Bengkel" class="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-blue-100">
+                        <a href="{{ route('dashboard') }}"
+                            class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition">
+                            <img src="{{ asset('storage/logo/icon.png') }}" alt="Logo Bengkel"
+                                class="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-blue-100">
                             <span class="text-xl font-bold text-blue-600">Bengkel Mekanik</span>
                         </a>
                     </div>
 
+                    {{-- Menu Kanan --}}
                     <div class="flex items-center space-x-4">
-                        <div class="flex">
-                            <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
-                                <a href="{{ route('mekanik.work-order.index') }}"
-                                    class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('mekanik.work-order.*') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                                    Work Order
-                                </a>
-                                <a href="{{ route('mekanik.sparepart.index') }}"
-                                    class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('mekanik.sparepart.*') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                                    Sparepart
-                                </a>
-                                <a href="{{ route('mekanik.riwayat') }}"
-                                    class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('mekanik.riwayat') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                                    Riwayat
-                                </a>
-
-                            </div>
+                        {{-- Menu Navigasi --}}
+                        <div class="hidden sm:flex sm:space-x-8">
+                            <a href="{{ route('mekanik.work-order.index') }}"
+                                class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('mekanik.work-order.*') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                Work Order
+                            </a>
+                            <a href="{{ route('mekanik.sparepart.index') }}"
+                                class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('mekanik.sparepart.*') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                Sparepart
+                            </a>
+                            <a href="{{ route('mekanik.riwayat') }}"
+                                class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('mekanik.riwayat') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                Riwayat
+                            </a>
                         </div>
 
-                        <div class="flex items-center space-x-2">
+                        {{-- Ikon Notifikasi (Lonceng) dengan latar kuning --}}
+                        <div class="relative">
+                            <button id="notification-button"
+                                class="relative p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-gray-800 transition focus:outline-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                <span id="notif-badge"
+                                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg hidden">0</span>
+                            </button>
+                        </div>
 
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {{-- Role Badge --}}
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Mekanik
                             </span>
                         </div>
 
+                        {{-- Logout --}}
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="text-gray-600 hover:text-gray-900 text-sm font-medium">
@@ -71,35 +86,12 @@
             </div>
         </nav>
 
-        {{-- Optional Header (Hanya tampil jika @section('header') ada di view) --}}
+        {{-- Optional Header (jika view mendefinisikan @section('header')) --}}
         @hasSection('header')
             <header class="bg-white shadow-sm">
-                {{-- Header --}}
                 <div class="bg-white border-b border-gray-200">
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div>
-                                <h2 class="font-bold text-2xl text-gray-800">Detail Work Order</h2>
-
-                            <form method="GET" action="" class="flex items-center gap-2">
-                                <div class="relative">
-                                    <input type="text" name="search" value="{{ request('search') }}"
-                                        placeholder="Cari Plat Nomor..."
-                                        class="border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none w-full md:w-64 transition">
-                                    <div class="absolute left-3 top-2.5 text-gray-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <button type="submit"
-                                    class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 shadow-sm transition font-medium text-sm">
-                                    Cari
-                                </button>
-                            </form>
-                        </div>
+                        @yield('header')
                     </div>
                 </div>
             </header>
@@ -107,11 +99,60 @@
 
         {{-- Main Content --}}
         <main class="flex-1">
+            {{-- Script polling notifikasi --}}
+            <script>
+                // Fungsi untuk mengecek apakah halaman saat ini adalah Work Order Index
+                function isWorkOrderIndexPage() {
+                    // Cek apakah route name mengandung 'mekanik.work-order.index'
+                    // Alternatif: bandingkan URL dengan route('mekanik.work-order.index')
+                    const currentUrl = window.location.pathname;
+                    const woIndexUrl = '{{ route('mekanik.work-order.index') }}';
+                    // Hapus domain dari URL
+                    const urlPath = currentUrl.replace(/^https?:\/\/[^\/]+/, '');
+                    const woPath = woIndexUrl.replace(/^https?:\/\/[^\/]+/, '');
+                    return urlPath === woPath;
+                }
+
+                function updateNotificationBadge() {
+                    // Jika sedang di halaman Work Order Index, sembunyikan badge dan tidak perlu request
+                    if (isWorkOrderIndexPage()) {
+                        const badge = document.getElementById('notif-badge');
+                        if (badge) badge.classList.add('hidden');
+                        return;
+                    }
+
+                    fetch('{{ route('mekanik.work-order.api.antrian-count') }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            const count = data.count;
+                            const badge = document.getElementById('notif-badge');
+                            if (count > 0) {
+                                badge.textContent = count;
+                                badge.classList.remove('hidden');
+                            } else {
+                                badge.classList.add('hidden');
+                            }
+                        })
+                        .catch(error => console.error('Notifikasi error:', error));
+                }
+
+                // Event klik notifikasi -> arahkan ke Work Order dengan filter status antrian
+                document.getElementById('notification-button')?.addEventListener('click', function() {
+                    // Sembunyikan badge segera (optimis) sebelum redirect
+                    const badge = document.getElementById('notif-badge');
+                    if (badge) badge.classList.add('hidden');
+                    window.location.href = '{{ route('mekanik.work-order.index') }}?status=antrian';
+                });
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    updateNotificationBadge();
+                    setInterval(updateNotificationBadge, 10000);
+                });
+            </script>
+
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                {{-- Slot untuk isi halaman --}}
                 @yield('content')
 
-                {{-- Area Pagination Otomatis --}}
                 <div class="mt-4">
                     @yield('pagination')
                 </div>
@@ -130,7 +171,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // Helper untuk Toast SweetAlert
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',

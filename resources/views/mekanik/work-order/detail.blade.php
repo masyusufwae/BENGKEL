@@ -245,33 +245,32 @@
 
             {{-- KOLOM KANAN (Aksi & Status) --}}
             <div class="space-y-6">
-                {{-- Card Update Status --}}
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                    <h5 class="font-bold text-gray-800 mb-4 flex items-center"><span
-                            class="w-2 h-6 bg-blue-600 rounded mr-2"></span>Update Status</h5>
-                    <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
-                        @csrf @method('PUT')
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Pilih
-                                    Progress</label>
-                                <select name="status"
-                                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 transition shadow-sm text-sm">
-                                    <option value="dikerjakan" {{ $wo->status == 'dikerjakan' ? 'selected' : '' }}>🔨
-                                        Sedang
-                                        Dikerjakan</option>
-                                    <option value="menunggu_part" {{ $wo->status == 'menunggu_part' ? 'selected' : '' }}>⏳
-                                        Menunggu Part</option>
-                                    <option value="selesai" {{ $wo->status == 'selesai' ? 'selected' : '' }}>✅ Selesai
-                                    </option>
-                                </select>
-                            </div>
-                            <button
-                                class="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition duration-300 font-bold shadow-lg shadow-blue-200">Simpan
-                                Perubahan</button>
-                        </div>
-                    </form>
+                @if($wo->status == 'antrian')
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-xl shadow-lg border-0 mb-6">
+                    <h5 class="font-bold text-xl text-white mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Tindakan Pertama
+                    </h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
+                            @csrf @method('PUT')
+                            <input type="hidden" name="status" value="dikerjakan">
+                            <button type="submit" class="w-full bg-emerald-500 text-white py-4 rounded-xl hover:bg-emerald-600 font-bold shadow-xl text-lg">
+                                ✅ Setuju & Mulai Kerja
+                            </button>
+                        </form>
+                        <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
+                            @csrf @method('PUT')
+                            <input type="hidden" name="status" value="ditolak">
+                            <button type="submit" class="w-full bg-red-500 text-white py-4 rounded-xl hover:bg-red-600 font-bold shadow-xl text-lg">
+                                ❌ Tolak Work Order
+                            </button>
+                        </form>
+                    </div>
                 </div>
+                @endif
 
 
                 {{-- Catatan Mekanik --}}
@@ -322,20 +321,22 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="space-y-4">
+                    @if($wo->status !== 'ditolak')
                     <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
                         class="flex items-center justify-center w-full px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg font-bold text-lg transition transform hover:-translate-y-1"><svg
                             class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                             </path>
-                        </svg>✏️ Edit Data Work Order</a>
-                    <a href="{{ route('mekanik.work-order.servis', $wo->id_wo) }}"
+                        </svg>🔧 Tambah Servis & Sparepart</a>
+                    @endif
+                    {{-- <a href="{{ route('mekanik.work-order.servis', $wo->id_wo) }}"
                         class="flex items-center justify-center w-full px-6 py-4 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 shadow-lg font-bold text-lg transition transform hover:-translate-y-1"><svg
                             class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
                             </path>
-                        </svg>🔧 Tambah Servis & Sparepart</a>
+                        </svg>🔧 Tambah Servis & Sparepart</a> --}}
                     <a href="{{ route('mekanik.work-order.index') }}"
                         class="flex items-center justify-center w-full px-4 py-3 text-sm font-bold text-gray-500 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition shadow-sm"><svg
                             class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
