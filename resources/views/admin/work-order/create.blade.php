@@ -41,7 +41,7 @@
                             <select name="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                                 <option value="antrian">Antrian</option>
                                 <option value="dikerjakan">Dikerjakan</option>
-                                <option value="menunggu part">Menunggu Part</option>
+                                <option value="menunggu_part">Menunggu Part</option>
                                 <option value="selesai">Selesai</option>
                                 <option value="diserahkan">Diserahkan</option>
                             </select>

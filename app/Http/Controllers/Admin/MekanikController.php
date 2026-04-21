@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Mekanik;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 
@@ -33,7 +34,8 @@ class MekanikController extends Controller
     ]);
 
     // Add the currently logged-in user's ID
-    $validated['id_user'] = auth()->id();  // or auth()->user()->id
+    // Use the Auth facade so static analyzers/IDEs can resolve the symbol cleanly.
+      $validated['id_user'] = auth()->id();  // or auth()->user()->id
 
     Mekanik::create($validated);
     return redirect()->route('admin.mekanik.index')->with('success', 'Mekanik berhasil ditambahkan');

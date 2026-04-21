@@ -21,6 +21,8 @@
                                 <th class="py-2 px-4 border">Kendaraan</th>
                                 <th class="py-2 px-4 border">Mekanik</th>
                                 <th class="py-2 px-4 border">Status</th>
+                                <th class="py-2 px-4 border">Servis</th>
+                                <th class="py-2 px-4 border">Sparepart</th>
                                 <th class="py-2 px-4 border">Total</th>
                                 <th class="py-2 px-4 border">Aksi</th>
                             </tr>
@@ -29,18 +31,65 @@
                             @forelse($workOrders as $wo)
                             <tr>
                                 <td class="py-2 px-4 border">{{ $wo->nomor_wo }}</td>
-                                <td class="py-2 px-4 border">{{ $wo->kendaraan->nama_pelanggan ?? '-' }}</td>
-                                <td class="py-2 px-4 border">{{ $wo->kendaraan->no_plat ?? '-' }}</td>
-                                <td class="py-2 px-4 border">{{ $wo->mekanik->nama_mekanik ?? '-' }}</td>
+                                <td class="py-2 px-4 border">{{ $wo->kendaraan?->user?->name ?? '-' }}</td>
+                                <td class="py-2 px-4 border">
+                                    {{ $wo->kendaraan?->nomor_polisi ?? '-' }}
+                                    @if($wo->kendaraan)
+                                        <div class="text-xs text-gray-500">{{ $wo->kendaraan->merek }} {{ $wo->kendaraan->model }}</div>
+                                    @endif
+                                </td>
+                                <td class="py-2 px-4 border">{{ $wo->mekanik?->nama_mekanik ?? '-' }}</td>
                                 <td class="py-2 px-4 border">
                                     <span class="px-2 py-1 rounded text-xs 
                                         @if($wo->status == 'antrian') bg-yellow-100 text-yellow-800
                                         @elseif($wo->status == 'dikerjakan') bg-blue-100 text-blue-800
-                                        @elseif($wo->status == 'menunggu part') bg-orange-100 text-orange-800
+                                        @elseif($wo->status == 'menunggu_part') bg-orange-100 text-orange-800
                                         @elseif($wo->status == 'selesai') bg-green-100 text-green-800
                                         @else bg-gray-100 text-gray-800 @endif">
-                                        {{ ucfirst($wo->status) }}
+                                        {{ ucwords(str_replace('_', ' ', $wo->status)) }}
                                     </span>
+                                </td>
+                                @php
+                                    $servisNames = $wo->jenisServis->pluck('nama_servis')->filter()->values();
+                                    if ($servisNames->isEmpty() && $wo->detailServis->isNotEmpty()) {
+                                        $servisNames = $wo->detailServis
+                                            ->map(fn ($d) => $d->jenisServis?->nama_servis)
+                                            ->filter()
+                                            ->values();
+                                    }
+                                    $servisText = $servisNames->take(3)->implode(', ');
+                                    if ($servisNames->count() > 3) {
+                                        $servisText .= ' ...';
+                                    }
+
+                                    $partItems = collect();
+                                    if ($wo->spareparts->isNotEmpty()) {
+                                        $partItems = $wo->spareparts->map(function ($p) {
+                                            $qty = (int) ($p->pivot->jumlah ?? 0);
+                                            $unit = $p->satuan ?? '';
+                                            $qtyText = trim($qty . ' ' . $unit);
+                                            return $p->nama_part . ($qtyText !== '' ? " ({$qtyText})" : '');
+                                        })->filter()->values();
+                                    } elseif ($wo->penggunaanSparepart->isNotEmpty()) {
+                                        $partItems = $wo->penggunaanSparepart->map(function ($row) {
+                                            $name = $row->sparepart?->nama_part ?? null;
+                                            if (!$name) return null;
+                                            $qty = (int) ($row->jumlah ?? 0);
+                                            $unit = $row->sparepart?->satuan ?? '';
+                                            $qtyText = trim($qty . ' ' . $unit);
+                                            return $name . ($qtyText !== '' ? " ({$qtyText})" : '');
+                                        })->filter()->values();
+                                    }
+                                    $partText = $partItems->take(3)->implode(', ');
+                                    if ($partItems->count() > 3) {
+                                        $partText .= ' ...';
+                                    }
+                                @endphp
+                                <td class="py-2 px-4 border">
+                                    <div class="text-xs text-gray-700">{{ $servisText !== '' ? $servisText : '-' }}</div>
+                                </td>
+                                <td class="py-2 px-4 border">
+                                    <div class="text-xs text-gray-700">{{ $partText !== '' ? $partText : '-' }}</div>
                                 </td>
                                 <td class="py-2 px-4 border">Rp {{ number_format($wo->totalHarga, 0, ',', '.') }}</td>
                                 <td class="py-2 px-4 border">
@@ -53,7 +102,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="7" class="text-center py-4">Tidak ada data</td></tr>
+                            <tr><td colspan="9" class="text-center py-4">Tidak ada data</td></tr>
                             @endforelse
                         </tbody>
                     </table>

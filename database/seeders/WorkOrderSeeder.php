@@ -13,13 +13,19 @@ class WorkOrderSeeder extends Seeder
 {
     $kendaraan = DB::table('kendaraan_pelanggan')->first();
     $mekanik = DB::table('mekanik')->first();
+    $sparepart = DB::table('sparepart')->first();
+
 
     if ($kendaraan && $mekanik) {
+        // sparepart primary key is id_part (not id_sparepart).
+        $idSparepart = $sparepart?->id_part;
+
         DB::table('work_order')->insert([
             [
                 'nomor_wo' => 'WO-' . date('Ymd') . '-001',
                 'id_kendaraan' => $kendaraan->id_kendaraan,
                 'id_mekanik' => $mekanik->id_mekanik,
+                'id_sparepart' => $idSparepart, // boleh null (WO bisa punya sparepart via tabel penggunaan_sparepart)
                 'keluhan' => 'Ganti oli dan rem belakang bunyi decit',
                 'tanggal_masuk' => now(),
                 'estimasi_selesai' => now()->addHours(2), // Ini ada
@@ -33,6 +39,7 @@ class WorkOrderSeeder extends Seeder
                 'nomor_wo' => 'WO-' . date('Ymd') . '-002',
                 'id_kendaraan' => $kendaraan->id_kendaraan,
                 'id_mekanik' => $mekanik->id_mekanik,
+                'id_sparepart' => $idSparepart,
                 'keluhan' => 'Motor sering mati mendadak saat macet',
                 'tanggal_masuk' => now()->subDay(),
                 'estimasi_selesai' => now()->subDay()->addHours(2), // TAMBAHKAN INI AGAR STRUKTUR SAMA

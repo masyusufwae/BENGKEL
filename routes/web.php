@@ -140,7 +140,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
 // Mekanik Work Order Routes
 
-Route::prefix('mekanik')->name('mekanik.')->group(function () {
+Route::prefix('mekanik')->name('mekanik.')->middleware(['auth'])->group(function () {
 
     Route::get('work-order', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'index'])->name('work-order.index');
 

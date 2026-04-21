@@ -150,7 +150,7 @@
     if ($logged_in_user) {
         $active_jobs_count = isset($wo_aktif) ? count($wo_aktif) : \App\Models\WorkOrder::whereHas('kendaraan', function($q) use ($logged_in_user) {
             $q->where('id_pelanggan', $logged_in_user->id);
-        })->whereIn('status', ['antrian', 'dikerjakan', 'menunggu part'])->count();
+        })->whereIn('status', ['antrian', 'dikerjakan', 'menunggu_part'])->count();
 
         $total_logs_count = isset($riwayat_servis) ? count($riwayat_servis) : \App\Models\WorkOrder::whereHas('kendaraan', function($q) use ($logged_in_user) {
             $q->where('id_pelanggan', $logged_in_user->id);
