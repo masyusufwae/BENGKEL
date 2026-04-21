@@ -36,14 +36,14 @@
             <div class="lg:col-span-2 space-y-6">
                 {{-- CARD INFO UTAMA --}}
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4 flex justify-between items-center">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex justify-between items-center">
                         <div>
-                            <h3 class="font-bold text-xl text-black">{{ $wo->kendaraan->merek }} {{ $wo->kendaraan->model }}
+                            <h3 class="font-bold text-xl text-white">{{ $wo->kendaraan->merek }} {{ $wo->kendaraan->model }}
                             </h3>
                             <p class="text-blue-100 text-sm">Work Order #{{ $wo->id_wo }}</p>
                         </div>
                         <span
-                            class="px-3 py-1 bg-white/20 rounded-full text-black text-xs font-semibold uppercase tracking-wider border border-blue">
+                            class="px-3 py-1 bg-white/20 rounded-full text-white text-xs font-semibold uppercase tracking-wider border border-blue">
                             {{ $wo->kendaraan->nomor_polisi }}
                         </span>
                     </div>
@@ -113,7 +113,7 @@
                         </div>
 
                         {{-- Gambar Kendaraan --}}
-                        @if ($wo->gambar)
+                        @if ($wo->kendaraan && $wo->kendaraan->foto_kendaraan)
                             <div class="mb-6">
                                 <h4 class="font-bold text-gray-800 mb-3 flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor"
@@ -122,10 +122,10 @@
                                             d="M3 16l4-4a3 3 0 014 0l4 4m-2-2l1-1a3 3 0 014 0l3 3m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                         </path>
                                     </svg>
-                                    Gambar Kendaraan
+                                    Foto Kendaraan
                                 </h4>
-                                <img src="{{ asset('storage/' . $wo->gambar) }}"
-                                    class="w-full max-h-64 object-cover rounded-xl border shadow">
+                                <img src="{{ asset('storage/' . $wo->kendaraan->foto_kendaraan) }}"
+                                    class="w-full max-h-84 object-cover rounded-xl border shadow">
                             </div>
                         @endif
 
@@ -159,7 +159,7 @@
                         </div>
 
                         {{-- Estimasi Selesai --}}
-                        @if ($wo->estimasi_selesai)
+                        {{-- @if ($wo->estimasi_selesai)
                             <div class="bg-amber-50 p-6 rounded-xl border border-amber-200 text-center mb-6">
                                 <div class="flex items-center justify-center mb-3">
                                     <svg class="w-8 h-8 text-amber-500 mr-3" fill="none" stroke="currentColor"
@@ -172,11 +172,11 @@
                                 </div>
                                 <p class="text-amber-800 font-medium">Estimasi Selesai</p>
                             </div>
-                        @endif
+                        @endif --}}
 
                         {{-- Daftar Layanan Servis --}}
                         <div class="bg-Blue rounded-xl shadow-md border border-gray-200 overflow-hidden mb-6">
-                            <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-4">
+                            <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
                                 <h4 class="font-bold text-xl text-black flex items-center"><svg class="w-6 h-6 mr-3"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -234,42 +234,45 @@
                         </div>
 
                         {{-- Ringkasan Total --}}
-                        <div
+                        {{-- <div
                             class="bg-gradient-to-r from-emerald-500 to-green-600 p-8 rounded-2xl shadow-2xl mb-6 text-black text-center">
                             <h3 class="text-4xl font-black mb-2">Rp {{ number_format($wo->total_harga) }}</h3>
                             <p class="text-emerald-100 font-semibold text-lg mb-4">Total Biaya Servis</p>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
 
             {{-- KOLOM KANAN (Aksi & Status) --}}
             <div class="space-y-6">
-                @if($wo->status == 'antrian')
-                <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-xl shadow-lg border-0 mb-6">
-                    <h5 class="font-bold text-xl text-white mb-6 flex items-center">
-                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Tindakan Pertama
-                    </h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="status" value="dikerjakan">
-                            <button type="submit" class="w-full bg-emerald-500 text-white py-4 rounded-xl hover:bg-emerald-600 font-bold shadow-xl text-lg">
-                                ✅ Setuju & Mulai Kerja
-                            </button>
-                        </form>
-                        <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="status" value="ditolak">
-                            <button type="submit" class="w-full bg-red-500 text-white py-4 rounded-xl hover:bg-red-600 font-bold shadow-xl text-lg">
-                                ❌ Tolak Work Order
-                            </button>
-                        </form>
+                @if ($wo->status == 'antrian')
+                    <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200">
+                        <h5 class="font-bold text-xl text-blue mb-6 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Tindakan Pertama
+                        </h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
+                                @csrf @method('PUT')
+                                <input type="hidden" name="status" value="dikerjakan">
+                                <button type="submit"
+                                    class="w-full bg-emerald-500 text-white py-4 rounded-xl hover:bg-emerald-600 font-bold shadow-xl text-lg">
+                                    ✅ Setuju
+                                </button>
+                            </form>
+                            <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
+                                @csrf @method('PUT')
+                                <input type="hidden" name="status" value="ditolak">
+                                <button type="submit"
+                                    class="w-full bg-red-500 text-white py-4 rounded-xl hover:bg-red-600 font-bold shadow-xl text-lg">
+                                    ❌ Tolak
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
                 @endif
 
 
@@ -321,14 +324,14 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="space-y-4">
-                    @if($wo->status !== 'ditolak')
-                    <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
-                        class="flex items-center justify-center w-full px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg font-bold text-lg transition transform hover:-translate-y-1"><svg
-                            class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                            </path>
-                        </svg>🔧 Tambah Servis & Sparepart</a>
+                    @if ($wo->status !== 'ditolak')
+                        <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
+                            class="flex items-center justify-center w-full px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg font-bold text-lg transition transform hover:-translate-y-1"><svg
+                                class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
+                            </svg>🔧 Tambah Servis & Sparepart</a>
                     @endif
                     {{-- <a href="{{ route('mekanik.work-order.servis', $wo->id_wo) }}"
                         class="flex items-center justify-center w-full px-6 py-4 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 shadow-lg font-bold text-lg transition transform hover:-translate-y-1"><svg

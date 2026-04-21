@@ -135,7 +135,7 @@
                                         @elseif ($wo->status == 'dikerjakan' && !$wo->servis_completed)
                                             {{-- Dikerjakan (servis belum): Servis --}}
                                             <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
-                                                class="w-full bg-blue-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition shadow font-bold text-center">
+                                                class="w-full bg-yellow-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-yellow-600 transition shadow font-bold text-center">
                                                 🔧 Servis
                                             </a>
                                         @elseif ($wo->status == 'dikerjakan' && $wo->servis_completed)
@@ -153,7 +153,7 @@
                                         @elseif ($wo->status == 'ditolak')
                                             {{-- Ditolak: Disabled --}}
                                             <button disabled
-                                                class="w-full bg-gray-400 text-gray-200 px-4 py-2 rounded-lg text-sm shadow cursor-not-allowed">
+                                                class="w-full bg-gray-500 text-gray-100 px-4 py-2 rounded-lg text-sm shadow cursor-not-allowed">
                                                 ❌ Ditolak
                                             </button>
                                         @elseif ($wo->status == 'selesai')
