@@ -20,17 +20,36 @@ class WorkOrderController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $statusFilter = $request->input('status', 'all');
+        $sort = $request->input('sort', 'default');
 
-        $workOrders = WorkOrder::with('kendaraan')
-            ->when($search, function ($query, $search) {
-                $query->whereHas('kendaraan', function ($q) use ($search) {
-                    $q->where('nomor_polisi', 'like', "%$search%");
-                });
-            })
-            ->orderByDesc('tanggal_masuk')
-            ->paginate(10);
+        $query = WorkOrder::with('kendaraan');
 
-        return view('mekanik.work-order.index', compact('workOrders'));
+        // Search
+        if ($search) {
+            $query->whereHas('kendaraan', function ($q) use ($search) {
+                $q->where('nomor_polisi', 'like', "%{$search}%");
+            });
+        }
+
+        // Status filter
+        if ($statusFilter !== 'all') {
+            $query->where('status', $statusFilter);
+        }
+
+        // Default sorting: status priority then newest
+        $statusOrder = ['antrian' => 1, 'dikerjakan' => 2, 'menunggu_part' => 3, 'selesai' => 4];
+        $query->orderByRaw("FIELD(status, 'antrian', 'dikerjakan', 'menunggu_part', 'selesai')")
+              ->orderBy('tanggal_masuk', 'desc');
+
+        // Override sort if specified
+        if ($sort === 'terlama') {
+            $query->orderBy('tanggal_masuk', 'asc');
+        }
+
+        $workOrders = $query->paginate(5)->withQueryString();
+
+        return view('mekanik.work-order.index', compact('workOrders', 'statusFilter', 'sort'));
     }
 
     // =========================
@@ -61,7 +80,10 @@ class WorkOrderController extends Controller
             'penggunaanSparepart.sparepart',
         ])->findOrFail($id);
 
-        return view('mekanik.work-order.edit', compact('wo'));
+        $jenisServis = JenisServis::all();
+        $spareparts = Sparepart::where('stok', '>', 0)->get();
+
+        return view('mekanik.work-order.edit', compact('wo', 'jenisServis', 'spareparts'));
     }
 
     // =========================
@@ -202,35 +224,51 @@ class WorkOrderController extends Controller
     // =========================
     // SIMPAN SERVIS (TRANSACTION)
     // =========================
-    public function storeServis(Request $request, $id)
-    {
+    // =========================
+// SIMPAN SERVIS (TRANSACTION)
+// =========================
+public function storeServis(Request $request, $id)
+{
+    try {
         DB::transaction(function () use ($request, $id) {
 
             $wo = WorkOrder::findOrFail($id);
 
-            // JASA SERVIS
+            // 1. UPDATE DATA BASIC WO (Opsional, jika ada update catatan/gambar)
+            if ($request->has('catatan_mekanik')) {
+                $wo->catatan_mekanik = $request->catatan_mekanik;
+            }
+
+            // Upload gambar jika ada
+            if ($request->hasFile('gambar')) {
+                $path = $request->file('gambar')->store('work-order', 'public');
+                $wo->gambar = $path;
+            }
+            $wo->save();
+
+            // 2. JASA SERVIS (Dropdown Multiple)
             if ($request->jenis_servis) {
-                foreach ($request->jenis_servis as $servis) {
-                    $jenis = JenisServis::findOrFail($servis);
+                foreach ($request->jenis_servis as $id_jenis) {
+                    $jenis = JenisServis::findOrFail($id_jenis);
 
                     DetailServisWo::create([
                         'id_wo' => $wo->id_wo,
-                        'id_jenis' => $servis,
+                        'id_jenis' => $id_jenis,
                         'harga_jasa' => $jenis->harga_jasa,
                     ]);
                 }
             }
 
-            // SPAREPART
-            if ($request->sparepart) {
-                foreach ($request->sparepart as $partId => $qty) {
+            // 3. SPAREPART (Sesuai dengan input dropdown & qty)
+            if ($request->sparepart_id) {
+                foreach ($request->sparepart_id as $index => $partId) {
+                    $qty = $request->sparepart_qty[$index] ?? 0;
 
-                    $part = Sparepart::find($partId);
-
-                    if ($part && $qty > 0) {
+                    if ($partId && $qty > 0) {
+                        $part = Sparepart::findOrFail($partId);
 
                         if ($qty > $part->stok) {
-                            throw new \Exception("Stok {$part->nama_part} tidak cukup!");
+                            throw new \Exception("Stok {$part->nama_part} tidak mencukupi!");
                         }
 
                         PenggunaanSparepart::create([
@@ -246,14 +284,18 @@ class WorkOrderController extends Controller
                 }
             }
 
-            // Update status
-            $wo->update([
-                'status' => 'dikerjakan'
-            ]);
+            // 4. Update status ke dikerjakan
+            $wo->update(['status' => 'dikerjakan']);
         });
 
-        return back()->with('success', 'Data servis berhasil disimpan!');
+        // REDIRECT KE INDEX setelah sukses
+        return redirect()->route('mekanik.work-order.index')
+            ->with('success', 'Data servis berhasil disimpan dan status diperbarui menjadi Dikerjakan!');
+
+    } catch (\Exception $e) {
+        return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
     }
+}
 
     // =========================
     // RIWAYAT SERVIS

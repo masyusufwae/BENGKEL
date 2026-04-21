@@ -1,11 +1,12 @@
-
+{{--
 <nav class="bg-white shadow-sm">
 	<div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 		<div class="flex justify-between h-16">
 			<!-- Logo -->
 			<div class="flex items-center">
-				<a href="{{ route('dashboard') }}" class="text-xl font-bold text-blue-600">
-					🔧 Bengkel Mekanik
+				<a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
+					<img src="{{ asset('storage/logo/icon.png') }}" alt="Logo Bengkel" class="h-10 w-10 rounded-full object-cover shadow-md">
+					<span class="text-xl font-bold text-blue-600 hidden sm:inline">Bengkel Mekanik</span>
 				</a>
 			</div>
 			<!-- Navigation Links -->
@@ -34,4 +35,4 @@
 			</div>
 		</div>
 	</div>
-</nav>
+</nav> --}}

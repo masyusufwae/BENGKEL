@@ -4,13 +4,9 @@
     <header class="bg-white py-6 border-b">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
-                <h2 class="font-bold text-2xl text-black">
-                    Edit Sparepart: {{ $sparepart->nama_part }}
-                </h2>
-                {{-- <p class="text-sm text-gray-500 mt-1">Kode: {{ $sparepart->kode_part }}</p> --}}
-                <a href="{{ route('mekanik.sparepart.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
-            Kembali
-        </a>
+            <h2 class="font-bold text-2xl text-black">
+                Edit Sparepart: {{ $sparepart->nama_part }}
+            </h2>
         </div>
     </header>
 
@@ -87,14 +83,12 @@
                             @enderror
                         </div>
                         <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">
-        Harga Beli <span class="text-red-500">*</span>
-    </label>
-    <input type="number" name="harga_beli"
-        value="{{ old('harga_beli', $sparepart->harga_beli) }}"
-        min="0" required
-        class="w-full border rounded-lg px-3 py-2">
-</div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Harga Beli <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="harga_beli" value="{{ old('harga_beli', $sparepart->harga_beli) }}"
+                                min="0" required class="w-full border rounded-lg px-3 py-2">
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Harga Jual <span
                                     class="text-red-500">*</span></label>

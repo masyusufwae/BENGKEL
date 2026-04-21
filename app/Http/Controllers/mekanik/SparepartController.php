@@ -10,10 +10,13 @@ class SparepartController extends Controller
 {
     public function index()
     {
-        $spareparts = Sparepart::orderBy('nama_part')->paginate(10);
 
         $stokMenipis = Sparepart::whereColumn('stok', '<=', 'stok_minimum')->count();
         $totalSparepart = Sparepart::count();
+
+        $spareparts = Sparepart::orderBy('nama_part')
+            ->paginate(4)
+            ->withQueryString();
 
         return view('mekanik.sparepart.index', compact(
             'spareparts',

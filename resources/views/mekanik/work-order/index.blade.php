@@ -8,12 +8,30 @@
             </h2>
 
             <div class="flex items-center gap-2">
-                {{-- Search --}}
+                {{-- Filters --}}
                 <form method="GET" action="" class="flex items-center gap-2">
-                    <input type="text" name="search" placeholder="Cari Plat Nomor..."
+                    {{-- Search --}}
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Plat Nomor..."
                         class="border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+
+                    {{-- Status Filter --}}
+                    <select name="status" class="border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                        <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
+                        <option value="antrian" {{ request('status') == 'antrian' ? 'selected' : '' }}>Antrian</option>
+                        <option value="dikerjakan" {{ request('status') == 'dikerjakan' ? 'selected' : '' }}>Dikerjakan</option>
+                        <option value="menunggu_part" {{ request('status') == 'menunggu_part' ? 'selected' : '' }}>Menunggu Part</option>
+                        <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                    </select>
+
+                    {{-- Sort Filter --}}
+                    <select name="sort" class="border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                        <option value="default" {{ request('sort') == 'default' ? 'selected' : '' }}>tanggal</option>
+                        <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+                        <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
+                    </select>
+
                     <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                        Cari
+                        Filter
                     </button>
                 </form>
             </div>
@@ -83,8 +101,8 @@
 
 
                                     <td class="py-3 px-4">
-                                        @if ($wo->gambar)
-                                            <img src="{{ asset('storage/' . $wo->gambar) }}"
+@if ($wo->kendaraan && $wo->kendaraan->foto_kendaraan)
+                                            <img src="{{ asset('storage/' . $wo->kendaraan->foto_kendaraan) }}"
                                                 class="w-16 h-16 object-cover rounded">
                                         @else
                                             <span class="text-gray-400 text-sm">-</span>
@@ -108,30 +126,27 @@
                                             Detail
                                         </a>
                                         @if ($wo->status == 'antrian')
-                                            <a href="{{ route('mekanik.work-order.detail', $wo->id_wo) }}"
-                                                class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm hover:bg-blue-200 transition shadow w-full text-center">
-                                                Mulai Kerjakan
+                                            <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
+                                                class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm hover:bg-emerald-200 transition shadow w-full text-center font-bold">
+                                                Kerjakan
                                             </a>
                                         @else
                                             <a href="{{ route('mekanik.work-order.edit', $wo->id_wo) }}"
-                                                class="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm hover:bg-blue-100 transition shadow w-full text-center">
-                                                Lanjutkan
+                                                class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm hover:bg-blue-200 transition shadow w-full text-center font-bold">
+                                                Servis
                                             </a>
-                                            <a href="{{ route('mekanik.work-order.servis', $wo->id_wo) }}"
-    class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition w-full text-center">
-    Servis
-</a>
                                         @endif
-                                        <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}" method="POST">
-    @csrf
-    @method('PUT')
+                                        {{-- <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('PUT')
 
-    <input type="hidden" name="status" value="selesai">
+                                            <input type="hidden" name="status" value="selesai">
 
-    <button class="bg-green-600 text-white px-4 py-2 rounded">
-        Selesaikan Servis
-    </button>
-</form>
+                                            <button class="bg-green-600 text-white px-4 py-2 rounded">
+                                                Selesaikan
+                                            </button>
+                                        </form> --}}
                                     </td>
 
 
@@ -147,11 +162,9 @@
                         </tbody>
                     </table>
 
-                    {{-- Pagination --}}
                     <div class="p-4">
-                        {{ $workOrders->links() }}
-                    </div>
-
+                    {{ $workOrders->links() }}
+                </div>
                 </div>
 
             </div>

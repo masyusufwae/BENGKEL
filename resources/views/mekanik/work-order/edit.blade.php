@@ -30,79 +30,147 @@
             <div class="md:col-span-3 bg-white p-6 rounded-xl shadow border">
                 <h3 class="font-bold text-lg mb-6">Edit Data Work Order</h3>
 
-                <form action="{{ route('mekanik.work-order.update', $wo->id_wo) }}" method="POST"
-                    class="grid grid-cols-1 md:grid-cols-2 gap-6" enctype="multipart/form-data">
+                <form action="{{ route('mekanik.work-order.servis.store', $wo->id_wo) }}" method="POST"
+                    enctype="multipart/form-data" class="space-y-8">
                     @csrf
-                    @method('PUT')
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nomor WO</label>
-                        <input type="text" name="nomor_wo" value="{{ old('nomor_wo', $wo->nomor_wo) }}"
-                            class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
-                        @error('nomor_wo')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+                    {{-- DATA BASIC WO --}}
+                    {{-- DATA BASIC WO --}}
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border">
+                        <h4 class="font-bold text-xl mb-6 text-gray-800 border-b-2 border-blue-500 pb-3">Data Work Order
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            {{-- Nomor WO (Readonly) --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor WO</label>
+                                <input type="text" name="nomor_wo" value="{{ old('nomor_wo', $wo->nomor_wo) }}"
+                                    class="w-full border rounded-xl px-4 py-3 bg-gray-100 cursor-not-allowed" readonly>
+                                @error('nomor_wo')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            {{-- Status (Disabled) --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <select name="status_disabled"
+                                    class="w-full border rounded-xl px-4 py-3 bg-gray-100 cursor-not-allowed" disabled>
+                                    <option value="antrian" {{ old('status', $wo->status) == 'antrian' ? 'selected' : '' }}>
+                                        Antrian</option>
+                                    <option value="dikerjakan"
+                                        {{ old('status', $wo->status) == 'dikerjakan' ? 'selected' : '' }}>Dikerjakan
+                                    </option>
+                                    <option value="menunggu_part"
+                                        {{ old('status', $wo->status) == 'menunggu_part' ? 'selected' : '' }}>Menunggu Part
+                                    </option>
+                                    <option value="selesai" {{ old('status', $wo->status) == 'selesai' ? 'selected' : '' }}>
+                                        Selesai</option>
+                                </select>
+                                {{-- Hidden input agar nilai status tetap terkirim ke server --}}
+                                <input type="hidden" name="status" value="{{ $wo->status }}">
+                            </div>
+
+                            {{-- Keluhan (Readonly) --}}
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Keluhan</label>
+                                <textarea name="keluhan" rows="3" class="w-full border rounded-xl px-4 py-3 bg-gray-100 cursor-not-allowed"
+                                    readonly>{{ old('keluhan', $wo->keluhan) }}</textarea>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Gambar</label>
+                                <input type="file" name="gambar" class="w-full border rounded-xl px-4 py-3">
+                            </div>
+
+                            {{-- Estimasi Selesai (Readonly) --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Estimasi Selesai</label>
+                                <input type="date" name="estimasi_selesai"
+                                    value="{{ old('estimasi_selesai', $wo->estimasi_selesai ? $wo->estimasi_selesai->format('Y-m-d') : '') }}"
+                                    class="w-full border rounded-xl px-4 py-3 bg-gray-100 cursor-not-allowed" readonly>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Mekanik</label>
+                                <textarea name="catatan_mekanik" rows="4"
+                                    class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500">{{ old('catatan_mekanik', $wo->catatan_mekanik) }}</textarea>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                        <select name="status" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                            required>
-                            <option value="antrian" {{ old('status', $wo->status) == 'antrian' ? 'selected' : '' }}>Antrian
-                            </option>
-                            <option value="dikerjakan" {{ old('status', $wo->status) == 'dikerjakan' ? 'selected' : '' }}>
-                                Dikerjakan</option>
-                            <option value="menunggu_part"
-                                {{ old('status', $wo->status) == 'menunggu_part' ? 'selected' : '' }}>Menunggu Part</option>
-                            <option value="selesai" {{ old('status', $wo->status) == 'selesai' ? 'selected' : '' }}>Selesai
-                            </option>
-                        </select>
-                        @error('status')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+                    {{-- JASA SERVIS --}}
+                    <div class="bg-gradient-to-r from-emerald-50 to-green-50 p-8 rounded-2xl border-2 border-emerald-200">
+                        <h4 class="font-bold text-2xl mb-6 text-emerald-800 flex items-center">
+                            <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                                </path>
+                            </svg>
+                            Pilih Jenis Servis
+                        </h4>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-emerald-700">Klik untuk memilih (Tahan Ctrl/Cmd
+                                untuk pilih lebih dari satu)</label>
+                            <select name="jenis_servis[]" multiple
+                                class="w-full border-2 border-emerald-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 min-h-[150px]">
+                                @foreach ($jenisServis as $servis)
+                                    <option value="{{ $servis->id_jenis }}" class="py-2 border-b border-emerald-50">
+                                        {{ $servis->nama_servis }} — Rp {{ number_format($servis->harga_jasa) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-emerald-600 mt-2">* Item yang dipilih akan diarsir biru</p>
+                        </div>
                     </div>
 
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Keluhan</label>
-                        <textarea name="keluhan" rows="3" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                            required>{{ old('keluhan', $wo->keluhan) }}</textarea>
-                        @error('keluhan')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+                    {{-- SPAREPART --}}
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-2xl border-2 border-blue-200">
+                        <h4 class="font-bold text-2xl mb-6 text-blue-800 flex items-center">
+                            <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                            Pilih Sparepart
+                        </h4>
+
+                        <div id="sparepart-container" class="space-y-4">
+                            {{-- Baris Input Sparepart --}}
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Sparepart</label>
+                                    <select name="sparepart_id[]"
+                                        class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                                        <option value="">-- Pilih Sparepart --</option>
+                                        @foreach ($spareparts as $part)
+                                            <option value="{{ $part->id_part }}">
+                                                {{ $part->nama_part }} (Stok: {{ $part->stok }}) — Rp
+                                                {{ number_format($part->harga_jual) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
+                                    <input type="number" name="sparepart_qty[]" min="1" value="0"
+                                        class="w-full border rounded-lg px-3 py-2 text-center" placeholder="0">
+                                </div>
+                            </div>
+
+                            {{-- Anda bisa menambahkan script JS nantinya untuk "Tambah Baris" jika ingin lebih dari satu sparepart --}}
+                        </div>
                     </div>
 
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Gambar</label>
-                        <input type="file" name="gambar" class="w-full border rounded-lg px-3 py-2">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Estimasi Selesai</label>
-                        <input type="date" name="estimasi_selesai"
-                            value="{{ old('estimasi_selesai', $wo->estimasi_selesai ? $wo->estimasi_selesai->format('Y-m-d') : '') }}"
-                            class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
-                        @error('estimasi_selesai')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Mekanik</label>
-                        <textarea name="catatan_mekanik" rows="4"
-                            class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">{{ old('catatan_mekanik', $wo->catatan_mekanik) }}</textarea>
-                        @error('catatan_mekanik')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="md:col-span-2 flex gap-3">
+                    <div class="flex gap-4">
                         <button type="submit"
-                            class="flex-1 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium">
-                            Update Data WO
+                            class="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 text-black px-8 py-4 rounded-2xl text-lg font-bold hover:from-emerald-700 hover:to-green-700 shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1">
+                            🚀 Simpan Data & Servis
                         </button>
                         <a href="{{ route('mekanik.work-order.index') }}"
-                            class="flex-1 bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 font-medium text-center">
-                            Kembali
+                            class="flex-1 bg-gray-500 text-white px-8 py-4 rounded-2xl text-lg font-bold hover:bg-gray-600 text-center transition">
+                            ← Kembali
                         </a>
                     </div>
                 </form>
