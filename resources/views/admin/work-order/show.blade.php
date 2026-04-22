@@ -6,6 +6,9 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
                 <h2 class="text-2xl font-bold mb-6">Detail Work Order</h2>
+                @if(session('error'))
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-4">{{ session('error') }}</div>
+                @endif
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><strong>No WO:</strong> {{ $workOrder->nomor_wo }}</div>
                     <div><strong>Status:</strong> {{ ucwords(str_replace('_', ' ', $workOrder->status)) }}</div>
@@ -86,6 +89,10 @@
                 </table>
                 <div class="text-right font-bold text-xl">Total: Rp {{ number_format($workOrder->totalHarga,0,',','.') }}</div>
                 <div class="mt-6 flex justify-end">
+                    @if(in_array($workOrder->status, ['selesai', 'diserahkan'], true))
+                        <a href="{{ route('admin.invoice.kirim', $workOrder->id_wo) }}" target="_blank" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded mr-2">Kirim ke Pelanggan</a>
+                        <a href="{{ route('admin.invoice.cetak', $workOrder->id_wo) }}" target="_blank" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2">Cetak Invoice</a>
+                    @endif
                     <a href="{{ route('admin.work-order.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">Kembali</a>
                 </div>
             </div>

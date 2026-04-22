@@ -134,6 +134,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('work-order', WorkOrderController::class);
     Route::get('invoice', [InvoiceController::class, 'index'])->name('invoice.index');
     Route::get('invoice/cetak/{id}', [InvoiceController::class, 'cetak'])->name('invoice.cetak');
+    Route::get('invoice/kirim/{id}', [InvoiceController::class, 'kirim'])->name('invoice.kirim');
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('laporan/generate', [LaporanController::class, 'generate'])->name('laporan.generate');
 });

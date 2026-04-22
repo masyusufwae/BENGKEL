@@ -12,6 +12,9 @@
                 @if(session('success'))
                     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-3 mb-4">{{ session('success') }}</div>
                 @endif
+                @if(session('error'))
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-4">{{ session('error') }}</div>
+                @endif
                 <div class="overflow-x-auto">
                     <table class="min-w-full bg-white border">
                         <thead>
@@ -95,6 +98,9 @@
                                 <td class="py-2 px-4 border">
                                     <a href="{{ route('admin.work-order.show', $wo->id_wo) }}" class="text-green-600 mr-2">Detail</a>
                                     <a href="{{ route('admin.work-order.edit', $wo->id_wo) }}" class="text-blue-600 mr-2">Edit</a>
+                                    @if(in_array($wo->status, ['selesai', 'diserahkan'], true))
+                                        <a href="{{ route('admin.invoice.cetak', $wo->id_wo) }}" target="_blank" class="text-indigo-600 mr-2">Invoice</a>
+                                    @endif
                                     <form action="{{ route('admin.work-order.destroy', $wo->id_wo) }}" method="POST" class="inline-block">
                                         @csrf @method('DELETE')
                                         <button type="submit" onclick="return confirm('Yakin hapus?')" class="text-red-600">Hapus</button>
