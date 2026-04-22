@@ -216,3 +216,10 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () { Route::get('/chat/contacts/summary', [\App\Http\Controllers\ChatController::class, 'fetchContacts']); });
+
+Route::prefix('admin')->group(function () {
+    Route::get('/invoice/cetak/{id}', [InvoiceController::class, 'cetak'])->name('admin.invoice.cetak');
+    Route::get('/invoice/kirim/{id}', [InvoiceController::class, 'kirim'])->name('admin.invoice.kirim');
+    // route index tetap seperti semula
+    Route::get('/invoice', [InvoiceController::class, 'index'])->name('admin.invoice.index');
+});

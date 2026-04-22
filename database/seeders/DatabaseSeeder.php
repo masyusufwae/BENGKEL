@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'pelanggan@bengkel.com',
             'password' => Hash::make('password123'),
             'role' => 'pelanggan',
-            'no_telp' => '+62812345681',
+            'no_telp' => '+6285892925898',
             'alamat' => 'Jl. Sudirman No. 888, Jakarta',
             'email_verified_at' => now(),
         ]);
@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'bambang@bengkel.com',
             'password' => Hash::make('password123'),
             'role' => 'pelanggan',
-            'no_telp' => '+62812345682',
+            'no_telp' => '+6285892925898',
             'alamat' => 'Jl. Thamrin No. 77, Jakarta',
             'email_verified_at' => now(),
         ]);
