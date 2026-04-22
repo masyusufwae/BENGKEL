@@ -186,11 +186,17 @@
 
         <div class="flex items-center space-x-5">
             <!-- Glowing Notification Bell -->
-            <button class="relative text-slate-300 hover:text-cyan-400 transition-colors group focus:outline-none hidden md:block">
+            @php
+                $unreadMessages = Auth::check() ? \App\Models\Pesan::where('penerima_id', Auth::id())->where('sudah_dibaca', false)->count() : 0;
+            @endphp
+            <a href="{{ route('customer.messages.index') }}" class="relative text-slate-300 hover:text-cyan-400 transition-colors group focus:outline-none hidden md:block">
                 <i class="fas fa-bell text-xl group-hover:scale-110 transition-transform"></i>
+                @if($unreadMessages > 0)
                 <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-slate-900"></span>
                 <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping opacity-75"></span>
-            </button>
+                <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $unreadMessages }}</span>
+                @endif
+            </a>
 
             @auth
             <div class="hidden md:flex items-center space-x-3 border-r border-slate-700 pr-5">
@@ -245,6 +251,17 @@
                     <a href="{{ route('customer.invoices.index') }}" class="list-group-item list-group-item-action border-0 mb-1 rounded flex items-center px-4 py-3 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-blue-400 transition-all border-l-[4px] @if(Route::currentRouteName() == 'customer.invoices.index') border-blue-500 bg-blue-900/50 text-blue-400 font-bold @else border-transparent @endif">
                         <i class="fas fa-file-invoice-dollar w-6 text-center @if(Route::currentRouteName() == 'customer.invoices.index') text-blue-400 @endif"></i>
                         <span class="ml-2 tracking-wide text-sm font-semibold">INVOICE</span>
+                    </a>
+
+                    <a href="{{ route('customer.messages.index') }}" class="list-group-item list-group-item-action border-0 mb-1 rounded flex items-center px-4 py-3 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-blue-400 transition-all border-l-[4px] @if(Route::currentRouteName() == 'customer.messages.index') border-blue-500 bg-blue-900/50 text-blue-400 font-bold @else border-transparent @endif">
+                        <i class="fas fa-envelope w-6 text-center @if(Route::currentRouteName() == 'customer.messages.index') text-blue-400 @endif"></i>
+                        <span class="ml-2 tracking-wide text-sm font-semibold">PESAN SAYA</span>
+                        @php
+                            $unreadMessages = \App\Models\Pesan::where('penerima_id', Auth::id())->where('sudah_dibaca', false)->count();
+                        @endphp
+                        @if($unreadMessages > 0)
+                            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">{{ $unreadMessages }}</span>
+                        @endif
                     </a>
                 </div>
 

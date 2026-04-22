@@ -117,6 +117,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/orders/create', [CustomerController::class, 'ordersCreate'])->name('orders.create');
         Route::post('/orders', [CustomerController::class, 'ordersStore'])->name('orders.store');
 
+        // Pesan (Messages)
+        Route::get('/messages', [\App\Http\Controllers\Customer\MessageController::class, 'index'])->name('messages.index');
+        Route::post('/messages/read', [\App\Http\Controllers\Customer\MessageController::class, 'markAsRead'])->name('messages.read');
+
         // Invoices (Tagihan)
         Route::get('/invoices', [CustomerController::class, 'invoicesIndex'])->name('invoices.index');
     });
