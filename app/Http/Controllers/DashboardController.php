@@ -81,7 +81,7 @@ class DashboardController extends Controller
             // Ambil WO untuk kendaraan pelanggan ini yang masih aktif
             $query->whereHas('kendaraan', function($q) use ($user) {
                 $q->where('id_pelanggan', $user->id);
-            })->whereIn('status', ['antrian', 'dikerjakan', 'menunggu part']);
+            })->whereIn('status', ['antrian', 'dikerjakan', 'menunggu_part']);
         })->with(['kendaraan', 'mekanik'])
         ->orderBy('tanggal_masuk', 'desc')
         ->get()

@@ -6,6 +6,9 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
                 <h2 class="text-2xl font-bold mb-6">Pilih Work Order untuk Cetak Invoice</h2>
+                @if(session('error'))
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-4">{{ session('error') }}</div>
+                @endif
                 <div class="overflow-x-auto">
                     <table class="min-w-full bg-white border">
                         <thead>
@@ -22,12 +25,15 @@
                             @forelse($workOrders as $wo)
                             <tr>
                                 <td class="py-2 px-4 border">{{ $wo->nomor_wo }}</td>
-                                <td class="py-2 px-4 border">{{ $wo->kendaraan->nama_pelanggan ?? '-' }}</td>
+                                <td class="py-2 px-4 border">{{ $wo->kendaraan?->user?->name ?? '-' }}</td>
                                 <td class="py-2 px-4 border">{{ $wo->tanggal_masuk->format('d/m/Y') }}</td>
                                 <td class="py-2 px-4 border">{{ ucfirst($wo->status) }}</td>
                                 <td class="py-2 px-4 border">Rp {{ number_format($wo->totalHarga,0,',','.') }}</td>
                                 <td class="py-2 px-4 border">
-                                    <a href="{{ route('admin.invoice.cetak', $wo->id_wo) }}" target="_blank" class="bg-blue-500 text-white px-3 py-1 rounded">Cetak Invoice</a>
+                                    <div class="flex flex-wrap gap-2">
+                                        <a href="{{ route('admin.invoice.kirim', $wo->id_wo) }}" target="_blank" class="bg-green-500 text-white px-3 py-1 rounded">Kirim ke Pelanggan</a>
+                                        <a href="{{ route('admin.invoice.cetak', $wo->id_wo) }}" target="_blank" class="bg-blue-500 text-white px-3 py-1 rounded">Cetak Invoice</a>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
