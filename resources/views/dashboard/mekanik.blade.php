@@ -19,7 +19,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">WO Diproses</p>
-                            <p class="text-3xl font-bold text-blue-600 mt-2">{{ count($wo_diproses) }}</p>
+                        <p class="text-3xl font-bold text-blue-600 mt-2">{{ $wo_diproses->count() }}</p>
                             <p class="text-gray-400 text-xs mt-2">Sedang dikerjakan</p>
                         </div>
                         <div class="bg-blue-100 rounded-full p-3">
@@ -35,7 +35,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">WO Menunggu</p>
-                            <p class="text-3xl font-bold text-yellow-600 mt-2">{{ count($wo_menunggu) }}</p>
+                        <p class="text-3xl font-bold text-yellow-600 mt-2">{{ $wo_antrian_count }}</p>
                             <p class="text-gray-400 text-xs mt-2">Antrian</p>
                         </div>
                         <div class="bg-yellow-100 rounded-full p-3">
@@ -170,23 +170,25 @@
             <div class="mt-8 bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Aksi Cepat</h2>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <a href="#" class="inline-flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+
+                    <a href="{{ route('mekanik.work-order.index') }}" class="inline-flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
                         Update Progress
                     </a>
-                    <a href="#" class="inline-flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+
+                    <a href="{{ route('mekanik.sparepart.index') }}" class="inline-flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                         Input Sparepart
                     </a>
-                    <a href="#" class="inline-flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700">
+                    <a href="{{ route('mekanik.riwayat') }}" class="inline-flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Selesaikan WO
+                        Lihat Riwayat
                     </a>
                 </div>
             </div>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Admin Dashboard - Bengkel')</title>
-    <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}?v=1">
 
     <!-- CSS Frameworks Mix (Bootstrap, Bulma, Tailwind) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -99,7 +99,7 @@
         .glitch-hover:hover::after {
             color: #f0f; z-index: -2; animation: glitch-anim2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite reverse;
         }
-        
+
         /* 3D Hover & Glow */
         .hover-3d-glow { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid transparent; }
         .hover-3d-glow:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(34, 211, 238, 0.3), 0 0 15px rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.5); z-index: 10; relative; }
@@ -137,7 +137,7 @@
         <div class="flex items-center space-x-5">
             @auth
             <div class="hidden md:flex items-center space-x-3 border-r border-slate-700 pr-5">
-                
+
                 @php
                     $unreadChatsAdmin = \App\Models\Chat::where('receiver_id', Auth::id())->where('is_read', false)->count();
                 @endphp
@@ -289,11 +289,11 @@
                             preloader.style.display = 'none';
                         }, 800);
                     }, 350);
-                }, 1000); 
+                }, 1000);
             }
         });
     </script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const Toast = Swal.mixin({

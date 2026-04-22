@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\WorkOrder;
 use App\Models\KendaraanPelanggan;
 use App\Models\InvoiceServis;
+use App\Models\Sparepart;
 use App\Helpers\ServiceScheduleHelper;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -49,24 +50,59 @@ class DashboardController extends Controller
         return view('dashboard.admin', $data);
     }
 
-    private function mekanikDashboard()
+private function mekanikDashboard()
     {
-        // Data dummy untuk dashboard mekanik
+        $today = Carbon::today();
+
+        $wo_antrian = WorkOrder::where('status', 'antrian')->count();
+        $wo_diproses = WorkOrder::where('status', 'dikerjakan')
+            ->with('kendaraan')
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($wo) {
+                return [
+                    'id_wo' => $wo->nomor_wo,
+                    'kendaraan' => $wo->kendaraan->merek . ' ' . $wo->kendaraan->model . ' (' . $wo->kendaraan->nomor_polisi . ')',
+                    'status' => $wo->status,
+                    'estimasi' => $wo->estimasi_selesai?->format('d M Y H:i') ?? 'Belum ditentukan',
+                ];
+            });
+        $wo_menunggu = WorkOrder::where('status', 'antrian')
+            ->with('kendaraan')
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($wo) {
+                return [
+                    'id_wo' => $wo->nomor_wo,
+                    'kendaraan' => $wo->kendaraan->merek . ' ' . $wo->kendaraan->model,
+                    'keluhan' => Str::limit($wo->keluhan, 50),
+                    'tanggal' => $wo->tanggal_masuk->format('d/m'),
+                ];
+            });
+        $sparepart_kosong = Sparepart::whereColumn('stok', '<=', 'stok_minimum')
+            ->take(5)
+            ->get()
+            ->map(function ($part) {
+                return [
+                    'nama' => $part->nama_part,
+                    'stok' => $part->stok,
+                    'minimum' => $part->stok_minimum,
+                ];
+            });
+        $total_wo_hari_ini = WorkOrder::whereDate('tanggal_masuk', $today)->count();
+        $wo_selesai_hari_ini = WorkOrder::where('status', 'selesai')
+            ->whereDate('tanggal_selesai', $today)
+            ->count();
+
         $data = [
-            'wo_diproses' => [
-                ['id_wo' => 'WO-001', 'kendaraan' => 'Honda Civic (B 1234 ABC)', 'status' => 'dikerjakan', 'estimasi' => '2 jam'],
-                ['id_wo' => 'WO-005', 'kendaraan' => 'Toyota Avanza (B 5678 XYZ)', 'status' => 'dikerjakan', 'estimasi' => '1 jam'],
-            ],
-            'wo_menunggu' => [
-                ['id_wo' => 'WO-003', 'kendaraan' => 'Daihatsu Xenia', 'keluhan' => 'Rem bunyi', 'tanggal' => '2024-04-13'],
-                ['id_wo' => 'WO-004', 'kendaraan' => 'Suzuki Ertiga', 'keluhan' => 'Radiator panas', 'tanggal' => '2024-04-13'],
-            ],
-            'sparepart_kosong' => [
-                ['nama' => 'Kampas Rem (Depan)', 'stok' => 0, 'minimum' => 5],
-                ['nama' => 'Filter Oli', 'stok' => 2, 'minimum' => 10],
-            ],
-            'total_wo_hari_ini' => 4,
-            'wo_selesai_hari_ini' => 3,
+            'wo_antrian_count' => $wo_antrian,
+            'wo_diproses' => $wo_diproses,
+            'wo_menunggu' => $wo_menunggu,
+            'sparepart_kosong' => $sparepart_kosong,
+            'total_wo_hari_ini' => $total_wo_hari_ini,
+            'wo_selesai_hari_ini' => $wo_selesai_hari_ini,
         ];
 
         return view('dashboard.mekanik', $data);

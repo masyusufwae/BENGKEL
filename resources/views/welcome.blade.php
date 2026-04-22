@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RevAuto - Bengkel & Showroom</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}?v=1">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
@@ -39,7 +40,7 @@
             backdrop-filter: blur(10px);
             position: fixed;
         }
-        
+
         .nav-link-custom {
             color: #fff !important;
             font-weight: 500;
@@ -90,7 +91,7 @@
             overflow: hidden;
             background: radial-gradient(circle at center, #1e293b 0%, #0b1121 70%);
         }
-        
+
         .car-bg {
             position: absolute;
             top: 0;
@@ -118,7 +119,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -173,13 +174,13 @@
             position: relative;
             z-index: 20;
         }
-        
+
         .stat-item {
             text-align: center;
             border-right: 1px solid rgba(255,255,255,0.1);
         }
         .stat-item:last-child { border-right: none; }
-        
+
         .stat-value {
             font-size: 2.5rem;
             font-weight: 700;
@@ -212,7 +213,7 @@
                 <span class="text-blue-500">REV</span>AUTO
             </h2>
         </div>
-        
+
         <div class="d-none d-lg-flex align-items-center">
             <a href="#" class="nav-link-custom">Home</a>
             <a href="#" class="nav-link-custom">Inventory</a>
@@ -239,14 +240,14 @@
     <section class="hero-section">
         <!-- Fullscreen Background Image -->
         <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Sports Car" class="car-bg">
-        
+
         <!-- Dark Overlay -->
         <div class="dark-overlay"></div>
 
         <div class="container hero-content">
             <h1 class="hero-title">EXPLORE THE NEXT <br>GENERATION OF CARS</h1>
             <p class="hero-subtitle">Discover unparalleled performance, sleek design, and cutting-edge technology. Your dream ride awaits in our premium showroom.</p>
-            
+
             <div class="hero-buttons d-flex justify-content-center gap-4">
                 <a href="#inventory" class="btn btn-glow" style="background:#3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);">
                     Explore Inventory
@@ -255,7 +256,7 @@
                     Book Service
                 </a>
             </div>
-            
+
         </div>
     </section>
 
@@ -301,7 +302,7 @@
                     <p class="text-slate-400 mb-8 leading-relaxed">
                         At our facility, we redefine the car ownership and maintenance experience with exceptional service, cutting-edge diagnostic tools, and customer-focused solutions tailored to your vehicle's needs.
                     </p>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                         <div class="flex items-center text-sm text-slate-300 font-medium">
                             <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
@@ -344,7 +345,7 @@
     <section class="py-20 relative bg-[#0b1121]" id="inventory">
         <div class="container">
             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Featured Vehicle & Services</h2>
-            
+
             <!-- Filters -->
             <div class="flex flex-wrap justify-between items-end mb-10 border-b border-slate-800 pb-4">
                 <div class="flex gap-6 text-sm font-semibold text-slate-400 mb-4 md:mb-0">
@@ -478,7 +479,7 @@
             <div class="absolute -bottom-[50%] right-[10%] w-[600px] h-[600px] rounded-full border border-slate-800/50 bg-slate-900/30"></div>
         </div>
         <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="White Car Dark" class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
-        
+
         <div class="container relative z-10">
             <div class="max-w-xl">
                 <h2 class="text-4xl font-extrabold text-white mb-4">Precision Engineering at Your Fingertips</h2>
@@ -495,7 +496,7 @@
                 <p class="text-blue-500 font-bold text-sm tracking-widest uppercase">Testimonials</p>
                 <h2 class="text-3xl font-extrabold text-white">What Our Clients Say</h2>
             </div>
-            
+
             <div class="row justify-content-center">
                 <!-- Review 1 -->
                 <div class="col-md-5 mb-4">
@@ -536,7 +537,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="flex justify-center gap-2 mt-6">
                 <div class="w-6 h-1.5 bg-blue-500 rounded-full"></div>
                 <div class="w-6 h-1.5 bg-slate-700 rounded-full"></div>

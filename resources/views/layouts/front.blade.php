@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RevAuto - @yield('title', 'Bengkel & Showroom')</title>
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}?v=1">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -34,7 +35,7 @@
             z-index: 50;
             top: 0;
         }
-        
+
         .nav-link-custom {
             color: #fff !important;
             font-weight: 500;
@@ -52,7 +53,7 @@
             height: 2px;
             bottom: -5px;
             left: 0;
-            background-color: #3b82f6; 
+            background-color: #3b82f6;
             transition: width 0.3s;
         }
         .nav-link-custom:hover::after {
@@ -91,7 +92,7 @@
                 </a>
             </h2>
         </div>
-        
+
         <div class="d-none d-lg-flex align-items-center">
             <a href="{{ url('/') }}" class="nav-link-custom">Home</a>
             <a href="{{ url('/#inventory') }}" class="nav-link-custom">Inventory</a>

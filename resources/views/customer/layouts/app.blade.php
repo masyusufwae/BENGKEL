@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Customer Dashboard - Bengkel</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}?v=1">
     <!-- CSS Frameworks Mix (Bootstrap, Bulma, Tailwind) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">

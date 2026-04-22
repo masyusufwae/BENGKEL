@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Mekanik Dashboard - Bengkel')</title>
-    <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}?v=1">
 
     <!-- CSS Frameworks Mix (Bootstrap, Bulma, Tailwind) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -99,7 +99,7 @@
         .glitch-hover:hover::after {
             color: #f0f; z-index: -2; animation: glitch-anim2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite reverse;
         }
-        
+
         /* 3D Hover & Glow */
         .hover-3d-glow { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid transparent; }
         .hover-3d-glow:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(34, 211, 238, 0.3), 0 0 15px rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.5); z-index: 10; relative; }
@@ -151,7 +151,7 @@
 
             @auth
             <div class="hidden md:flex items-center space-x-3 border-r border-slate-700 pr-5">
-                
+
                 @php
                     $unreadChats = \App\Models\Chat::where('receiver_id', Auth::id())->where('is_read', false)->count();
                 @endphp
@@ -243,7 +243,7 @@
                         <p class="text-[10px] text-slate-400 font-medium mb-2 truncate w-full">
                             {{ auth()->user()->email }}
                         </p>
-                        
+
                         <a href="{{ route('profile.edit') }}" class="w-full text-center bg-slate-700 border border-slate-600 hover:bg-cyan-600 hover:border-cyan-500 text-slate-300 hover:text-white font-bold text-xs py-2 px-4 rounded-md transition-all shadow-sm flex items-center justify-center group-hover:shadow-[0_0_8px_rgba(34,211,238,0.3)]">
                             <i class="fas fa-user-edit mr-2"></i> EDIT PROFILE
                         </a>
@@ -357,7 +357,7 @@
             }
         });
     </script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const Toast = Swal.mixin({

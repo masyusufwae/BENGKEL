@@ -48,13 +48,15 @@ class WorkOrderController extends Controller
             $query->where('status', $statusFilter);
         }
 
-        // Default sorting: status priority then newest
-        $query->orderByRaw("FIELD(status, 'antrian', 'dikerjakan', 'menunggu_part', 'selesai', 'diserahkan')")
-              ->orderBy('tanggal_masuk', 'desc');
+        // Urutan prioritas status (Antrian -> Dikerjakan -> Selesai -> Ditolak)
+        // Dibalik urutannya di dalam FIELD dan menggunakan DESC agar yang tidak masuk list ditaruh di paling bawah
+        $query->orderByRaw("FIELD(status, 'ditolak', 'selesai', 'dikerjakan', 'antrian') DESC");
 
-        // Override sort if specified
+        // Override sort untuk tanggal masuk (terbaru/terlama)
         if ($sort === 'terlama') {
             $query->orderBy('tanggal_masuk', 'asc');
+        } else {
+            $query->orderBy('tanggal_masuk', 'desc'); // Default: terbaru
         }
 
         $workOrders = $query->paginate(5)->withQueryString();
