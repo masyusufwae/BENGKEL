@@ -25,7 +25,7 @@ class WorkOrderController extends Controller
         $spareparts = Sparepart::where('stok', '>', 0)->get();
         return view('admin.work-order.create', compact('mekaniks', 'jenisServis', 'spareparts'));
     }
-
+// ghfhgfg
     public function store(Request $request)
     {
         $validated = $request->validate([
