@@ -13,24 +13,6 @@
 
             <!-- Form -->
             <div class="bg-white rounded-lg shadow p-6">
-                <!-- Modal Pilih Merek -->
-                <div id="brand-modal" class="fixed inset-0 z-[110] bg-gray-900/50 hidden flex-col items-center justify-center backdrop-blur-sm transition-opacity duration-300" style="display: none;">
-                    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 m-4 max-h-[85vh] flex flex-col relative" onclick="event.stopPropagation()">
-                        <div class="flex justify-between items-center mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900">Pilih Merek Kendaraan</h3>
-                                <p class="text-sm text-gray-500 mt-1">Pilih dari daftar merek kendaraan populer</p>
-                            </div>
-                            <button type="button" onclick="closeBrandModal()" class="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </div>
-                        <div class="overflow-y-auto pr-2 grid grid-cols-2 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100" id="brand-list-container">
-                            <!-- Isi list merek digenerate via JS -->
-                        </div>
-                    </div>
-                </div>
-
                 <form action="{{ route('customer.vehicles.update', $kendaraan->id_kendaraan) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     @method('PATCH')
@@ -175,9 +157,9 @@
                             file:rounded-full file:border-0
                             file:text-sm file:font-semibold
                             file:bg-blue-50 file:text-blue-700
-                            hover:file:bg-blue-100" 
+                            hover:file:bg-blue-100"
                             onchange="previewPhoto(this)" />
-                            
+
                         <!-- Preview upload foto baru -->
                         <div id="photo-preview-container" class="mt-4 hidden">
                             <p class="text-sm text-gray-500 mb-2">Preview Foto Baru:</p>
@@ -214,34 +196,80 @@
                 </div>
             </div>
 
+            <!-- Modal Pilih Merek -->
+            <div id="brand-modal" class="fixed inset-0 z-[110] bg-gray-900/50 hidden flex-col items-center justify-center backdrop-blur-sm transition-opacity duration-300" style="display: none;">
+                <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 m-4 max-h-[85vh] flex flex-col relative" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Pilih Merek Kendaraan</h3>
+                            <p class="text-sm text-gray-500 mt-1">Pilih dari daftar merek kendaraan populer</p>
+                        </div>
+                        <button type="button" onclick="closeBrandModal()" class="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="overflow-y-auto pr-2 grid grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100" id="brand-list-container">
+                        <!-- Isi list merek digenerate via JS -->
+                    </div>
+                </div>
+            </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Pindahkan modal ke luar dari container main content agar posisinya benar-benar fixed pada layar utama
+        const modal = document.getElementById('brand-modal');
+        if (modal) {
+            document.body.appendChild(modal);
+        }
+
         const merekInput = document.getElementById('merek');
         const logoContainer = document.getElementById('preview-logo-container');
         const logoPreview = document.getElementById('brand-logo-preview');
 
         const domainMap = {
+            // Jepang
             'toyota': 'toyota.com',
             'honda': 'honda.com',
-            'daihatsu': 'daihatsu.com',
-            'suzuki': 'globalsuzuki.com',
-            'mitsubishi': 'mitsubishi-motors.com',
+            'daihatsu': 'daihatsu.co.id',
             'nissan': 'nissan-global.com',
-            'hyundai': 'hyundai.com',
-            'kia': 'kia.com',
-            'wuling': 'wulingmotors.com',
             'mazda': 'mazda.com',
-            'isuzu': 'isuzu.com',
-            'chevrolet': 'chevrolet.com',
+            'lexus': 'lexus.com',
+            'subaru': 'subaru.com',
+            'infiniti': 'infiniti.com',
+            'acura': 'acura.com',
+            // Eropa
             'bmw': 'bmw.com',
             'mercedes': 'mercedes-benz.com',
-            'yamaha': 'yamaha-motor.com',
-            'kawasaki': 'kawasaki.com',
-            'vespa': 'vespa.com',
-            'ktm': 'ktm.com',
-            'ducati': 'ducati.com',
-            'harley': 'harley-davidson.com',
-            'piaggio': 'piaggio.com'
+            'audi': 'audi.com',
+            'volkswagen': 'volkswagen.com',
+            'porsche': 'porsche.com',
+            'volvo': 'volvo.com',
+            'peugeot': 'peugeot.com',
+            'renault': 'renault.com',
+            'citroen': 'citroen.com',
+            'fiat': 'fiat.com',
+            'land': 'landrover.com',
+            'jaguar': 'jaguar.com',
+            'mini': 'mini.com',
+            'aston': 'astonmartin.com',
+            'bentley': 'bentleymotors.com',
+            'rolls': 'rolls-roycemotorcars.com',
+            'ferrari': 'ferrari.com',
+            'lamborghini': 'lamborghini.com',
+            'maserati': 'maserati.com',
+            'alfa': 'alfaromeo.com',
+            // Amerika
+            'ford': 'ford.com',
+            'chevrolet': 'chevrolet.com',
+            'jeep': 'jeep.com',
+            'tesla': 'tesla.com',
+            'dodge': 'dodge.com',
+            'chrysler': 'chrysler.com',
+            'gmc': 'gmc.com',
+            // Korea & China
+            'hyundai': 'hyundai.com',
+            'kia': 'kia.com',
+            'byd': 'byd.com'
         };
 
         function updateBrandLogo() {
@@ -250,13 +278,13 @@
                 logoContainer.classList.add('hidden');
                 return;
             }
-            
+
             logoContainer.classList.remove('hidden');
             const firstWord = val.split(' ')[0].toLowerCase();
             const domain = domainMap[firstWord] || (firstWord + '.com');
-            
-            logoPreview.src = 'https://logo.clearbit.com/' + domain;
-            
+
+            logoPreview.src = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=128';
+
             // Fallback to text initials if logo fails to load
             logoPreview.onerror = function() {
                 this.onerror = null;
@@ -273,10 +301,10 @@
         const previewContainer = document.getElementById('photo-preview-container');
         const photoPreview = document.getElementById('photo-preview');
         const currentContainer = document.getElementById('current-photo-container');
-        
+
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 photoPreview.src = e.target.result;
                 previewContainer.classList.remove('hidden');
@@ -284,7 +312,7 @@
                     currentContainer.classList.add('hidden');
                 }
             }
-            
+
             reader.readAsDataURL(input.files[0]);
         } else {
             photoPreview.src = "";
@@ -297,37 +325,63 @@
 
     // Modal Logic
     const domainMapGlobal = {
-        // Mobil
+        // Jepang
         'toyota': 'toyota.com',
         'honda': 'honda.com',
-        'daihatsu': 'daihatsu.com',
-        'suzuki': 'globalsuzuki.com',
-        'mitsubishi': 'mitsubishi-motors.com',
+        'daihatsu': 'daihatsu.co.id',
         'nissan': 'nissan-global.com',
-        'hyundai': 'hyundai.com',
-        'kia': 'kia.com',
-        'wuling': 'wulingmotors.com',
         'mazda': 'mazda.com',
-        'isuzu': 'isuzu.com',
-        'chevrolet': 'chevrolet.com',
+        'lexus': 'lexus.com',
+        'subaru': 'subaru.com',
+        'infiniti': 'infiniti.com',
+        'acura': 'acura.com',
+        // Eropa
         'bmw': 'bmw.com',
         'mercedes': 'mercedes-benz.com',
-        
-        // Motor
-        'yamaha': 'yamaha-motor.com',
-        'kawasaki': 'kawasaki.com',
-        'vespa': 'vespa.com',
-        'ktm': 'ktm.com',
-        'ducati': 'ducati.com',
-        'harley': 'harley-davidson.com',
-        'piaggio': 'piaggio.com'
+        'audi': 'audi.com',
+        'volkswagen': 'volkswagen.com',
+        'porsche': 'porsche.com',
+        'volvo': 'volvo.com',
+        'peugeot': 'peugeot.com',
+        'renault': 'renault.com',
+        'citroen': 'citroen.com',
+        'fiat': 'fiat.com',
+        'land': 'landrover.com',
+        'jaguar': 'jaguar.com',
+        'mini': 'mini.com',
+        'aston': 'astonmartin.com',
+        'bentley': 'bentleymotors.com',
+        'rolls': 'rolls-roycemotorcars.com',
+        'ferrari': 'ferrari.com',
+        'lamborghini': 'lamborghini.com',
+        'maserati': 'maserati.com',
+        'alfa': 'alfaromeo.com',
+        // Amerika
+        'ford': 'ford.com',
+        'chevrolet': 'chevrolet.com',
+        'jeep': 'jeep.com',
+        'tesla': 'tesla.com',
+        'dodge': 'dodge.com',
+        'chrysler': 'chrysler.com',
+        'gmc': 'gmc.com',
+        // Korea & China
+        'hyundai': 'hyundai.com',
+        'kia': 'kia.com',
+        'byd': 'byd.com'
     };
 
     function openBrandModal() {
         const modal = document.getElementById('brand-modal');
+        const mainScroll = document.getElementById('main-content-scroll');
+        if (mainScroll) {
+            mainScroll.style.setProperty('overflow', 'hidden', 'important');
+            mainScroll.classList.remove('overflow-y-auto');
+        }
+        document.body.classList.add('modal-open');
+
         modal.style.display = 'flex';
         setTimeout(() => { modal.classList.remove('hidden'); }, 10);
-        
+
         const container = document.getElementById('brand-list-container');
         if (container.children.length === 0) {
             Object.keys(domainMapGlobal).forEach(brand => {
@@ -336,10 +390,10 @@
                 btn.type = 'button';
                 btn.className = 'flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-500 hover:ring-2 hover:ring-blue-200 hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500';
                 btn.onclick = () => selectBrand(brand);
-                
+
                 btn.innerHTML = `
                     <div class="w-14 h-14 mb-3 flex items-center justify-center overflow-hidden">
-                        <img src="https://logo.clearbit.com/${domain}" alt="${brand}" class="w-full h-full object-contain mix-blend-multiply" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${brand}&background=eff6ff&color=1d4ed8&bold=true&size=128'">
+                        <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=128" alt="${brand}" class="w-full h-full object-contain mix-blend-multiply" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${brand}&background=eff6ff&color=1d4ed8&bold=true&size=128'">
                     </div>
                     <span class="text-sm font-semibold text-gray-800 capitalize whitespace-nowrap">${brand}</span>
                     <span class="text-[10px] text-gray-400 mt-1 truncate w-full text-center">${domain}</span>
@@ -351,6 +405,13 @@
 
     function closeBrandModal() {
         const modal = document.getElementById('brand-modal');
+        const mainScroll = document.getElementById('main-content-scroll');
+        if (mainScroll) {
+            mainScroll.style.removeProperty('overflow');
+            mainScroll.classList.add('overflow-y-auto');
+        }
+        document.body.classList.remove('modal-open');
+
         modal.classList.add('hidden');
         setTimeout(() => { modal.style.display = 'none'; }, 300);
     }

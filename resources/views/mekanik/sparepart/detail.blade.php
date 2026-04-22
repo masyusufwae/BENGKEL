@@ -21,6 +21,32 @@
                         {{-- KIRI: Info Sparepart dalam card --}}
                         <div class="md:w-5/12 w-full flex">
                             <div class="bg-white border border-gray-200 rounded-2xl shadow-md p-6 space-y-6 w-full">
+                                {{-- INFO UMUM --}}
+                                <div>
+                                    <h3 class="font-semibold text-gray-800 text-lg mb-3">Info Umum</h3>
+                                    <div class="bg-gray-50 p-4 rounded-xl border space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500">Kode Part</span>
+                                            <span class="font-medium text-gray-800">{{ $sparepart->kode_part }}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500">Nama</span>
+                                            <span class="font-medium text-gray-800">{{ $sparepart->nama_part }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- GAMBAR --}}
+                                <div>
+                                    <h3 class="font-semibold text-gray-800 text-lg mb-3">Gambar</h3>
+                                    <div class="bg-gray-50 p-4 rounded-xl border flex justify-center items-center">
+                                        @if ($sparepart->gambar)
+                                            <img src="{{ asset('storage/' . $sparepart->gambar) }}" alt="{{ $sparepart->nama_part }}" class="w-16 h-16 object-cover rounded-lg shadow-sm">
+                                        @else
+                                            <span class="text-gray-500 text-sm">Tidak ada gambar</span>
+                                        @endif
+                                    </div>
+                                </div>
                                 {{-- STOK --}}
                                 <div>
                                     <h3 class="font-semibold text-gray-800 text-lg mb-3">Stok</h3>
@@ -63,20 +89,7 @@
                                     </div>
                                 </div>
 
-                                {{-- INFO UMUM --}}
-                                <div>
-                                    <h3 class="font-semibold text-gray-800 text-lg mb-3">Info Umum</h3>
-                                    <div class="bg-gray-50 p-4 rounded-xl border space-y-2 text-sm">
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-500">Kode Part</span>
-                                            <span class="font-medium text-gray-800">{{ $sparepart->kode_part }}</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-500">Nama</span>
-                                            <span class="font-medium text-gray-800">{{ $sparepart->nama_part }}</span>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
 

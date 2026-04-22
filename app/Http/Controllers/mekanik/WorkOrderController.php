@@ -147,7 +147,7 @@ class WorkOrderController extends Controller
         $wo->update($payload);
 
         return redirect()->route('mekanik.work-order.detail', $id)
-            ->with('success', 'Status berhasil diupdate');
+            ->with('success', 'Status dan tanggal selesai berhasil diupdate');
     }
 
     // =========================
@@ -165,7 +165,7 @@ class WorkOrderController extends Controller
             'catatan_mekanik' => $request->catatan_mekanik
         ]);
 
-        return redirect()->route('mekanik.work-order.detail', $id)
+        return redirect()->route('mekanik.work-order.index')
             ->with('success', 'Catatan berhasil disimpan');
     }
 
@@ -316,18 +316,27 @@ public function storeServis(Request $request, $id)
                 }
             }
 
-            // 4. Update status ke dikerjakan
-            $wo->update(['status' => 'dikerjakan']);
+            // 4. Mark servis completed (status remains dikerjakan)
+            $wo->update(['servis_completed' => true]);
         });
 
         // REDIRECT KE INDEX setelah sukses
         return redirect()->route('mekanik.work-order.index')
-            ->with('success', 'Data servis berhasil disimpan dan status diperbarui menjadi Dikerjakan!');
+            ->with('success', 'Data servis berhasil disimpan! Status servis selesai.');
 
     } catch (\Exception $e) {
         return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
     }
 }
+
+    // =========================
+    // API: Count Antrian WO
+    // =========================
+    public function apiAntrianCount()
+    {
+        $count = WorkOrder::where('status', 'antrian')->count();
+        return response()->json(['count' => $count]);
+    }
 
     // =========================
     // RIWAYAT SERVIS
@@ -359,4 +368,5 @@ public function storeServis(Request $request, $id)
 
         return view('mekanik.riwayat.index', compact('workOrdersSelesai'));
     }
+
 }

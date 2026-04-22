@@ -4,7 +4,7 @@
     <header class="bg-white py-6 border-b">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="font-bold text-2xl text-black">
-                Edit Work Order #{{ $wo->nomor_wo }}
+                Servis Work Order #{{ $wo->nomor_wo }}
             </h2>
         </div>
     </header>
@@ -25,10 +25,10 @@
 
 
             {{-- ===================== --}}
-            {{-- EDIT WORK ORDER DATA --}}
+            {{-- Servis WORK ORDER DATA --}}
             {{-- ===================== --}}
             <div class="md:col-span-3 bg-white p-6 rounded-xl shadow border">
-                <h3 class="font-bold text-lg mb-6">Edit Data Work Order</h3>
+                <h3 class="font-bold text-lg mb-6">Servis Data Work Order</h3>
 
                 <form action="{{ route('mekanik.work-order.servis.store', $wo->id_wo) }}" method="POST"
                     enctype="multipart/form-data" class="space-y-8">
@@ -61,11 +61,10 @@
                                     <option value="dikerjakan"
                                         {{ old('status', $wo->status) == 'dikerjakan' ? 'selected' : '' }}>Dikerjakan
                                     </option>
-                                    <option value="menunggu_part"
-                                        {{ old('status', $wo->status) == 'menunggu_part' ? 'selected' : '' }}>Menunggu Part
-                                    </option>
                                     <option value="selesai" {{ old('status', $wo->status) == 'selesai' ? 'selected' : '' }}>
                                         Selesai</option>
+                                    <option value="ditolak" {{ old('status', $wo->status) == 'ditolak' ? 'selected' : '' }}>
+                                        Ditolak</option>
                                 </select>
                                 {{-- Hidden input agar nilai status tetap terkirim ke server --}}
                                 <input type="hidden" name="status" value="{{ $wo->status }}">
@@ -79,8 +78,20 @@
                             </div>
 
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Gambar</label>
-                                <input type="file" name="gambar" class="w-full border rounded-xl px-4 py-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Kendaraan</label>
+                                <div
+                                    class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                                    @if ($wo->kendaraan->foto_kendaraan)
+                                        <img src="{{ asset('storage/' . $wo->kendaraan->foto_kendaraan) }}"
+                                            alt="Foto Kendaraan"
+                                            class="w-20 h-20 object-cover rounded-lg shadow-md flex-shrink-0">
+                                    @else
+                                        <div
+                                            class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-500 text-xs">No photo</span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
 
                             {{-- Estimasi Selesai (Readonly) --}}
@@ -110,18 +121,53 @@
                             Pilih Jenis Servis
                         </h4>
 
-                        <div class="space-y-2">
-                            <label class="block text-sm font-medium text-emerald-700">Klik untuk memilih (Tahan Ctrl/Cmd
-                                untuk pilih lebih dari satu)</label>
-                            <select name="jenis_servis[]" multiple
-                                class="w-full border-2 border-emerald-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 min-h-[150px]">
-                                @foreach ($jenisServis as $servis)
-                                    <option value="{{ $servis->id_jenis }}" class="py-2 border-b border-emerald-50">
-                                        {{ $servis->nama_servis }} — Rp {{ number_format($servis->harga_jasa) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <p class="text-xs text-emerald-600 mt-2">* Item yang dipilih akan diarsir biru</p>
+                        <div class="space-y-4">
+                            @php
+                                $kategori = ['ringan' => [], 'sedang' => [], 'berat' => []];
+                                foreach ($jenisServis as $servis) {
+                                    $kategori[$servis->kategori][] = $servis;
+                                }
+                            @endphp
+
+                            @foreach (['ringan' => '🟢 Ringan', 'sedang' => '🟡 Sedang', 'berat' => '🔴 Berat'] as $kat => $label)
+                                <details class="bg-white rounded-lg border border-gray-200 shadow-sm">
+                                    <summary
+                                        class="px-4 py-3 font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 rounded-lg flex justify-between items-center list-none">
+                                        <span>{{ $label }} <span
+                                                class="text-xs text-gray-500">({{ count($kategori[$kat]) }}
+                                                layanan)</span></span>
+                                        <svg class="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </summary>
+                                    <div class="p-3 border-t border-gray-100 max-h-64 overflow-y-auto">
+                                        @if (!empty($kategori[$kat]))
+                                            <div class="space-y-2">
+                                                @foreach ($kategori[$kat] as $servis)
+                                                    <label
+                                                        class="flex items-start p-2 rounded-lg hover:bg-emerald-50 transition cursor-pointer">
+                                                        <input type="checkbox" name="jenis_servis[]"
+                                                            value="{{ $servis->id_jenis }}"
+                                                            class="rounded w-4 h-4 text-emerald-600 mr-3 mt-0.5 focus:ring-emerald-500">
+                                                        <div class="flex-1">
+                                                            <div class="font-medium text-sm text-gray-800">
+                                                                {{ $servis->nama_servis }}</div>
+                                                            <div class="text-xs text-gray-500">Rp
+                                                                {{ number_format($servis->harga_jasa) }} •
+                                                                {{ $servis->deskripsi ?? '' }}</div>
+                                                        </div>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="text-center py-6 text-gray-400 text-sm">Tidak ada layanan
+                                                {{ strtolower($label) }}</div>
+                                        @endif
+                                    </div>
+                                </details>
+                            @endforeach
                         </div>
                     </div>
 

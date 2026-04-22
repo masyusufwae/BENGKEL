@@ -88,7 +88,7 @@
                                 {{-- AKSI --}}
                                 <td class="py-3 px-4 text-center space-x-1">
                                     <a href="{{ route('mekanik.sparepart.detail', $sp->id_part) }}"
-                                        class="bg-gray-600 text-black px-3 py-1 rounded-lg hover:bg-gray-50 text-xs inline-block text-center min-w-[50px] border border-black"
+                                        class="bg-white text-black px-3 py-1 rounded-lg hover:bg-gray-200 text-xs inline-block text-center min-w-[50px] border border-black"
                                         title="Detail">
                                         Detail
                                     </a>

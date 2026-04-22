@@ -117,6 +117,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/orders/create', [CustomerController::class, 'ordersCreate'])->name('orders.create');
         Route::post('/orders', [CustomerController::class, 'ordersStore'])->name('orders.store');
 
+        // Pesan (Messages)
+        Route::get('/messages', [\App\Http\Controllers\Customer\MessageController::class, 'index'])->name('messages.index');
+        Route::post('/messages/read', [\App\Http\Controllers\Customer\MessageController::class, 'markAsRead'])->name('messages.read');
+
         // Invoices (Tagihan)
         Route::get('/invoices', [CustomerController::class, 'invoicesIndex'])->name('invoices.index');
     });
@@ -144,6 +148,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 Route::prefix('mekanik')->name('mekanik.')->middleware(['auth'])->group(function () {
 
     Route::get('work-order', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'index'])->name('work-order.index');
+
+    Route::get('api/antrian-count', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'apiAntrianCount'])->name('work-order.api.antrian-count');
 
     // Route::get('work-order/create', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'create'])->name('work-order.create');
 
@@ -194,7 +200,19 @@ Route::prefix('mekanik')->name('mekanik.')->middleware(['auth'])->group(function
 
 Route::post('work-order/{id}/servis', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'storeServis'])
     ->name('work-order.servis.store');
+    
 });
 
 // 4. Memanggil Routes Autentikasi Breeze (Login, Register, Reset Password, dll)
 require __DIR__ . '/auth.php';
+
+
+// General Realtime Chat Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/messages/{contact_id}', [\App\Http\Controllers\ChatController::class, 'fetchMessages']);
+    Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'send']);
+    Route::get('/chat/unread', [\App\Http\Controllers\ChatController::class, 'getUnreadCount']);
+});
+
+Route::middleware(['auth'])->group(function () { Route::get('/chat/contacts/summary', [\App\Http\Controllers\ChatController::class, 'fetchContacts']); });
