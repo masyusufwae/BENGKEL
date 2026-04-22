@@ -14,7 +14,7 @@ class WorkOrderController extends Controller
 {
     public function index()
     {
-        $workOrders = WorkOrder::with(['mekanik', 'jenisServis', 'spareparts'])->latest()->paginate(10);
+        $workOrders = WorkOrder::with(['mekanik', 'kendaraan', 'detailServis', 'penggunaanSparepart'])->latest()->paginate(10);
         return view('admin.work-order.index', compact('workOrders'));
     }
 
