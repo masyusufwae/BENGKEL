@@ -204,3 +204,14 @@ Route::post('work-order/{id}/servis', [\App\Http\Controllers\Mekanik\WorkOrderCo
 
 // 4. Memanggil Routes Autentikasi Breeze (Login, Register, Reset Password, dll)
 require __DIR__ . '/auth.php';
+
+
+// General Realtime Chat Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/messages/{contact_id}', [\App\Http\Controllers\ChatController::class, 'fetchMessages']);
+    Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'send']);
+    Route::get('/chat/unread', [\App\Http\Controllers\ChatController::class, 'getUnreadCount']);
+});
+
+Route::middleware(['auth'])->group(function () { Route::get('/chat/contacts/summary', [\App\Http\Controllers\ChatController::class, 'fetchContacts']); });

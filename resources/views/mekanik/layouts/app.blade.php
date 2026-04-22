@@ -151,6 +151,19 @@
 
             @auth
             <div class="hidden md:flex items-center space-x-3 border-r border-slate-700 pr-5">
+                
+                @php
+                    $unreadChats = \App\Models\Chat::where('receiver_id', Auth::id())->where('is_read', false)->count();
+                @endphp
+                <a href="{{ route('chat.index') }}" class="relative text-slate-300 hover:text-cyan-400 transition-colors group focus:outline-none hidden md:block mr-2" title="Pesan Live Chat">
+                    <i class="fas fa-comments text-xl group-hover:scale-110 transition-transform"></i>
+                    @if($unreadChats > 0)
+                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-slate-900"></span>
+                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping opacity-75"></span>
+                    <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $unreadChats }}</span>
+                    @endif
+                </a>
+
                 <span class="text-slate-200 font-semibold tracking-wide shadow-sm">{{ auth()->user()->name }}</span>
                 <span class="tag is-dark bg-slate-800 text-blue-400 border border-slate-700 font-bold is-rounded shadow-sm">{{ strtoupper(auth()->user()->role) }}</span>
             </div>
