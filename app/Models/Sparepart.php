@@ -26,4 +26,21 @@ class Sparepart extends Model
 {
     return $this->hasMany(\App\Models\PenggunaanSparepart::class, 'id_part', 'id_part');
 }
+
+    /**
+     * Generate next unique kode_part (SP001, SP002, etc.)
+     */
+    public static function generateNextKode()
+    {
+        $count = self::count();
+        do {
+            $nextNum = $count + 1;
+            $kode = 'SP' . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
+            $exists = self::where('kode_part', $kode)->exists();
+            if (!$exists) {
+                return $kode;
+            }
+            $count++;
+        } while (true);
+    }
 }

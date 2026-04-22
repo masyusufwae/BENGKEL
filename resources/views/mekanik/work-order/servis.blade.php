@@ -1,4 +1,4 @@
-@extends('mekanik.layouts.app')
+{{-- @extends('mekanik.layouts.app')
 
 @section('content')
 
@@ -8,7 +8,7 @@
         Servis WO #{{ $wo->nomor_wo }}
     </h2>
 
-    {{-- INFO KENDARAAN --}}
+
     <div class="bg-white p-4 rounded-lg shadow mb-6">
         <p><b>No Polisi:</b> {{ $wo->kendaraan->nomor_polisi }}</p>
         <p><b>Keluhan:</b> {{ $wo->keluhan }}</p>
@@ -17,9 +17,6 @@
     <form action="{{ route('mekanik.work-order.servis.store', $wo->id_wo) }}" method="POST">
         @csrf
 
-        {{-- ===================== --}}
-        {{-- JENIS SERVIS --}}
-        {{-- ===================== --}}
         <div class="bg-white p-6 rounded-xl shadow mb-6">
             <h3 class="font-bold mb-4">Pilih Jenis Servis</h3>
 
@@ -31,9 +28,7 @@
             @endforeach
         </div>
 
-        {{-- ===================== --}}
-        {{-- SPAREPART --}}
-        {{-- ===================== --}}
+
         <div class="bg-white p-6 rounded-xl shadow mb-6">
             <h3 class="font-bold mb-4">Penggunaan Sparepart</h3>
 
@@ -52,9 +47,6 @@
 
     </form>
 
-    {{-- ===================== --}}
-    {{-- RINGKASAN --}}
-    {{-- ===================== --}}
     <div class="mt-6 bg-green-50 p-4 rounded-lg">
         <h3 class="font-bold">Total Saat Ini:</h3>
         <p class="text-xl font-bold">
@@ -64,4 +56,4 @@
 
 </div>
 
-@endsection
+@endsection --}}

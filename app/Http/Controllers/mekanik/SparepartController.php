@@ -27,13 +27,13 @@ class SparepartController extends Controller
 
     public function create()
     {
-        return view('mekanik.sparepart.tambah');
+        $nextKode = \App\Models\Sparepart::generateNextKode();
+        return view('mekanik.sparepart.tambah', compact('nextKode'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'kode_part' => 'required|unique:sparepart,kode_part',
             'nama_part' => 'required|string|max:255',
             'satuan' => 'nullable|string|max:50',
             'stok_minimum' => 'required|integer|min:0',
@@ -43,8 +43,9 @@ class SparepartController extends Controller
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
+        $data['kode_part'] = \App\Models\Sparepart::generateNextKode();
+
         $data = $request->only([
-            'kode_part',
             'nama_part',
             'satuan',
             'stok_minimum',

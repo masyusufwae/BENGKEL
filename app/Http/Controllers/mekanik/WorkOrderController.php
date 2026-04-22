@@ -118,14 +118,19 @@ class WorkOrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-'status' => 'required|in:antrian,dikerjakan,selesai,ditolak',
+            'status' => 'required|in:antrian,dikerjakan,selesai,ditolak',
         ]);
 
         $wo = WorkOrder::findOrFail($id);
-        $wo->update(['status' => $request->status]);
+
+        if ($request->status === 'selesai') {
+            $wo->tanggal_selesai = now();
+        }
+        $wo->status = $request->status;
+        $wo->save();
 
         return redirect()->route('mekanik.work-order.detail', $id)
-            ->with('success', 'Status berhasil diupdate');
+            ->with('success', 'Status dan tanggal selesai berhasil diupdate');
     }
 
     // =========================
