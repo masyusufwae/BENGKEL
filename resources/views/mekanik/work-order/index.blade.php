@@ -138,7 +138,7 @@
                                                 class="w-full bg-yellow-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-yellow-600 transition shadow font-bold text-center">
                                                 🔧 Servis
                                             </a>
-                                        {{-- @elseif ($wo->status == 'dikerjakan' && $wo->servis_completed)
+                                        @elseif ($wo->status == 'dikerjakan' && $wo->servis_completed)
 
                                             <form action="{{ route('mekanik.work-order.updateStatus', $wo->id_wo) }}"
                                                 method="POST" class="w-full">
@@ -147,9 +147,9 @@
                                                 <input type="hidden" name="status" value="selesai">
                                                 <button type="submit"
                                                     class="w-full bg-green-500 text-black px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition shadow font-bold">
-                                                    ✅ Selesai Servis
+                                                    ✅ Selesaikan
                                                 </button>
-                                            </form> --}}
+                                            </form>
                                         @elseif ($wo->status == 'ditolak')
                                             {{-- Ditolak: Disabled --}}
                                             <button disabled

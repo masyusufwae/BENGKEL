@@ -89,7 +89,8 @@ class DashboardController extends Controller
             return [
                 'id_wo' => $wo->nomor_wo,
                 'kendaraan' => $wo->kendaraan->merek . ' ' . $wo->kendaraan->model . ' (' . $wo->kendaraan->nomor_polisi . ')',
-                'tanggal_masuk' => $wo->tanggal_masuk->format('Y-m-d H:i'),
+                // Tambahkan ?-> dan fallback string jika kosong
+                'tanggal_masuk' => $wo->tanggal_masuk?->format('Y-m-d H:i') ?? '-',
                 'status' => $wo->status,
                 'estimasi' => $wo->estimasi_selesai ? $wo->estimasi_selesai->format('d M Y H:i') : 'Belum ditentukan',
             ];
@@ -108,7 +109,8 @@ class DashboardController extends Controller
             $invoice = $wo->invoice->first();
             return [
                 'id_wo' => $wo->nomor_wo,
-                'tanggal' => $wo->tanggal_selesai->format('Y-m-d'),
+                // Tambahkan ?-> dan fallback string jika kosong
+                'tanggal' => $wo->tanggal_selesai?->format('Y-m-d') ?? 'Belum Selesai',
                 'kendaraan' => $wo->kendaraan->merek . ' ' . $wo->kendaraan->model,
                 'jenis' => $wo->keluhan,
                 'total' => $invoice ? $invoice->total_bayar : 0,
@@ -128,9 +130,7 @@ class DashboardController extends Controller
                     ->first();
 
                 // Hitung jadwal servis berikutnya
-                $nextServiceDate = $lastService
-                    ? $lastService->tanggal_selesai
-                    : $kendaraan->created_at;
+                $nextServiceDate = $lastService?->tanggal_selesai ?? $kendaraan->created_at ?? now();
 
                 $scheduleInfo = ServiceScheduleHelper::calculateNextService($kendaraan->merek, $nextServiceDate);
 
@@ -175,7 +175,7 @@ class DashboardController extends Controller
                 ->orderBy('tanggal_selesai', 'desc')
                 ->first();
 
-            $serviceDate = $lastService ? $lastService->tanggal_selesai : $vehicle->created_at;
+            $serviceDate = $lastService?->tanggal_selesai ?? $vehicle->created_at ?? now();
             $scheduleInfo = ServiceScheduleHelper::calculateNextService($vehicle->merek, $serviceDate);
 
             $allNextServices[] = [
