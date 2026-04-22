@@ -38,7 +38,7 @@
                             <select name="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                                 <option value="antrian" {{ $workOrder->status == 'antrian' ? 'selected' : '' }}>Antrian</option>
                                 <option value="dikerjakan" {{ $workOrder->status == 'dikerjakan' ? 'selected' : '' }}>Dikerjakan</option>
-                                <option value="menunggu part" {{ $workOrder->status == 'menunggu part' ? 'selected' : '' }}>Menunggu Part</option>
+                                <option value="menunggu_part" {{ $workOrder->status == 'menunggu_part' ? 'selected' : '' }}>Menunggu Part</option>
                                 <option value="selesai" {{ $workOrder->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="diserahkan" {{ $workOrder->status == 'diserahkan' ? 'selected' : '' }}>Diserahkan</option>
                             </select>

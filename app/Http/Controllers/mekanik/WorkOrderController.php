@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mekanik;
 
 use App\Http\Controllers\Controller;
+use App\Models\Mekanik;
 use App\Models\WorkOrder;
 use App\Models\JenisServis;
 use App\Models\Sparepart;
@@ -10,20 +11,30 @@ use App\Models\DetailServisWo;
 use App\Models\PenggunaanSparepart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class WorkOrderController extends Controller
 {
+    private function currentMekanikOrAbort(): Mekanik
+    {
+        $mekanik = Mekanik::where('id_user', Auth::id())->first();
+        abort_if(!$mekanik, 403, 'Akses ditolak.');
+        return $mekanik;
+    }
+
     // =========================
     // INDEX + SEARCH
     // =========================
     public function index(Request $request)
     {
+        $mekanik = $this->currentMekanikOrAbort();
+
         $search = $request->input('search');
         $statusFilter = $request->input('status', 'all');
         $sort = $request->input('sort', 'default');
 
-        $query = WorkOrder::with('kendaraan');
+        $query = WorkOrder::with('kendaraan')->where('id_mekanik', $mekanik->id_mekanik);
 
         // Search
         if ($search) {
@@ -38,8 +49,7 @@ class WorkOrderController extends Controller
         }
 
         // Default sorting: status priority then newest
-        $statusOrder = ['antrian' => 1, 'dikerjakan' => 2, 'selesai' => 3, 'ditolak' => 4];
-        $query->orderByRaw("FIELD(status, 'antrian', 'dikerjakan', 'selesai', 'ditolak')")
+        $query->orderByRaw("FIELD(status, 'antrian', 'dikerjakan', 'menunggu_part', 'selesai', 'diserahkan')")
               ->orderBy('tanggal_masuk', 'desc');
 
         // Override sort if specified
@@ -57,11 +67,13 @@ class WorkOrderController extends Controller
     // =========================
     public function detail($id)
     {
+        $mekanik = $this->currentMekanikOrAbort();
+
         $wo = WorkOrder::with([
             'kendaraan.user',
             'detailServis.jenisServis',
             'penggunaanSparepart.sparepart',
-        ])->findOrFail($id);
+        ])->where('id_mekanik', $mekanik->id_mekanik)->findOrFail($id);
 
         $jenisServis = JenisServis::all();
         $spareparts = Sparepart::all();
@@ -74,11 +86,13 @@ class WorkOrderController extends Controller
     // =========================
     public function edit($id)
     {
+        $mekanik = $this->currentMekanikOrAbort();
+
         $wo = WorkOrder::with([
             'kendaraan.user',
             'detailServis.jenisServis',
             'penggunaanSparepart.sparepart',
-        ])->findOrFail($id);
+        ])->where('id_mekanik', $mekanik->id_mekanik)->findOrFail($id);
 
         $jenisServis = JenisServis::all();
         $spareparts = Sparepart::where('stok', '>', 0)->get();
@@ -91,7 +105,8 @@ class WorkOrderController extends Controller
     // =========================
     public function update(Request $request, $id)
     {
-        $wo = WorkOrder::findOrFail($id);
+        $mekanik = $this->currentMekanikOrAbort();
+        $wo = WorkOrder::where('id_mekanik', $mekanik->id_mekanik)->findOrFail($id);
 
         $validated = $request->validate([
             'nomor_wo' => 'required|string|max:50|unique:work_order,nomor_wo,' . $id . ',id_wo',
@@ -118,16 +133,18 @@ class WorkOrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:antrian,dikerjakan,selesai,ditolak',
+            'status' => 'required|in:antrian,dikerjakan,menunggu_part,selesai,diserahkan',
         ]);
 
-        $wo = WorkOrder::findOrFail($id);
+        $mekanik = $this->currentMekanikOrAbort();
+        $wo = WorkOrder::where('id_mekanik', $mekanik->id_mekanik)->findOrFail($id);
 
-        if ($request->status === 'selesai') {
-            $wo->tanggal_selesai = now();
+        $payload = ['status' => $request->status];
+        if ($request->status === 'selesai' && !$wo->tanggal_selesai) {
+            $payload['tanggal_selesai'] = now();
         }
-        $wo->status = $request->status;
-        $wo->save();
+
+        $wo->update($payload);
 
         return redirect()->route('mekanik.work-order.detail', $id)
             ->with('success', 'Status dan tanggal selesai berhasil diupdate');
@@ -142,7 +159,8 @@ class WorkOrderController extends Controller
             'catatan_mekanik' => 'nullable|string|max:1000',
         ]);
 
-        $wo = WorkOrder::findOrFail($id);
+        $mekanik = $this->currentMekanikOrAbort();
+        $wo = WorkOrder::where('id_mekanik', $mekanik->id_mekanik)->findOrFail($id);
         $wo->update([
             'catatan_mekanik' => $request->catatan_mekanik
         ]);
@@ -160,6 +178,9 @@ class WorkOrderController extends Controller
             'id_wo' => 'required|exists:work_order,id_wo',
             'id_jenis' => 'required|exists:jenis_servis,id_jenis',
         ]);
+
+        $mekanik = $this->currentMekanikOrAbort();
+        WorkOrder::where('id_wo', $request->id_wo)->where('id_mekanik', $mekanik->id_mekanik)->firstOrFail();
 
         $jenis = JenisServis::findOrFail($request->id_jenis);
 
@@ -184,6 +205,9 @@ class WorkOrderController extends Controller
             'id_part' => 'required|exists:sparepart,id_part',
             'jumlah' => 'required|integer|min:1',
         ]);
+
+        $mekanik = $this->currentMekanikOrAbort();
+        WorkOrder::where('id_wo', $request->id_wo)->where('id_mekanik', $mekanik->id_mekanik)->firstOrFail();
 
         $sparepart = Sparepart::findOrFail($request->id_part);
 
@@ -214,11 +238,13 @@ class WorkOrderController extends Controller
     // =========================
     public function servis($id)
     {
+        $mekanik = $this->currentMekanikOrAbort();
+
         $wo = WorkOrder::with([
             'kendaraan',
             'detailServis.jenisServis',
             'penggunaanSparepart.sparepart'
-        ])->findOrFail($id);
+        ])->where('id_mekanik', $mekanik->id_mekanik)->findOrFail($id);
 
         $jenisServis = JenisServis::all();
         $spareparts = Sparepart::where('stok', '>', 0)->get();
@@ -237,7 +263,8 @@ public function storeServis(Request $request, $id)
     try {
         DB::transaction(function () use ($request, $id) {
 
-            $wo = WorkOrder::findOrFail($id);
+            $mekanik = $this->currentMekanikOrAbort();
+            $wo = WorkOrder::where('id_mekanik', $mekanik->id_mekanik)->findOrFail($id);
 
             // 1. UPDATE DATA BASIC WO (Opsional, jika ada update catatan/gambar)
             if ($request->has('catatan_mekanik')) {
@@ -316,7 +343,10 @@ public function storeServis(Request $request, $id)
     // =========================
     public function riwayat(Request $request)
     {
+        $mekanik = $this->currentMekanikOrAbort();
+
         $query = WorkOrder::with('kendaraan')
+            ->where('id_mekanik', $mekanik->id_mekanik)
             ->where('status', 'selesai')
             ->orderByDesc('tanggal_selesai');
 

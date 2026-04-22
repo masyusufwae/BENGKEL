@@ -14,7 +14,17 @@ class WorkOrderController extends Controller
 {
     public function index()
     {
-        $workOrders = WorkOrder::with(['mekanik', 'kendaraan', 'detailServis', 'penggunaanSparepart'])->latest()->paginate(10);
+        $workOrders = WorkOrder::with([
+            'mekanik',
+            'kendaraan.user',
+            'jenisServis',
+            'spareparts',
+            // Fallback relations (mekanik flow) for summary columns.
+            'detailServis.jenisServis',
+            'penggunaanSparepart.sparepart',
+        ])
+            ->latest()
+            ->paginate(10);
         return view('admin.work-order.index', compact('workOrders'));
     }
 
@@ -34,7 +44,7 @@ class WorkOrderController extends Controller
             'keluhan' => 'required|string',
             'tanggal_masuk' => 'required|date',
             'estimasi_selesai' => 'nullable|date',
-            'status' => 'required|in:antrian,dikerjakan,menunggu part,selesai,diserahkan',
+            'status' => 'required|in:antrian,dikerjakan,menunggu_part,selesai,diserahkan',
             'catatan_mekanik' => 'nullable|string',
             'servis_ids' => 'required|array|min:1',
             'servis_ids.*' => 'exists:jenis_servis,id_jenis',
@@ -46,7 +56,15 @@ class WorkOrderController extends Controller
         DB::beginTransaction();
         try {
             // Buat WO
-            $wo = WorkOrder::create($validated);
+            $wo = WorkOrder::create([
+                'id_kendaraan' => $validated['id_kendaraan'],
+                'id_mekanik' => $validated['id_mekanik'],
+                'keluhan' => $validated['keluhan'],
+                'tanggal_masuk' => $validated['tanggal_masuk'],
+                'estimasi_selesai' => $validated['estimasi_selesai'] ?? null,
+                'status' => $validated['status'],
+                'catatan_mekanik' => $validated['catatan_mekanik'] ?? null,
+            ]);
 
             // Simpan detail servis
             foreach ($request->servis_ids as $id_jenis) {
@@ -93,16 +111,22 @@ class WorkOrderController extends Controller
         $validated = $request->validate([
             'id_kendaraan' => 'required|exists:kendaraan_pelanggan,id_kendaraan',
             'id_mekanik' => 'required|exists:mekanik,id_mekanik',
+            'id_sparepart' => 'nullable|exists:sparepart,id_part',
             'keluhan' => 'required|string',
             'tanggal_masuk' => 'required|date',
             'tanggal_selesai' => 'nullable|date',
             'estimasi_selesai' => 'nullable|date',
-            'status' => 'required|in:antrian,dikerjakan,menunggu part,selesai,diserahkan',
+            'status' => 'required|in:antrian,dikerjakan,menunggu_part,selesai,diserahkan',
             'catatan_mekanik' => 'nullable|string',
         ]);
 
         DB::beginTransaction();
         try {
+            // Auto-set tanggal_selesai when WO is completed.
+            if (($validated['status'] ?? null) === 'selesai' && empty($validated['tanggal_selesai'])) {
+                $validated['tanggal_selesai'] = now();
+            }
+
             $wo->update($validated);
             // Update servis dan sparepart bisa dihandle secara terpisah (misal dengan form dinamis)
             // Untuk sederhananya, kita tidak update relasi many-to-many di sini (bisa dibuat fitur tersendiri)
@@ -123,7 +147,15 @@ class WorkOrderController extends Controller
 
     public function show($id)
     {
-        $workOrder = WorkOrder::with(['mekanik', 'jenisServis', 'spareparts', 'kendaraan'])->findOrFail($id);
+        $workOrder = WorkOrder::with([
+            'mekanik',
+            'jenisServis',
+            'spareparts',
+            'kendaraan.user',
+            // Fallback relations (mekanik flow) so admin detail page still shows items.
+            'detailServis.jenisServis',
+            'penggunaanSparepart.sparepart',
+        ])->findOrFail($id);
         return view('admin.work-order.show', compact('workOrder'));
     }
 }

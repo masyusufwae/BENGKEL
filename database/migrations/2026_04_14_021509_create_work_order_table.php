@@ -16,7 +16,7 @@ return new class extends Migration
 
     $table->unsignedBigInteger('id_kendaraan');
     $table->unsignedBigInteger('id_mekanik');
-
+    $table->unsignedBigInteger('id_sparepart');
     $table->string('nomor_wo')->unique();
     $table->text('keluhan');
     $table->dateTime('tanggal_masuk');
@@ -36,6 +36,11 @@ return new class extends Migration
     $table->foreign('id_mekanik')
           ->references('id_mekanik')
           ->on('mekanik')
+          ->onDelete('cascade');
+
+    $table->foreign('id_sparepart')
+          ->references('id_part')
+          ->on('sparepart')
           ->onDelete('cascade');
 });
     }
