@@ -270,26 +270,17 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <!-- Fullscreen Background Image -->
-<<<<<<< Updated upstream
-        <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Sports Car" class="car-bg">
+        <img src="https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Sports Car" class="car-bg">
 
-=======
-        <img src="https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Bengkel RevAuto" class="car-bg" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
-        
->>>>>>> Stashed changes
+        {{-- <img src="https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Bengkel RevAuto" class="car-bg" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';"> --}}
+
         <!-- Dark Overlay -->
         <div class="dark-overlay"></div>
 
         <div class="container hero-content">
-<<<<<<< Updated upstream
-            <h1 class="hero-title">EXPLORE THE NEXT <br>GENERATION OF CARS</h1>
-            <p class="hero-subtitle">Discover unparalleled performance, sleek design, and cutting-edge technology. Your dream ride awaits in our premium showroom.</p>
-
-=======
             <h1 class="hero-title">{{ strtoupper($headline) }}</h1>
             <p class="hero-subtitle">{{ $subheadline }}</p>
-            
->>>>>>> Stashed changes
+
             <div class="hero-buttons d-flex justify-content-center gap-4">
                 <a href="{{ Route::has('login') ? route('login') : '#' }}" class="btn btn-glow">
                     Booking Servis
@@ -324,19 +315,16 @@
                 </div>
                 <!-- Text Right -->
                 <div class="col-lg-6 lg:pl-16">
-<<<<<<< Updated upstream
                     <p class="text-blue-500 font-bold tracking-widest uppercase mb-2 text-sm">About Us</p>
                     <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">Redefining The Workshop & <br>Showroom Experience</h2>
                     <p class="text-slate-400 mb-8 leading-relaxed">
                         At our facility, we redefine the car ownership and maintenance experience with exceptional service, cutting-edge diagnostic tools, and customer-focused solutions tailored to your vehicle's needs.
                     </p>
 
-=======
                     <p class="text-blue-500 font-bold tracking-widest uppercase mb-2 text-sm">Tentang {{ $brand }}</p>
                     <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">{{ $aboutTitle }}</h2>
                     <p class="text-slate-400 mb-8 leading-relaxed">{{ $aboutBody }}</p>
-                    
->>>>>>> Stashed changes
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                         <div class="flex items-center text-sm text-slate-300 font-medium">
                             <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
@@ -373,7 +361,6 @@
     <!-- New Arrival / Featured Section -->
     <section class="py-20 relative bg-[#0b1121]" id="services">
         <div class="container">
-<<<<<<< Updated upstream
             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Featured Vehicle & Services</h2>
 
             <!-- Filters -->
@@ -389,12 +376,11 @@
                     <button class="px-4 py-1.5 rounded-full border border-blue-500 text-blue-400 text-xs font-semibold">Latest</button>
                     <button class="px-4 py-1.5 rounded-full border border-slate-700 text-slate-400 hover:text-white text-xs font-semibold">Popular</button>
                 </div>
-=======
             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Layanan Unggulan {{ $brand }}</h2>
-            
+
             <div class="mb-10 border-b border-slate-800 pb-4">
                 <p class="text-slate-400 m-0">Daftar layanan aktif yang tersedia di bengkel {{ $brand }}.</p>
->>>>>>> Stashed changes
+
             </div>
 
             <!-- Grid -->
@@ -444,13 +430,10 @@
             <div class="absolute -top-[50%] -left-[10%] w-[500px] h-[500px] rounded-full border border-slate-800/50 bg-slate-900/20"></div>
             <div class="absolute -bottom-[50%] right-[10%] w-[600px] h-[600px] rounded-full border border-slate-800/50 bg-slate-900/30"></div>
         </div>
-<<<<<<< Updated upstream
         <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="White Car Dark" class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
 
-=======
         <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="White Car Dark" class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
-        
->>>>>>> Stashed changes
+
         <div class="container relative z-10">
             <div class="max-w-xl">
                 <h2 class="text-4xl font-extrabold text-white mb-4">Servis Presisi untuk Kendaraan Anda</h2>
