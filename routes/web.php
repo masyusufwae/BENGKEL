@@ -250,7 +250,7 @@ Route::prefix('mekanik')->name('mekanik.')->middleware(['auth'])->group(function
 
 Route::post('work-order/{id}/servis', [\App\Http\Controllers\Mekanik\WorkOrderController::class, 'storeServis'])
     ->name('work-order.servis.store');
-    
+
 });
 
 // 4. Memanggil Routes Autentikasi Breeze (Login, Register, Reset Password, dll)
@@ -267,12 +267,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () { Route::get('/chat/contacts/summary', [\App\Http\Controllers\ChatController::class, 'fetchContacts']); });
 
-<<<<<<< Updated upstream
 Route::prefix('admin')->group(function () {
     Route::get('/invoice/cetak/{id}', [InvoiceController::class, 'cetak'])->name('admin.invoice.cetak');
     Route::get('/invoice/kirim/{id}', [InvoiceController::class, 'kirim'])->name('admin.invoice.kirim');
     // route index tetap seperti semula
     Route::get('/invoice', [InvoiceController::class, 'index'])->name('admin.invoice.index');
 });
-=======
->>>>>>> Stashed changes
