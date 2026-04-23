@@ -128,7 +128,7 @@
         <div class="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-blue-700 via-cyan-400 to-indigo-700 shadow-[0_2px_12px_rgba(34,211,238,0.4)] z-50"></div>
 
         <div class="flex items-center">
-            <a href="{{ route('admin.dashboard') }}" aria-label="BENGKELPRO" class="glitch-hover text-white text-xl md:text-2xl font-extrabold tracking-wide flex items-center hover:text-blue-400 transition-colors duration-300 drop-shadow-md" data-text="BENGKELADMIN">
+            <a href="{{ route('admin.dashboard') }}" aria-label="REVAUTO" class="glitch-hover text-white text-xl md:text-2xl font-extrabold tracking-wide flex items-center hover:text-blue-400 transition-colors duration-300 drop-shadow-md" data-text="REVAUTOADMIN">
                 <i class="fas fa-shield-alt text-cyan-500 mr-3 text-2xl drop-shadow-[0_0_5px_rgba(6,182,212,0.6)]"></i>
                 BENGKEL<span class="font-light ml-1 opacity-80 text-cyan-300">ADMIN</span>
             </a>
@@ -141,13 +141,12 @@
                 @php
                     $unreadChatsAdmin = \App\Models\Chat::where('receiver_id', Auth::id())->where('is_read', false)->count();
                 @endphp
-                <a href="{{ route('chat.index') }}" class="relative text-slate-300 hover:text-cyan-400 transition-colors group focus:outline-none hidden md:block mr-2" title="Pesan Live Chat">
+                <a href="{{ route('chat.index') }}" class="relative text-slate-300 hover:text-cyan-400 transition-colors group focus:outline-none hidden md:block mr-2" title="Pesan Live Chat" id="chat-global-icon">
                     <i class="fas fa-comments text-xl group-hover:scale-110 transition-transform"></i>
-                    @if($unreadChatsAdmin > 0)
-                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-slate-900"></span>
-                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping opacity-75"></span>
-                    <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $unreadChatsAdmin }}</span>
-                    @endif
+                    
+                    <span class="chat-pulse-indicator absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-slate-900 {{ $unreadChatsAdmin > 0 ? '' : 'hidden' }}"></span>
+                    <span class="chat-pulse-indicator absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping opacity-75 {{ $unreadChatsAdmin > 0 ? '' : 'hidden' }}"></span>
+                    <span class="chat-count-badge absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full {{ $unreadChatsAdmin > 0 ? '' : 'hidden' }}">{{ $unreadChatsAdmin }}</span>
                 </a>
 
                 <span class="text-slate-200 font-semibold tracking-wide shadow-sm">{{ auth()->user()->name }}</span>
@@ -265,7 +264,7 @@
                 <div class="absolute inset-0 bg-navy-motif opacity-30"></div>
                 <div class="relative z-10 flex items-center">
                     <i class="fas fa-shield-alt text-cyan-400 mr-2 text-lg drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]"></i>
-                    <span>BENGKEL PRO ADMIN &copy; {{ date('Y') }} | <span class="text-slate-500">System Version 2.0</span></span>
+                    <span>REVAUTO ADMIN &copy; {{ date('Y') }} | <span class="text-slate-500">System Version 2.0</span></span>
                 </div>
                 <div class="relative z-10 flex items-center space-x-3 text-[10px]">
                     <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-1"></span> Server Online</span>
@@ -314,5 +313,43 @@
             Toast.fire({ icon: 'warning', title: 'Peringatan!', text: '{{ session('warning') }}' });
         @endif
     </script>
+
+    <!-- Global Live Chat Badge Realtime Polling -->
+    <script>
+        function updateGlobalChatBadge() {
+            fetch('{{ url('/chat/unread') }}', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.json())
+                .then(data => {
+                    const count = data.count || 0;
+                    document.querySelectorAll('.chat-pulse-indicator').forEach(el => {
+                        if(count > 0) el.classList.remove('hidden');
+                        else el.classList.add('hidden');
+                    });
+                    document.querySelectorAll('.chat-count-badge').forEach(el => {
+                        if(count > 0) {
+                            el.textContent = count;
+                            el.classList.remove('hidden');
+                        } else {
+                            el.classList.add('hidden');
+                        }
+                    });
+                    document.querySelectorAll('.chat-count-badge-alt').forEach(el => {
+                        if(count > 0) {
+                            el.textContent = count;
+                            el.classList.remove('hidden');
+                        } else {
+                            el.classList.add('hidden');
+                        }
+                    });
+                })
+                .catch(error => console.error('Gagal mengambil notifikasi chat:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update every 3 seconds for realtime feel
+            setInterval(updateGlobalChatBadge, 3000);
+        });
+    </script>
 </body>
 </html>
+

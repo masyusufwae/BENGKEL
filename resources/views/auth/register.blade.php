@@ -231,22 +231,21 @@
         .sign-in-container {
             left: 0;
             width: 50%;
-            z-index: 1; /* Under overlay */
-            opacity: 0; /* Hidden by default in user's requested flow */
-            transform: translateX(-20%); /* Slide out slightly to left */
+            z-index: 2;
+            opacity: 1;
         }
         .sign-up-container {
-            left: 50%;
+            left: 0;
             width: 50%;
-            opacity: 1;
-            z-index: 2;
+            opacity: 0;
+            z-index: 1;
         }
 
         /* OVERLAY - Sliding door */
         .overlay-container {
             position: absolute;
             top: 0;
-            left: 0; /* Default: Overlay on left (covers Login form) */
+            left: 50%;
             width: 50%;
             height: 100%;
             overflow: hidden;
@@ -260,23 +259,19 @@
             background-position: 0 0;
             color: #FFFFFF;
             position: relative;
-            left: 0; /* Start at 0% */
+            left: -100%;
             height: 100%;
-            width: 200%; /* Double width because it contains two panels */
-            transform: translateX(0); 
+            width: 200%;
+            transform: translateX(0);
             transition: transform 0.6s ease-in-out;
         }
         
-        /* The glow effect on overlay */
         .overlay::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1613214150148-52ba71ab523b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.2;
-            mix-blend-mode: overlay;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 70%);
+            z-index: 0;
         }
 
         .overlay-panel {
@@ -292,16 +287,16 @@
             width: 50%;
             transform: translateX(0);
             transition: transform 0.6s ease-in-out;
-            z-index: 10;
+            z-index: 1;
         }
 
         .overlay-left {
-            transform: translateX(0);
+            transform: translateX(-20%);
         }
 
         .overlay-right {
-            right: 0;   
-            transform: translateX(20%); /* Slightly offset for parallax effect */
+            right: 0;
+            transform: translateX(0);
         }
         
         .overlay-panel h1 {
@@ -311,34 +306,39 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
-        /* --- ACTIVE STATE (SLIDED RIGHT) --- */
-        /* When login button pressed: overlay moves Right, showing Login form on Left */
+        /* --- ACTIVE STATE --- */
         .container-auth.right-panel-active .sign-in-container {
-            transform: translateX(0);
-            opacity: 1;
-            z-index: 5;
-        }
-
-        .container-auth.right-panel-active .sign-up-container {
             transform: translateX(100%);
             opacity: 0;
             z-index: 1;
         }
 
+        .container-auth.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
         .container-auth.right-panel-active .overlay-container {
-            transform: translateX(100%); /* Overlay moves to the right 50% */
+            transform: translateX(-100%);
         }
 
         .container-auth.right-panel-active .overlay {
-            transform: translateX(-50%); /* Internal shifting for parallax */
+            transform: translateX(50%);
         }
 
         .container-auth.right-panel-active .overlay-left {
-            transform: translateX(-20%); /* Shift out */
+            transform: translateX(0);
         }
 
         .container-auth.right-panel-active .overlay-right {
-            transform: translateX(0); /* Shift in */
+            transform: translateX(20%);
+        }
+
+        @keyframes show {
+            0%, 49.99% { opacity: 0; z-index: 1; }
+            50%, 100% { opacity: 1; z-index: 5; }
         }
 
         .error-message {
@@ -394,8 +394,8 @@
         <i class="fa-solid fa-arrow-left"></i> Back to Home
     </a>
 
-    <!-- Container gets 'right-panel-active' if route is login or login errors exist -->
-    <div class="container-auth {{ (request()->routeIs('login') || $errors->has('email') && !old('name')) ? 'right-panel-active' : '' }}" id="container">
+    <!-- Container gets 'right-panel-active' if route is REGISTER or register errors exist -->
+    <div class="container-auth {{ (request()->routeIs('register') || $errors->has('name') || ($errors->has('email') && old('name'))) ? 'right-panel-active' : '' }}" id="container">
         
         <!-- Registration Form (Right Side Default) -->
         <div class="form-container sign-up-container">
@@ -493,22 +493,13 @@
         const signInButton = document.getElementById('signInBtn');
         const container = document.getElementById('container');
 
-        // Note: Default state based on user initial request: Left overlay, Register right.
-        // That means "right-panel-active" class puts Overlay on right, Login on left.
-
         signUpButton.addEventListener('click', () => {
-            // Remove class so overlay slides to left, revealing Register on right
-            container.classList.remove('right-panel-active');
-            
-            // Optional: update URL hash without reload
+            container.classList.add('right-panel-active');
             window.history.pushState({}, '', '{{ url("/register") }}');
         });
 
         signInButton.addEventListener('click', () => {
-            // Add class so overlay slides to right, revealing Login on left
-            container.classList.add('right-panel-active');
-            
-            // Optional: update URL hash without reload
+            container.classList.remove('right-panel-active');
             window.history.pushState({}, '', '{{ url("/login") }}');
         });
     </script>

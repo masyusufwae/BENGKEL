@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>RevAuto - Bengkel & Showroom</title>
+    <title>RevAuto - Bengkel Modern</title>
 
     <link rel="icon" type="image/png" href="{{ asset('storage/logo/icon.png') }}?v=1">
     <!-- Fonts -->
@@ -164,6 +164,29 @@
             animation: fadeUp 1s ease forwards 0.6s;
         }
 
+        .about-image-main,
+        .about-image-secondary {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .about-image-secondary {
+            height: 220px;
+            margin-top: 14px;
+        }
+
+        .service-thumb {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 12px;
+            position: relative;
+            z-index: 10;
+        }
+
         /* Stats Section */
         .stats-container {
             background: rgba(30, 41, 59, 0.5);
@@ -205,6 +228,18 @@
     </style>
 </head>
 <body>
+    @php
+        $brand = $landingContent['brand'] ?? 'RevAuto';
+        $headline = $landingContent['headline'] ?? 'Servis Tepat, Performa Hebat';
+        $subheadline = $landingContent['subheadline'] ?? 'Bengkel modern dengan layanan cepat dan transparan.';
+        $aboutTitle = $landingContent['about_title'] ?? 'Bengkel Modern dengan Sistem Terintegrasi';
+        $aboutBody = $landingContent['about_body'] ?? 'Semua proses servis kendaraan dikelola lebih efisien dalam satu platform.';
+        $contactEmail = $landingContent['contact_email'] ?? 'hello@revauto.id';
+        $contactPhone = $landingContent['contact_phone'] ?? '-';
+        $contactAddress = $landingContent['contact_address'] ?? '-';
+
+        $globalFallbackImage = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"><rect width="100%" height="100%" fill="#0f172a"/><rect x="40" y="40" width="1520" height="820" rx="24" fill="#1e293b" stroke="#334155" stroke-width="4"/><text x="50%" y="47%" fill="#93c5fd" font-family="Arial, sans-serif" font-size="72" text-anchor="middle">RevAuto</text><text x="50%" y="58%" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="38" text-anchor="middle">Bengkel Modern</text></svg>');
+    @endphp
 
     <!-- Navbar -->
     <nav class="navbar-custom d-flex justify-content-between align-items-center" id="mainNav">
@@ -216,10 +251,9 @@
 
         <div class="d-none d-lg-flex align-items-center">
             <a href="#" class="nav-link-custom">Home</a>
-            <a href="#" class="nav-link-custom">Inventory</a>
-            <a href="#" class="nav-link-custom">Services</a>
-            <a href="#" class="nav-link-custom">About</a>
-            <a href="#" class="nav-link-custom">Contact</a>
+            <a href="#services" class="nav-link-custom">Layanan</a>
+            <a href="#about" class="nav-link-custom">Tentang</a>
+            <a href="#contact" class="nav-link-custom">Kontak</a>
         </div>
 
         <div>
@@ -227,10 +261,7 @@
                 @auth
                     <a href="{{ url('/dashboard') }}" class="btn-glow text-decoration-none">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="text-white text-decoration-none me-4 font-semibold hover:text-blue-400 transition" style="font-size:0.9rem; text-transform:uppercase;">Login</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="btn-glow text-decoration-none">Register</a>
-                    @endif
+                    <a href="{{ route('login') }}" class="btn-glow text-decoration-none">Masuk</a>
                 @endauth
             @endif
         </div>
@@ -239,21 +270,29 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <!-- Fullscreen Background Image -->
+<<<<<<< Updated upstream
         <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Sports Car" class="car-bg">
 
+=======
+        <img src="https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Bengkel RevAuto" class="car-bg" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
+        
+>>>>>>> Stashed changes
         <!-- Dark Overlay -->
         <div class="dark-overlay"></div>
 
         <div class="container hero-content">
+<<<<<<< Updated upstream
             <h1 class="hero-title">EXPLORE THE NEXT <br>GENERATION OF CARS</h1>
             <p class="hero-subtitle">Discover unparalleled performance, sleek design, and cutting-edge technology. Your dream ride awaits in our premium showroom.</p>
 
+=======
+            <h1 class="hero-title">{{ strtoupper($headline) }}</h1>
+            <p class="hero-subtitle">{{ $subheadline }}</p>
+            
+>>>>>>> Stashed changes
             <div class="hero-buttons d-flex justify-content-center gap-4">
-                <a href="#inventory" class="btn btn-glow" style="background:#3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);">
-                    Explore Inventory
-                </a>
-                <a href="#services" class="btn btn-glow">
-                    Book Service
+                <a href="{{ Route::has('login') ? route('login') : '#' }}" class="btn btn-glow">
+                    Booking Servis
                 </a>
             </div>
 
@@ -264,22 +303,12 @@
     <div class="stats-container">
         <div class="container">
             <div class="row">
-                <div class="col-md-3 col-6 stat-item">
-                    <div class="stat-value">500+</div>
-                    <div class="stat-label">Vehicles Sold</div>
-                </div>
-                <div class="col-md-3 col-6 stat-item">
-                    <div class="stat-value">12k</div>
-                    <div class="stat-label">Happy Clients</div>
-                </div>
-                <div class="col-md-3 col-6 stat-item">
-                    <div class="stat-value">15</div>
-                    <div class="stat-label">Years Exp</div>
-                </div>
-                <div class="col-md-3 col-6 stat-item">
-                    <div class="stat-value">24/7</div>
-                    <div class="stat-label">Support</div>
-                </div>
+                @foreach ($stats ?? [] as $index => $stat)
+                    <div class="col-md-3 col-6 stat-item {{ $index >= 2 ? 'mt-4 mt-md-0' : '' }}">
+                        <div class="stat-value">{{ $stat['value'] }}</div>
+                        <div class="stat-label">{{ $stat['label'] }}</div>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -290,50 +319,50 @@
             <div class="row align-items-center">
                 <!-- Images Left -->
                 <div class="col-lg-6 mb-5 mb-lg-0 relative">
-                    <div class="relative w-full" style="padding-bottom: 75%; max-width: 90%;">
-                        <img src="https://images.unsplash.com/photo-1613214150148-52ba71ab523b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Workshop Bay" class="absolute top-0 left-0 w-10/12 h-5/6 object-cover rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] z-10 border border-slate-700">
-                        <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Red Sports Car" class="absolute bottom-0 right-0 w-8/12 h-3/4 object-cover rounded-2xl shadow-[0_25px_50px_rgba(0,0,0,0.8)] z-20 border-2 border-slate-800">
-                    </div>
+                    <img src="https://images.unsplash.com/photo-1613214150148-52ba71ab523b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Area kerja bengkel" class="about-image-main" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
+                    <img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Peralatan servis kendaraan" class="about-image-secondary" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
                 </div>
                 <!-- Text Right -->
                 <div class="col-lg-6 lg:pl-16">
+<<<<<<< Updated upstream
                     <p class="text-blue-500 font-bold tracking-widest uppercase mb-2 text-sm">About Us</p>
                     <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">Redefining The Workshop & <br>Showroom Experience</h2>
                     <p class="text-slate-400 mb-8 leading-relaxed">
                         At our facility, we redefine the car ownership and maintenance experience with exceptional service, cutting-edge diagnostic tools, and customer-focused solutions tailored to your vehicle's needs.
                     </p>
 
+=======
+                    <p class="text-blue-500 font-bold tracking-widest uppercase mb-2 text-sm">Tentang {{ $brand }}</p>
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">{{ $aboutTitle }}</h2>
+                    <p class="text-slate-400 mb-8 leading-relaxed">{{ $aboutBody }}</p>
+                    
+>>>>>>> Stashed changes
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                         <div class="flex items-center text-sm text-slate-300 font-medium">
                             <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
-                            Customer-Centric Approach
+                            Pengerjaan Transparan
                         </div>
                         <div class="flex items-center text-sm text-slate-300 font-medium">
                             <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
-                            Expert Certified Mechanics
+                            Mekanik Berpengalaman
                         </div>
                         <div class="flex items-center text-sm text-slate-300 font-medium">
                             <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
-                            Comprehensive Services
+                            Layanan Servis Lengkap
                         </div>
                         <div class="flex items-center text-sm text-slate-300 font-medium">
                             <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
-                            Premium Original Parts
+                            Sparepart Original
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-6">
-                        <a href="#services" class="btn-glow inline-flex items-center bg-blue-500 text-white" style="border-color: #3b82f6;">
-                            ABOUT REVAUTO
-                        </a>
-                        <div class="flex items-center border-l border-slate-700 pl-6">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center mr-3">
-                                📞
-                            </div>
-                            <div>
-                                <p class="text-xs text-slate-400 m-0">Call For Help</p>
-                                <p class="text-white font-bold m-0 tracking-wider">+(704) 555-0127</p>
-                            </div>
+                    <div class="flex items-center border-l border-slate-700 pl-6">
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center mr-3">
+                            TEL
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 m-0">Hubungi Kami</p>
+                            <p class="text-white font-bold m-0 tracking-wider">{{ $contactPhone }}</p>
                         </div>
                     </div>
                 </div>
@@ -342,8 +371,9 @@
     </section>
 
     <!-- New Arrival / Featured Section -->
-    <section class="py-20 relative bg-[#0b1121]" id="inventory">
+    <section class="py-20 relative bg-[#0b1121]" id="services">
         <div class="container">
+<<<<<<< Updated upstream
             <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Featured Vehicle & Services</h2>
 
             <!-- Filters -->
@@ -359,114 +389,50 @@
                     <button class="px-4 py-1.5 rounded-full border border-blue-500 text-blue-400 text-xs font-semibold">Latest</button>
                     <button class="px-4 py-1.5 rounded-full border border-slate-700 text-slate-400 hover:text-white text-xs font-semibold">Popular</button>
                 </div>
+=======
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Layanan Unggulan {{ $brand }}</h2>
+            
+            <div class="mb-10 border-b border-slate-800 pb-4">
+                <p class="text-slate-400 m-0">Daftar layanan aktif yang tersedia di bengkel {{ $brand }}.</p>
+>>>>>>> Stashed changes
             </div>
 
             <!-- Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
+                <!-- Cards Dynamic -->
+                @forelse ($services as $service)
+                @php
+                    $serviceQuery = trim(($service->nama_servis ?? 'servis mobil') . ' ' . ($service->kategori ?? '') . ' car mechanic workshop');
+                    $serviceImage = 'https://loremflickr.com/900/600/' . rawurlencode($serviceQuery) . '?lock=' . ($service->id_jenis ?? crc32($serviceQuery));
+                    $serviceTitle = htmlspecialchars(trim($service->nama_servis ?? 'Layanan Servis'), ENT_QUOTES, 'UTF-8');
+                    $serviceFallback = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600"><rect width="100%" height="100%" fill="#0f172a"/><rect x="28" y="28" width="844" height="544" rx="22" fill="#1e293b" stroke="#334155" stroke-width="4"/><text x="50%" y="46%" fill="#93c5fd" font-family="Arial, sans-serif" font-size="46" text-anchor="middle">RevAuto</text><text x="50%" y="58%" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="30" text-anchor="middle">' . $serviceTitle . '</text></svg>');
+                @endphp
                 <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 hover:border-blue-500 transition-all duration-300 group">
                     <div class="flex justify-between items-start mb-2">
                         <div>
-                            <h3 class="font-bold text-white text-lg">Engine Tuning</h3>
-                            <p class="text-xs text-slate-400">Performance</p>
+                            <h3 class="font-bold text-white text-lg">{{ $service->nama_servis }}</h3>
+                            <p class="text-xs text-slate-400">{{ \Illuminate\Support\Str::limit($service->deskripsi, 60) }}</p>
                         </div>
-                        <button class="text-slate-500 hover:text-red-500">♡</button>
+                        <span class="text-slate-500 text-xs">Layanan</span>
                     </div>
                     <div class="h-32 flex items-center justify-center my-4 overflow-hidden relative">
-                        <!-- Glow behind image -->
                         <div class="absolute w-20 h-20 bg-blue-500/30 rounded-full blur-xl group-hover:bg-blue-400/40 transition-all"></div>
-                        <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Engine" class="max-h-full object-contain relative z-10 transform group-hover:scale-110 transition-transform duration-500 rounded-lg">
+                        <img src="{{ $serviceImage }}" alt="{{ $service->nama_servis }}" class="service-thumb transform group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='{{ $serviceFallback }}';">
                     </div>
                     <div class="flex justify-between text-[11px] text-slate-400 mb-4 border-b border-slate-700 pb-4">
-                        <span class="flex items-center gap-1">⚙️ Remap</span>
-                        <span class="flex items-center gap-1">⚡ Stage 2</span>
-                        <span class="flex items-center gap-1">⏱️ 2 Days</span>
+                        <span class="flex items-center gap-1">Estimasi: {{ $service->estimasi_waktu }} jam</span>
+                        <span class="flex items-center gap-1">{{ $service->kategori ?? 'Servis Umum' }}</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <p class="font-bold text-xl text-white">Rp 2.5jt</p>
-                        <a href="{{ route('service.details', 'engine-tuning') }}" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 no-underline">
-                            View More <span>→</span>
+                        <p class="font-bold text-xl text-white">Rp {{ number_format($service->harga_jasa, 0, ',', '.') }}</p>
+                        <a href="{{ Auth::check() ? route('customer.orders.create') : route('login') }}" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 no-underline">
+                            Booking
                         </a>
                     </div>
                 </div>
-
-                <!-- Card 2 -->
-                <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 hover:border-blue-500 transition-all duration-300 group">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">Periodic Maintenance</h3>
-                            <p class="text-xs text-slate-400">General Run</p>
-                        </div>
-                        <button class="text-slate-500 hover:text-red-500">♡</button>
-                    </div>
-                    <div class="h-32 flex items-center justify-center my-4 overflow-hidden relative">
-                        <div class="absolute w-20 h-20 bg-yellow-500/20 rounded-full blur-xl group-hover:bg-yellow-400/30 transition-all"></div>
-                        <img src="https://images.unsplash.com/photo-1493139369975-47eb021e5485?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Maintenance" class="max-h-full object-contain relative z-10 transform group-hover:scale-110 transition-transform duration-500 drop-shadow-2xl rounded-lg">
-                    </div>
-                    <div class="flex justify-between text-[11px] text-slate-400 mb-4 border-b border-slate-700 pb-4">
-                        <span class="flex items-center gap-1">🛢️ Oil</span>
-                        <span class="flex items-center gap-1">🧹 Filter</span>
-                        <span class="flex items-center gap-1">⏱️ 2 Hours</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="font-bold text-xl text-white">Rp 850k</p>
-                        <a href="{{ route('service.details', 'general-maintenance') }}" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 no-underline">
-                            View More <span>→</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 hover:border-blue-500 transition-all duration-300 group">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">Performance Parts</h3>
-                            <p class="text-xs text-slate-400">Inventory & Install</p>
-                        </div>
-                        <button class="text-slate-500 hover:text-red-500">♡</button>
-                    </div>
-                    <div class="h-32 flex items-center justify-center my-4 overflow-hidden relative">
-                        <div class="absolute w-20 h-20 bg-cyan-500/20 rounded-full blur-xl group-hover:bg-cyan-400/30 transition-all"></div>
-                        <img src="https://images.unsplash.com/photo-1594966601815-5e60a3c20042?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Parts" class="max-h-full object-contain relative z-10 transform group-hover:scale-110 transition-transform duration-500 drop-shadow-2xl rounded-lg">
-                    </div>
-                    <div class="flex justify-between text-[11px] text-slate-400 mb-4 border-b border-slate-700 pb-4">
-                        <span class="flex items-center gap-1">⚙️ OEM</span>
-                        <span class="flex items-center gap-1">🔩 Forged</span>
-                        <span class="flex items-center gap-1">✨ Install</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="font-bold text-xl text-white">Varies</p>
-                        <a href="{{ route('service.details', 'custom-parts') }}" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 no-underline">
-                            View More <span>→</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 hover:border-blue-500 transition-all duration-300 group">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">Heavy Service</h3>
-                            <p class="text-xs text-slate-400">Overhaul</p>
-                        </div>
-                        <button class="text-slate-500 hover:text-red-500">♡</button>
-                    </div>
-                    <div class="h-32 flex items-center justify-center my-4 overflow-hidden relative">
-                        <div class="absolute w-20 h-20 bg-red-500/20 rounded-full blur-xl group-hover:bg-red-400/30 transition-all"></div>
-                        <img src="https://images.unsplash.com/photo-1635784964531-90a6e3505877?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Service" class="max-h-full object-contain relative z-10 transform group-hover:scale-110 transition-transform duration-500 rounded-lg">
-                    </div>
-                    <div class="flex justify-between text-[11px] text-slate-400 mb-4 border-b border-slate-700 pb-4">
-                        <span class="flex items-center gap-1">🔧 Rebuild</span>
-                        <span class="flex items-center gap-1">🚿 Flush</span>
-                        <span class="flex items-center gap-1">⏱️ 3 Days</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="font-bold text-xl text-white">Rp 5.5jt</p>
-                        <a href="{{ route('service.details', 'heavy-service') }}" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 no-underline">
-                            View More <span>→</span>
-                        </a>
-                    </div>
-                </div>
+                @empty
+                    <p class="text-slate-400">Belum ada layanan tersedia saat ini.</p>
+                @endforelse
             </div>
         </div>
     </section>
@@ -478,13 +444,18 @@
             <div class="absolute -top-[50%] -left-[10%] w-[500px] h-[500px] rounded-full border border-slate-800/50 bg-slate-900/20"></div>
             <div class="absolute -bottom-[50%] right-[10%] w-[600px] h-[600px] rounded-full border border-slate-800/50 bg-slate-900/30"></div>
         </div>
+<<<<<<< Updated upstream
         <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="White Car Dark" class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
 
+=======
+        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="White Car Dark" class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
+        
+>>>>>>> Stashed changes
         <div class="container relative z-10">
             <div class="max-w-xl">
-                <h2 class="text-4xl font-extrabold text-white mb-4">Precision Engineering at Your Fingertips</h2>
-                <p class="text-slate-400 mb-8">Access our premium workshop facilities and high-end vehicle inventory curated just for automotive enthusiasts.</p>
-                <a href="#contact" class="btn-glow border-white hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]">Contact Us Today</a>
+                <h2 class="text-4xl font-extrabold text-white mb-4">Servis Presisi untuk Kendaraan Anda</h2>
+                <p class="text-slate-400 mb-8">Mulai dari diagnosa cepat hingga pengerjaan detail, semua layanan RevAuto dirancang untuk menjaga performa kendaraan tetap optimal.</p>
+                <a href="#contact" class="btn-glow border-white hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]">Hubungi Tim Kami</a>
             </div>
         </div>
     </section>
@@ -494,48 +465,27 @@
         <div class="container">
             <div class="text-center mb-12">
                 <p class="text-blue-500 font-bold text-sm tracking-widest uppercase">Testimonials</p>
-                <h2 class="text-3xl font-extrabold text-white">What Our Clients Say</h2>
+                <h2 class="text-3xl font-extrabold text-white">Apa Kata Pelanggan</h2>
             </div>
 
             <div class="row justify-content-center">
-                <!-- Review 1 -->
-                <div class="col-md-5 mb-4">
-                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex gap-4 h-full">
-                        <img src="https://images.unsplash.com/photo-1627448378616-2a781ce72c83?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="w-32 h-32 object-cover rounded-xl shrink-0" alt="Workshop">
-                        <div>
+                @foreach ($testimonials ?? [] as $testimonial)
+                    <div class="col-md-5 mb-4">
+                        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 h-full">
                             <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
-                            <p class="text-slate-300 text-sm leading-relaxed mb-4">"From start to finish, the mechanics at RevAuto answered all my questions, perfectly tuned my engine, and delivered top-notch service!"</p>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-4">"{{ $testimonial['quote'] }}"</p>
                             <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full bg-slate-600 mr-3 overflow-hidden">
-                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Avatar">
+                                <div class="w-10 h-10 rounded-full bg-slate-600 mr-3 flex items-center justify-center text-xs text-white">
+                                    {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($testimonial['name'], 0, 2)) }}
                                 </div>
                                 <div>
-                                    <h4 class="text-white text-sm font-bold m-0">Floyd Miles</h4>
-                                    <p class="text-slate-500 text-xs m-0">Car Enthusiast</p>
+                                    <h4 class="text-white text-sm font-bold m-0">{{ $testimonial['name'] }}</h4>
+                                    <p class="text-slate-500 text-xs m-0">{{ $testimonial['role'] }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- Review 2 -->
-                <div class="col-md-5 mb-4">
-                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex gap-4 h-full">
-                        <img src="https://images.unsplash.com/photo-1542282088-fe8426682b8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="w-32 h-32 object-cover rounded-xl shrink-0" alt="Car Fix">
-                        <div>
-                            <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
-                            <p class="text-slate-300 text-sm leading-relaxed mb-4">"Their showroom inventory is amazing, but their maintenance bay is what keeps me coming back. Highly recommend!"</p>
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full bg-slate-600 mr-3 overflow-hidden">
-                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Avatar">
-                                </div>
-                                <div>
-                                    <h4 class="text-white text-sm font-bold m-0">Darlene Robertson</h4>
-                                    <p class="text-slate-500 text-xs m-0">Business Owner</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <div class="flex justify-center gap-2 mt-6">
@@ -554,11 +504,11 @@
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
-                            ✉️
+                            @
                         </div>
                         <div>
                             <h4 class="text-white text-sm font-bold mb-1">Contact Us</h4>
-                            <p class="text-sm m-0">contact@revauto.com</p>
+                            <p class="text-sm m-0">{{ $contactEmail }}</p>
                         </div>
                     </div>
                 </div>
@@ -566,11 +516,11 @@
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
-                            📞
+                            TEL
                         </div>
                         <div>
                             <h4 class="text-white text-sm font-bold mb-1">Call Us</h4>
-                            <p class="text-sm m-0">+62 812 3456 7890</p>
+                            <p class="text-sm m-0">{{ $contactPhone }}</p>
                         </div>
                     </div>
                 </div>
@@ -578,7 +528,7 @@
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
-                            💬
+                            CS
                         </div>
                         <div>
                             <h4 class="text-white text-sm font-bold mb-1">Live Chat</h4>
@@ -590,18 +540,18 @@
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
-                            📍
+                            LOC
                         </div>
                         <div>
                             <h4 class="text-white text-sm font-bold mb-1">Location</h4>
-                            <p class="text-sm m-0">Jl. Teknologi No.12, Jakarta</p>
+                            <p class="text-sm m-0">{{ $contactAddress }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="flex flex-col md:flex-row justify-between items-center border-t border-slate-800 pt-8">
-                <p class="text-xs text-slate-500 mb-4 md:mb-0">&copy; 2026 BENGKEL RevAuto. All rights reserved.</p>
+                <p class="text-xs text-slate-500 mb-4 md:mb-0">&copy; {{ now()->year }} {{ $brand }}. All rights reserved.</p>
                 <div class="flex gap-2">
                     <div class="px-3 py-1 bg-slate-800 text-xs text-slate-300 font-bold rounded">VISA</div>
                     <div class="px-3 py-1 bg-slate-800 text-xs text-slate-300 font-bold rounded">MC</div>
@@ -612,7 +562,7 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.css"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Navbar Scrolled Effect
         window.addEventListener('scroll', function() {
@@ -626,3 +576,4 @@
     </script>
 </body>
 </html>
+

@@ -12,13 +12,63 @@ use App\Http\Controllers\Admin\SparepartController;
 use App\Http\Controllers\Admin\WorkOrderController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Models\JenisServis;
+use App\Models\Mekanik;
+use App\Models\Sparepart;
+use App\Models\WorkOrder;
 
 // 1. Halaman Utama (Landing Page)
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
     }
-    return view('welcome');
+
+    $services = JenisServis::orderByDesc('id_jenis')->take(8)->get();
+
+    $stats = [
+        [
+            'value' => number_format(Mekanik::count(), 0, ',', '.'),
+            'label' => 'Mekanik Aktif',
+        ],
+        [
+            'value' => number_format(JenisServis::count(), 0, ',', '.'),
+            'label' => 'Jenis Servis',
+        ],
+        [
+            'value' => number_format(Sparepart::count(), 0, ',', '.'),
+            'label' => 'Sparepart Tersedia',
+        ],
+        [
+            'value' => number_format(WorkOrder::count(), 0, ',', '.'),
+            'label' => 'Work Order Tercatat',
+        ],
+    ];
+
+    $landingContent = [
+        'brand' => 'RevAuto',
+        'headline' => 'Servis Tepat, Performa Hebat',
+        'subheadline' => 'RevAuto membantu Anda mengelola servis kendaraan secara cepat, transparan, dan terjadwal dengan teknisi profesional.',
+        'about_title' => 'Bengkel Modern dengan Sistem Terintegrasi',
+        'about_body' => 'Mulai dari booking servis, pemantauan work order, hingga pengelolaan sparepart dilakukan dalam satu platform agar proses lebih efisien dan minim kesalahan.',
+        'contact_email' => 'hello@revauto.id',
+        'contact_phone' => '+62 812 3456 7890',
+        'contact_address' => 'Jl. Teknologi No.12, Jakarta',
+    ];
+
+    $testimonials = [
+        [
+            'name' => 'Andi Pratama',
+            'role' => 'Pemilik Mobil Harian',
+            'quote' => 'Proses booking cepat, estimasi biaya jelas, dan progres servis bisa dipantau. Sangat membantu.',
+        ],
+        [
+            'name' => 'Rina Mahesa',
+            'role' => 'Fleet Supervisor',
+            'quote' => 'Tim RevAuto rapi dalam pengerjaan dan laporan work order selalu up-to-date untuk armada kami.',
+        ],
+    ];
+
+    return view('welcome', compact('services', 'stats', 'landingContent', 'testimonials'));
 })->name('home');
 
 // Halaman Detail Layanan Dinamis
@@ -217,9 +267,12 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () { Route::get('/chat/contacts/summary', [\App\Http\Controllers\ChatController::class, 'fetchContacts']); });
 
+<<<<<<< Updated upstream
 Route::prefix('admin')->group(function () {
     Route::get('/invoice/cetak/{id}', [InvoiceController::class, 'cetak'])->name('admin.invoice.cetak');
     Route::get('/invoice/kirim/{id}', [InvoiceController::class, 'kirim'])->name('admin.invoice.kirim');
     // route index tetap seperti semula
     Route::get('/invoice', [InvoiceController::class, 'index'])->name('admin.invoice.index');
 });
+=======
+>>>>>>> Stashed changes
