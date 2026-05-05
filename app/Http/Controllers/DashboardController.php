@@ -28,22 +28,62 @@ class DashboardController extends Controller
 
     private function adminDashboard()
     {
-        // Data dummy untuk dashboard admin/kepala bengkel
+        $today = Carbon::today();
+        $monthStart = Carbon::now()->startOfMonth();
+
+        // Real stats
+        $antrian_hari_ini = WorkOrder::where('status', 'antrian')
+            ->whereDate('tanggal_masuk', $today)
+            ->count();
+        $mekanik_aktif = WorkOrder::where('status', 'dikerjakan')
+            ->distinct('id_mekanik')
+            ->count('id_mekanik');
+        $pendapatan_hari_ini = InvoiceServis::whereHas('workOrder', fn($q) => $q->whereDate('tanggal_masuk', $today))
+            ->where('status_bayar', 'lunas')
+            ->sum('total_bayar');
+        $total_wo_bulan_ini = WorkOrder::where('status', 'selesai')
+            ->whereBetween('tanggal_selesai', [$monthStart, now()])
+            ->count();
+
+        // Layanan populer (from detail_servis_wo or jenis_servis)
+        $layanan_populer = WorkOrder::whereBetween('tanggal_selesai', [$monthStart, now()])
+            ->with('detailServis.jenisServis')
+            ->get()
+            ->flatMap(fn($wo) => $wo->detailServis)
+            ->groupBy('jenis_servis')
+            ->map(fn($group) => ['nama' => $group->first()->jenis_servis, 'jumlah' => $group->count()])
+            ->sortByDesc('jumlah')
+            ->take(4)
+            ->values()
+            ->toArray();
+
+        // Chart data (last 6 months)
+        $months = collect();
+        $woData = collect();
+        $revenueData = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            $months->push($date->format('M'));
+            $woData->push(WorkOrder::whereMonth('tanggal_selesai', $date->month)
+                ->whereYear('tanggal_selesai', $date->year)
+                ->where('status', 'selesai')
+                ->count());
+            $revenueData->push(InvoiceServis::whereHas('workOrder', fn($q) => $q->whereMonth('tanggal_selesai', $date->month)
+                ->whereYear('tanggal_selesai', $date->year))
+                ->where('status_bayar', 'lunas')
+                ->sum('total_bayar'));
+        }
+
         $data = [
-            'antrian_hari_ini' => 5,
-            'mekanik_aktif' => 8,
-            'pendapatan_hari_ini' => 2500000,
-            'total_wo_bulan_ini' => 45,
-            'layanan_populer' => [
-                ['nama' => 'Service Berkala', 'jumlah' => 15],
-                ['nama' => 'Perbaikan Mesin', 'jumlah' => 12],
-                ['nama' => 'Ganti Oli', 'jumlah' => 10],
-                ['nama' => 'Servis Rem', 'jumlah' => 8],
-            ],
+            'antrian_hari_ini' => $antrian_hari_ini,
+            'mekanik_aktif' => $mekanik_aktif,
+            'pendapatan_hari_ini' => $pendapatan_hari_ini,
+            'total_wo_bulan_ini' => $total_wo_bulan_ini,
+            'layanan_populer' => $layanan_populer,
             'chart_data' => [
-                'bulan' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
-                'wo' => [28, 32, 35, 42, 45, 38],
-                'pendapatan' => [45000000, 52000000, 58000000, 68000000, 72000000, 65000000],
+                'bulan' => $months->toArray(),
+                'wo' => $woData->toArray(),
+                'pendapatan' => $revenueData->toArray(),
             ]
         ];
 

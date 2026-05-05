@@ -21,11 +21,11 @@
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
+<div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Kode Part (Otomatis)
                             </label>
-                            <input type="text" name="kode_part" value="{{ old('kode_part', $nextKode ?? '') }}" readonly
+                            <input type="text" value="{{ $nextKode ?? 'SP' . str_pad(Sparepart::count() + 1, 3, '0', STR_PAD_LEFT) }}" readonly
                                 class="w-full border rounded-lg px-3 py-2 bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-blue-500">
                             <p class="text-xs text-gray-500 mt-1">Kode akan otomatis dibuat oleh sistem.</p>
                         </div>

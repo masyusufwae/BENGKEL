@@ -1,4 +1,4 @@
-﻿@extends('customer.layouts.app')
+@extends('customer.layouts.app')
 
 @section('title', 'Dashboard - Pelanggan')
 
@@ -9,7 +9,7 @@
     <!-- Animated background accents -->
     <div class="absolute -right-20 -top-20 w-64 h-64 bg-cyan-500 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 group-hover:scale-110 transition-all duration-700"></div>
     <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-600 rounded-full blur-[60px] opacity-20 group-hover:opacity-50 transition-all duration-700"></div>
-    
+
     <div class="relative z-10 p-8 md:p-10 flex flex-col md:flex-row items-center justify-between">
         <div class="mb-6 md:mb-0 md:pr-10">
             <div class="inline-block px-3 py-1 bg-cyan-500/20 border border-cyan-400/30 rounded-full text-cyan-300 text-[10px] font-bold tracking-widest mb-4">
@@ -20,7 +20,7 @@
                 Kendaraan Anda adalah prioritas kami. Pantau riwayat servis, jadwal perawatan, dan info penting kendaraan Anda langsung dari Control Center ini.
             </p>
         </div>
-        
+
         <div class="hidden lg:flex items-center justify-center relative">
             <!-- 3D/Tech Illustration fallback via FontAwesome -->
             <div class="relative w-32 h-32 flex items-center justify-center">
@@ -39,7 +39,7 @@
 <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 md:p-8 shadow-lg mb-8 relative overflow-hidden group">
     <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-600/10"></div>
     <div class="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-    
+
     <!-- Workshop Mechanics Animation Element -->
     <div class="absolute top-1/2 right-[10%] md:right-[20%] transform -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 opacity-20 pointer-events-none flex items-center justify-center mix-blend-screen">
         <!-- Outer Glowing Gear -->
@@ -49,7 +49,7 @@
         <!-- Center core pulse -->
         <div class="absolute w-8 h-8 bg-cyan-300 rounded-full animate-pulse shadow-[0_0_20px_rgba(34,211,238,1)]"></div>
     </div>
-    
+
     <div class="relative z-10 flex flex-col justify-between h-full md:flex-row md:items-center">
         <div class="mb-5 md:mb-0">
             <h2 class="text-[10px] sm:text-xs font-black text-cyan-400 tracking-[0.2em] uppercase mb-2 flex items-center">
@@ -61,7 +61,7 @@
                 <i class="fas fa-wrench mr-1 text-cyan-600"></i> Sinkronisasi ke buku panduan perawatan...
             </p>
         </div>
-        
+
         <div class="flex flex-col items-center">
             <div class="text-[10px] text-cyan-500 font-bold mb-2 uppercase tracking-widest hidden md:block">Slot Servis Tersedia</div>
             <a href="{{ route('customer.orders.create') }}" class="w-full md:w-auto inline-flex items-center justify-center bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black px-8 py-3.5 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:shadow-[0_0_30px_rgba(34,211,238,0.7)] hover:scale-105 border border-cyan-400 relative overflow-hidden group-hover:border-white">
@@ -134,6 +134,12 @@
                                     <div class="space-y-2 text-xs text-gray-600">
                                         <p>Tanggal Masuk: {{ $wo['tanggal_masuk'] }}</p>
                                         <p>Estimasi Selesai: <span class="font-semibold text-blue-600">{{ $wo['estimasi'] }}</span></p>
+                                        <a href="{{ route('customer.orders.show', $wo['id_wo']) }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-2">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                            </svg>
+                                            Lihat Detail
+                                        </a>
                                         <div class="mt-3">
                                             <div class="flex justify-between items-center mb-1">
                                                 <p>Progress</p>

@@ -171,6 +171,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/messages', [\App\Http\Controllers\Customer\MessageController::class, 'index'])->name('messages.index');
         Route::post('/messages/read', [\App\Http\Controllers\Customer\MessageController::class, 'markAsRead'])->name('messages.read');
 
+        // Orders Detail
+        Route::get('/orders/{id_wo}', [CustomerController::class, 'ordersShow'])->name('orders.show');
+
+        // Pesan (Messages)
+        Route::get('/messages', [\App\Http\Controllers\Customer\MessageController::class, 'index'])->name('messages.index');
+        Route::post('/messages/read', [\App\Http\Controllers\Customer\MessageController::class, 'markAsRead'])->name('messages.read');
+
         // Invoices (Tagihan)
         Route::get('/invoices', [CustomerController::class, 'invoicesIndex'])->name('invoices.index');
     });

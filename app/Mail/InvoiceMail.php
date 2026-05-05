@@ -5,9 +5,7 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Queue\SerializesModels;
 
 class InvoiceMail extends Mailable
@@ -17,7 +15,7 @@ class InvoiceMail extends Mailable
     public $workOrder;
     protected $pdf;
 
-    public function __construct($workOrder, PDF $pdf)
+    public function __construct($workOrder, $pdf)
     {
         $this->workOrder = $workOrder;
         $this->pdf = $pdf;

@@ -1,24 +1,115 @@
 @extends('admin.layouts.app')
+
 @section('title', 'Hasil Laporan Servis')
+
 @section('content')
+<style>
+    @media print {
+        /* 1. Sembunyikan elemen navigasi dashboard */
+        aside, nav, header, footer, .sidebar, .no-print {
+            display: none !important;
+        }
+
+        /* 2. Sembunyikan elemen tambahan agar HANYA TABEL yang muncul */
+        .print\:hidden,
+        button,
+        .hidden.print\:block, /* Menyembunyikan Header Bengkel Admin */
+        .hidden.print\:flex,  /* Menyembunyikan Tanda Tangan/Footer */
+        .grid,                /* Menyembunyikan Ringkasan Statistik (Total WO, dll) */
+        h2.text-2xl           /* Menyembunyikan tulisan "Laporan Servis" */ {
+            display: none !important;
+        }
+
+        /* 3. Atur layout kertas */
+        .py-12 { padding: 0 !important; }
+        .max-w-7xl {
+            max-width: 100% !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .bg-white { background-color: transparent !important; }
+        .shadow-sm, .sm\:rounded-lg {
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* 4. Optimasi Tabel */
+        table {
+            width: 100% !important;
+            margin-top: 20px;
+            border-collapse: collapse !important;
+        }
+
+        table, th, td {
+            border: 1px solid #000 !important;
+        }
+
+        th { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; }
+
+        @page {
+            margin: 1cm;
+            size: A4 portrait;
+        }
+    }
+</style>
+
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+        <!-- Header Bengkel (Akan tersembunyi saat cetak karena CSS di atas) -->
+        <div class="hidden print:block text-center mb-8 border-b-2 border-black pb-4">
+            <h1 class="text-3xl font-bold uppercase">BENGKEL ADMIN</h1>
+        </div>
+
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold">Laporan Servis</h2>
-                    <button onclick="window.print()" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Cetak Laporan</button>
+                    <button onclick="window.print()" class="print:hidden bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded transition">
+                        Cetak Laporan
+                    </button>
                 </div>
-                <div class="mb-6"><strong>Periode:</strong> {{ $dari->format('d/m/Y') }} - {{ $sampai->format('d/m/Y') }}</div>
+
+                <!-- Informasi Periode (Tetap muncul agar tabel punya konteks waktu) -->
+                <div class="mb-6">
+                    <strong>Periode Laporan:</strong> {{ $dari->format('d/m/Y') }} - {{ $sampai->format('d/m/Y') }}
+                </div>
+
+                <!-- Ringkasan Statistik (Tersembunyi saat cetak karena selector .grid) -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                    <div class="bg-blue-100 p-4 rounded"><p class="text-sm">Total WO</p><p class="text-2xl font-bold">{{ $totalWO }}</p></div>
-                    <div class="bg-green-100 p-4 rounded"><p class="text-sm">Total Pendapatan</p><p class="text-2xl font-bold">Rp {{ number_format($totalPendapatan,0,',','.') }}</p></div>
-                    <div class="bg-yellow-100 p-4 rounded"><p class="text-sm">WO Selesai</p><p class="text-2xl font-bold">{{ $totalSelesai }}</p></div>
-                    <div class="bg-purple-100 p-4 rounded"><p class="text-sm">WO Diserahkan</p><p class="text-2xl font-bold">{{ $totalDiserahkan }}</p></div>
+                    <div class="bg-blue-100 p-4 rounded border border-blue-200">
+                        <p class="text-sm">Total WO</p>
+                        <p class="text-2xl font-bold">{{ $totalWO }}</p>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded border border-green-200">
+                        <p class="text-sm">Total Pendapatan</p>
+                        <p class="text-2xl font-bold">Rp {{ number_format($totalPendapatan,0,',','.') }}</p>
+                    </div>
+                    <div class="bg-yellow-100 p-4 rounded border border-yellow-200">
+                        <p class="text-sm">WO Selesai</p>
+                        <p class="text-2xl font-bold">{{ $totalSelesai }}</p>
+                    </div>
+                    <div class="bg-purple-100 p-4 rounded border border-purple-200">
+                        <p class="text-sm">WO Diserahkan</p>
+                        <p class="text-2xl font-bold">{{ $totalDiserahkan }}</p>
+                    </div>
                 </div>
+
+                <!-- Tabel Data (Satu-satunya yang muncul dominan saat cetak) -->
                 <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border">
-                        <thead><tr class="bg-gray-100"><th class="py-2 px-4 border">No WO</th><th class="py-2 px-4 border">Tanggal Masuk</th><th class="py-2 px-4 border">Customer</th><th class="py-2 px-4 border">Mekanik</th><th class="py-2 px-4 border">Status</th><th class="py-2 px-4 border">Total</th></tr></thead>
+                    <table class="min-w-full bg-white border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="py-2 px-4 border">No WO</th>
+                                <th class="py-2 px-4 border">Tanggal Masuk</th>
+                                <th class="py-2 px-4 border">Customer</th>
+                                <th class="py-2 px-4 border">Mekanik</th>
+                                <th class="py-2 px-4 border">Status</th>
+                                <th class="py-2 px-4 border">Total</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             @forelse($laporan as $wo)
                             <tr>
@@ -30,11 +121,26 @@
                                 <td class="py-2 px-4 border">Rp {{ number_format($wo->totalHarga,0,',','.') }}</td>
                             </tr>
                             @empty
-                            <tr><td colspan="6" class="text-center py-4">Tidak ada data</td></tr>
+                            <tr>
+                                <td colspan="6" class="text-center py-4">Tidak ada data untuk periode ini</td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Footer Tanda Tangan (Tersembunyi saat cetak karena selector .hidden.print:flex) -->
+                <div class="hidden print:flex justify-between mt-12">
+                    <div class="text-center">
+                        <p>Dicetak pada: {{ now()->format('d/m/Y H:i') }}</p>
+                    </div>
+                    <div class="text-center w-48">
+                        <p>Kepala Bengkel,</p>
+                        <br><br><br>
+                        <p class="font-bold">( ............................ )</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\WorkOrder;
 use App\Models\KendaraanPelanggan;
 use App\Models\InvoiceServis;
+use App\Models\DetailServisWo;
+use App\Models\PenggunaanSparepart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -152,34 +154,16 @@ class CustomerController extends Controller
     }
 
     /**
-     * Orders Index - Tampilkan daftar pesanan service
+     * Orders Index - Tampilkan daftar pesanan service (updated with pagination)
      */
     public function ordersIndex()
     {
-        $user = Auth::user();
+        $workOrders = WorkOrder::whereHas('kendaraan', fn($q) => $q->where('id_pelanggan', Auth::id()))
+            ->with(['kendaraan', 'invoice' => fn($q) => $q->latest()])
+            ->orderBy('tanggal_masuk', 'desc')
+            ->paginate(10);
 
-        $riwayat_servis = WorkOrder::where(function($query) use ($user) {
-            $query->whereHas('kendaraan', function($q) use ($user) {
-                $q->where('id_pelanggan', $user->id);
-            });
-        })->with(['kendaraan', 'invoice'])
-        ->orderBy('tanggal_masuk', 'desc')
-        ->get()
-        ->map(function($wo) {
-            $invoice = $wo->invoice && is_iterable($wo->invoice) ? collect($wo->invoice)->first() : null;
-            return [
-                'id_wo' => $wo->nomor_wo,
-                'tanggal' => $wo->tanggal_selesai ? $wo->tanggal_selesai->format('Y-m-d') : '-',
-                'kendaraan' => $wo->kendaraan->merek . ' ' . $wo->kendaraan->model,
-                'jenis' => $wo->keluhan,
-                'total' => $invoice ? $invoice->total_bayar : 0,
-                'status_bayar' => $invoice ? $invoice->status_bayar : 'belum',
-            ];
-        })->toArray();
-
-        return view('customer.orders.index', [
-            'riwayat_servis' => $riwayat_servis,
-        ]);
+        return view('customer.orders.index', compact('workOrders'));
     }
 
     /**
@@ -221,6 +205,35 @@ class CustomerController extends Controller
         return redirect()->route('customer.orders.index')
             ->with('success', 'Pesanan service berhasil dibuat');
     }
+
+    /**
+     * Invoices Index - Tampilkan daftar invoice
+     */
+    /**
+     * Orders Show - Detail work order untuk pelanggan
+     */
+    public function ordersShow($id_wo)
+    {
+        $user = Auth::user();
+
+        $wo = WorkOrder::with([
+            'kendaraan.user',
+            'mekanik',
+            'detailServis.jenisServis',
+            'penggunaanSparepart.sparepart',
+            'invoice' => fn($q) => $q->latest()
+        ])
+        ->where('nomor_wo', $id_wo)
+        ->whereHas('kendaraan', fn($q) => $q->where('id_pelanggan', $user->id))
+        ->firstOrFail();
+
+        return view('customer.orders.detail', compact('wo'));
+    }
+
+    /**
+     * Orders Index - Tampilkan daftar pesanan service (updated with pagination)
+     */
+
 
     /**
      * Invoices Index - Tampilkan daftar invoice

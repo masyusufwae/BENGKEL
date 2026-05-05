@@ -21,7 +21,7 @@
                         <div class="flex gap-2">
                             <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}"
                                 class="flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
-                            <span class="text-gray-400">-</span>
+                            <span class="text-gray-400 self-center">-</span>
                             <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}"
                                 class="flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
                         </div>
@@ -59,8 +59,7 @@
                                 <th class="py-4 px-6 font-bold text-black">No WO</th>
                                 <th class="py-4 px-6 font-bold text-black">Tanggal Masuk</th>
                                 <th class="py-4 px-6 font-bold text-black">Tanggal Selesai</th>
-                                <th class="py-4 px-6 font-bold text-black">Plat Nomor</th>
-                                <th class="py-4 px-6 font-bold text-black">Kendaraan</th>
+                                <th class="py-4 px-6 font-bold text-black">Detail Kendaraan</th>
                                 <th class="py-4 px-6 font-bold text-black">Status</th>
                                 <th class="py-4 px-6 text-center font-bold text-black">Aksi</th>
                             </tr>
@@ -77,13 +76,14 @@
                                     <td class="py-4 px-6 text-sm text-gray-600">
                                         {{ $wo->tanggal_selesai?->format('d M Y') ?? '—' }}
                                     </td>
-                                    <td class="py-4 px-6 font-bold text-lg">
-                                        {{ $wo->kendaraan->nomor_polisi }}
-                                    </td>
+
+                                    {{-- Modifikasi Kolom Kendaraan Sesuai Permintaan --}}
                                     <td class="py-4 px-6">
-                                        {{ $wo->kendaraan->model ?? '-' }}<br>
-                                        <span class="text-sm text-gray-500">{{ $wo->kendaraan->user->name ?? '-' }}</span>
+                                        <div class="font-bold text-lg text-black">{{ $wo->kendaraan->nomor_polisi ?? '-' }}</div>
+                                        <div class="text-gray-700 mt-1">{{ $wo->kendaraan->model ?? '-' }}</div>
+                                        <div class="text-sm text-gray-500">{{ $wo->kendaraan->user->name ?? '-' }}</div>
                                     </td>
+
                                     <td class="py-4 px-6">
                                         <span
                                             class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">
@@ -99,7 +99,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-12 text-gray-500">
+                                    {{-- Colspan diubah menjadi 6 karena jumlah kolom berkurang dari 7 menjadi 6 --}}
+                                    <td colspan="6" class="text-center py-12 text-gray-500">
                                         <div class="space-y-2">
                                             <p class="text-lg">📋 Belum ada riwayat servis selesai</p>
                                             <p class="text-sm">Selesaikan beberapa Work Order untuk melihat arsip di sini.

@@ -33,7 +33,7 @@ class SparepartController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+$request->validate([
             'nama_part' => 'required|string|max:255',
             'satuan' => 'nullable|string|max:50',
             'stok_minimum' => 'required|integer|min:0',
@@ -43,8 +43,6 @@ class SparepartController extends Controller
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $data['kode_part'] = \App\Models\Sparepart::generateNextKode();
-
         $data = $request->only([
             'nama_part',
             'satuan',
@@ -53,6 +51,7 @@ class SparepartController extends Controller
             'harga_beli',
             'harga_jual'
         ]);
+        $data['kode_part'] = Sparepart::generateNextKode();
 
         // upload gambar
         if ($request->hasFile('gambar')) {
