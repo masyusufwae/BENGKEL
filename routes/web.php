@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ServisController;
 use App\Http\Controllers\Admin\SparepartController;
 use App\Http\Controllers\Admin\WorkOrderController;
 use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\InventoryMovementController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Models\JenisServis;
 use App\Models\Mekanik;
@@ -198,6 +199,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('invoice/kirim/{id}', [InvoiceController::class, 'kirim'])->name('invoice.kirim');
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('laporan/generate', [LaporanController::class, 'generate'])->name('laporan.generate');
+    Route::get('laporan/calendar', [LaporanController::class, 'calendar'])->name('laporan.calendar');
+    Route::get('inventory', [InventoryMovementController::class, 'index'])->name('inventory.index');
+    Route::post('inventory', [InventoryMovementController::class, 'store'])->name('inventory.store');
 });
 
 // Mekanik Work Order Routes
@@ -273,10 +277,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () { Route::get('/chat/contacts/summary', [\App\Http\Controllers\ChatController::class, 'fetchContacts']); });
-
-Route::prefix('admin')->group(function () {
-    Route::get('/invoice/cetak/{id}', [InvoiceController::class, 'cetak'])->name('admin.invoice.cetak');
-    Route::get('/invoice/kirim/{id}', [InvoiceController::class, 'kirim'])->name('admin.invoice.kirim');
-    // route index tetap seperti semula
-    Route::get('/invoice', [InvoiceController::class, 'index'])->name('admin.invoice.index');
-});

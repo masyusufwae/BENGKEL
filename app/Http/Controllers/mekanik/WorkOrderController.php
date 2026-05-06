@@ -9,6 +9,7 @@ use App\Models\JenisServis;
 use App\Models\Sparepart;
 use App\Models\DetailServisWo;
 use App\Models\PenggunaanSparepart;
+use App\Models\InventoryMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -231,6 +232,17 @@ class WorkOrderController extends Controller
         // Kurangi stok
         $sparepart->decrement('stok', $request->jumlah);
 
+        InventoryMovement::create([
+            'id_part' => $sparepart->id_part,
+            'id_wo' => $request->id_wo,
+            'jenis' => 'keluar',
+            'jumlah' => $request->jumlah,
+            'harga_satuan' => $sparepart->harga_jual,
+            'subtotal' => $subtotal,
+            'sumber' => 'work_order',
+            'keterangan' => 'Penggunaan sparepart pada work order ' . $request->id_wo,
+        ]);
+
         return redirect()->route('mekanik.work-order.detail', $request->id_wo)
             ->with('success', 'Sparepart ditambahkan');
     }
@@ -314,6 +326,17 @@ public function storeServis(Request $request, $id)
                         ]);
 
                         $part->decrement('stok', $qty);
+
+                        InventoryMovement::create([
+                            'id_part' => $part->id_part,
+                            'id_wo' => $wo->id_wo,
+                            'jenis' => 'keluar',
+                            'jumlah' => $qty,
+                            'harga_satuan' => $part->harga_jual,
+                            'subtotal' => $qty * $part->harga_jual,
+                            'sumber' => 'work_order',
+                            'keterangan' => 'Penggunaan sparepart pada work order ' . $wo->nomor_wo,
+                        ]);
                     }
                 }
             }

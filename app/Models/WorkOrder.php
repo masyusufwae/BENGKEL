@@ -71,10 +71,56 @@ class WorkOrder extends Model
     return $this->hasMany(\App\Models\DetailServisWo::class, 'id_wo', 'id_wo');
 }
 
-public function penggunaanSparepart()
+    public function penggunaanSparepart()
 {
     return $this->hasMany(\App\Models\PenggunaanSparepart::class, 'id_wo', 'id_wo');
 }
+
+    public function getSubtotalServisAttribute(): float
+    {
+        if ($this->relationLoaded('jenisServis') && $this->jenisServis->isNotEmpty()) {
+            return (float) $this->jenisServis->sum(fn ($s) => (float) ($s->pivot->harga_satuan ?? 0));
+        }
+
+        if ($this->relationLoaded('detailServis')) {
+            return (float) $this->detailServis->sum('harga_jasa');
+        }
+
+        if ($this->jenisServis()->exists()) {
+            return (float) $this->jenisServis()->sum('detail_wo_servis.harga_satuan');
+        }
+
+        return (float) $this->detailServis()->sum('harga_jasa');
+    }
+
+    public function getSubtotalSparepartAttribute(): float
+    {
+        if ($this->relationLoaded('spareparts') && $this->spareparts->isNotEmpty()) {
+            return (float) $this->spareparts->sum(function ($p) {
+                $qty = (int) ($p->pivot->jumlah ?? 0);
+                $harga = (float) ($p->pivot->harga_satuan ?? 0);
+                return $qty * $harga;
+            });
+        }
+
+        if ($this->relationLoaded('penggunaanSparepart')) {
+            return (float) $this->penggunaanSparepart->sum(fn ($row) => (float) ($row->subtotal ?? 0));
+        }
+
+        if ($this->spareparts()->exists()) {
+            return (float) (DB::table('detail_wo_sparepart')
+                ->where('id_wo', $this->getKey())
+                ->selectRaw('COALESCE(SUM(jumlah * harga_satuan), 0) AS total')
+                ->value('total') ?? 0);
+        }
+
+        return (float) $this->penggunaanSparepart()->sum('subtotal');
+    }
+
+    public function getTotalPendapatanAttribute(): float
+    {
+        return $this->subtotal_servis + $this->subtotal_sparepart;
+    }
 
     // Hitung total harga
  public function getTotalHargaAttribute()

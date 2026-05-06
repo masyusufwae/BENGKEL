@@ -28,10 +28,10 @@
                                 <td class="py-2 px-4 border">{{ $wo->kendaraan?->user?->name ?? '-' }}</td>
                                 <td class="py-2 px-4 border">{{ $wo->tanggal_masuk->format('d/m/Y') }}</td>
                                 <td class="py-2 px-4 border">{{ ucfirst($wo->status) }}</td>
-                                <td class="py-2 px-4 border">Rp {{ number_format($wo->totalHarga,0,',','.') }}</td>
+                                <td class="py-2 px-4 border">Rp {{ number_format($wo->totalPendapatan,0,',','.') }}</td>
                                 <td class="py-2 px-4 border">
                                     <div class="flex flex-wrap gap-2">
-                                        <a href="{{ route('admin.invoice.kirim', $wo->id_wo) }}" target="_blank" class="bg-green-500 text-white px-3 py-1 rounded">Kirim ke Pelanggan</a>
+                                        <a href="{{ route('admin.invoice.kirim', $wo->id_wo) }}" target="_blank" class="bg-green-500 text-white px-3 py-1 rounded">Kirim PDF</a>
                                         <a href="{{ route('admin.invoice.cetak', $wo->id_wo) }}" target="_blank" class="bg-blue-500 text-white px-3 py-1 rounded">Cetak Invoice</a>
                                     </div>
                                 </td>

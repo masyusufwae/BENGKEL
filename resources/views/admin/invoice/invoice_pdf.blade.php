@@ -1,4 +1,3 @@
-{{-- resources/views/admin/invoice/invoice_pdf.blade.php --}}
 <!DOCTYPE html>
 <html>
 <head>
@@ -83,7 +82,7 @@
 <div class="invoice-box">
     <div class="header">
         <h1>INVOICE</h1>
-        <p>Bengkel System – Layanan Servis Kendaraan</p>
+        <p>Bengkel System - Layanan Servis Kendaraan</p>
         <p><strong>No. WO:</strong> {{ $workOrder->nomor_wo }}</p>
     </div>
 
@@ -93,7 +92,6 @@
         $nomorPolisi = $workOrder->kendaraan?->nomor_polisi ?? '-';
         $merekModel = trim(($workOrder->kendaraan?->merek ?? '') . ' ' . ($workOrder->kendaraan?->model ?? ''));
 
-        // Ambil data servis
         $servisRows = collect();
         if ($workOrder->jenisServis->isNotEmpty()) {
             $servisRows = $workOrder->jenisServis->map(fn ($s) => [
@@ -107,7 +105,6 @@
             ]);
         }
 
-        // Ambil data sparepart
         $partRows = collect();
         if ($workOrder->spareparts->isNotEmpty()) {
             $partRows = $workOrder->spareparts->map(function ($p) {
@@ -179,8 +176,16 @@
                 </tr>
             @endforelse
 
+            <tr>
+                <td>Subtotal Servis</td>
+                <td class="text-right">{{ number_format($workOrder->subtotal_servis, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td>Subtotal Sparepart</td>
+                <td class="text-right">{{ number_format($workOrder->subtotal_sparepart, 0, ',', '.') }}</td>
+            </tr>
             <tr class="total-row">
-                <td><strong>TOTAL</strong></td>
+                <td><strong>TOTAL PENDAPATAN</strong></td>
                 <td class="text-right"><strong>Rp {{ number_format($workOrder->totalHarga, 0, ',', '.') }}</strong></td>
             </tr>
         </tbody>

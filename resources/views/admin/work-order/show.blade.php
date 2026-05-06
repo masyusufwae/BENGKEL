@@ -87,10 +87,14 @@
                         @endif
                     </tbody>
                 </table>
-                <div class="text-right font-bold text-xl">Total: Rp {{ number_format($workOrder->totalHarga,0,',','.') }}</div>
+                <div class="text-right space-y-1">
+                    <div class="text-sm text-gray-500">Subtotal Servis: Rp {{ number_format($workOrder->subtotal_servis,0,',','.') }}</div>
+                    <div class="text-sm text-gray-500">Subtotal Sparepart: Rp {{ number_format($workOrder->subtotal_sparepart,0,',','.') }}</div>
+                    <div class="font-bold text-xl">Total Pendapatan: Rp {{ number_format($workOrder->totalHarga,0,',','.') }}</div>
+                </div>
                 <div class="mt-6 flex justify-end">
                     @if(in_array($workOrder->status, ['selesai', 'diserahkan'], true))
-                        <a href="{{ route('admin.invoice.kirim', $workOrder->id_wo) }}" target="_blank" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded mr-2">Kirim ke Pelanggan</a>
+                        <a href="{{ route('admin.invoice.kirim', $workOrder->id_wo) }}" target="_blank" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded mr-2">Kirim PDF ke Pelanggan</a>
                         <a href="{{ route('admin.invoice.cetak', $workOrder->id_wo) }}" target="_blank" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2">Cetak Invoice</a>
                     @endif
                     <a href="{{ route('admin.work-order.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">Kembali</a>

@@ -212,6 +212,11 @@
                         <i class="fas fa-chart-line w-6 text-center @if(request()->routeIs('admin.laporan.*')) text-blue-400 @endif"></i>
                         <span class="ml-2 tracking-wide text-sm font-semibold">LAPORAN SERVIS</span>
                     </a>
+
+                    <a href="{{ route('admin.inventory.index') }}" class="list-group-item list-group-item-action border-0 mb-1 rounded flex items-center px-4 py-3 bg-transparent text-slate-300 hover:bg-slate-800 hover:text-blue-400 transition-all border-l-[4px] @if(request()->routeIs('admin.inventory.*')) border-blue-500 bg-blue-900/50 text-blue-400 font-bold @else border-transparent @endif">
+                        <i class="fas fa-boxes-stacked w-6 text-center @if(request()->routeIs('admin.inventory.*')) text-blue-400 @endif"></i>
+                        <span class="ml-2 tracking-wide text-sm font-semibold">BARANG MASUK/KELUAR</span>
+                    </a>
                 </div>
 
                 <!-- User Profile Widget -->
@@ -352,4 +357,3 @@
     </script>
 </body>
 </html>
-

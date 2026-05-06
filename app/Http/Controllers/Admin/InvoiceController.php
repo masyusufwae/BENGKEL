@@ -53,23 +53,31 @@ class InvoiceController extends Controller
      */
     public function kirim($id)
     {
-        $workOrder = WorkOrder::with([
-            'kendaraan.user',
-            'mekanik',
-            'jenisServis',
-            'detailServis.jenisServis',
-            'spareparts',
-            'penggunaanSparepart.sparepart'
-        ])->findOrFail($id);
+        try {
+            $workOrder = WorkOrder::with([
+                'kendaraan.user',
+                'mekanik',
+                'jenisServis' => function($q) {
+                    $q->withPivot('harga_satuan');
+                },
+                'detailServis.jenisServis',
+                'spareparts' => function($q) {
+                    $q->withPivot('jumlah', 'harga_satuan');
+                },
+                'penggunaanSparepart.sparepart'
+            ])->findOrFail($id);
 
-        $customerEmail = $workOrder->kendaraan?->user?->email;
-        if (!$customerEmail) {
-            return redirect()->back()->with('error', 'Email pelanggan tidak ditemukan.');
+            $customerEmail = $workOrder->kendaraan?->user?->email;
+            if (!$customerEmail) {
+                return redirect()->back()->with('error', 'Email pelanggan tidak ditemukan.');
+            }
+
+            $pdf = Pdf::loadView('admin.invoice.invoice_pdf', compact('workOrder'));
+            Mail::to($customerEmail)->send(new InvoiceMail($workOrder, $pdf));
+
+            return redirect()->back()->with('success', 'Invoice berhasil dikirim ke email pelanggan.');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Invoice gagal dikirim: ' . $e->getMessage());
         }
-
-        $pdf = Pdf::loadView('admin.invoice.invoice_pdf', compact('workOrder'));
-        Mail::to($customerEmail)->send(new InvoiceMail($workOrder, $pdf));
-
-        return redirect()->back()->with('success', 'Invoice berhasil dikirim ke email pelanggan.');
     }
 }
