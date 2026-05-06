@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +19,8 @@
     <style>
         body {
             font-family: 'Instrument Sans', sans-serif;
-            background-color: #0b1121; /* Dark navy background */
+            background-color: #0b1121;
+            /* Dark navy background */
             color: #ffffff;
             margin: 0;
             padding: 0;
@@ -33,6 +35,7 @@
             width: 100%;
             z-index: 50;
         }
+
         .navbar-custom.scrolled {
             background-color: rgba(11, 17, 33, 0.95) !important;
             padding: 1rem 5%;
@@ -50,6 +53,7 @@
             text-transform: uppercase;
             font-size: 0.9rem;
         }
+
         .nav-link-custom::after {
             content: '';
             position: absolute;
@@ -57,9 +61,11 @@
             height: 2px;
             bottom: -5px;
             left: 0;
-            background-color: #3b82f6; /* Tailwind blue-500 */
+            background-color: #3b82f6;
+            /* Tailwind blue-500 */
             transition: width 0.3s;
         }
+
         .nav-link-custom:hover::after {
             width: 100%;
         }
@@ -76,6 +82,7 @@
             font-size: 0.85rem;
             letter-spacing: 1px;
         }
+
         .btn-glow:hover {
             background: #3b82f6;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
@@ -110,7 +117,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(11, 17, 33, 0.6); /* Dark navy with opacity */
+            background: rgba(11, 17, 33, 0.6);
+            /* Dark navy with opacity */
             z-index: 1;
         }
 
@@ -118,10 +126,13 @@
         .hero-section::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image:
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             z-index: 2;
             pointer-events: none;
@@ -190,8 +201,8 @@
         /* Stats Section */
         .stats-container {
             background: rgba(30, 41, 59, 0.5);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 30px 0;
             position: relative;
@@ -200,9 +211,12 @@
 
         .stat-item {
             text-align: center;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .stat-item:last-child { border-right: none; }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
 
         .stat-value {
             font-size: 2.5rem;
@@ -210,6 +224,7 @@
             color: #fff;
             margin-bottom: 5px;
         }
+
         .stat-label {
             color: #94a3b8;
             font-size: 0.9rem;
@@ -219,26 +234,38 @@
 
         /* Animations */
         @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
+
 <body>
     @php
         $brand = $landingContent['brand'] ?? 'RevAuto';
         $headline = $landingContent['headline'] ?? 'Servis Tepat, Performa Hebat';
         $subheadline = $landingContent['subheadline'] ?? 'Bengkel modern dengan layanan cepat dan transparan.';
         $aboutTitle = $landingContent['about_title'] ?? 'Bengkel Modern dengan Sistem Terintegrasi';
-        $aboutBody = $landingContent['about_body'] ?? 'Semua proses servis kendaraan dikelola lebih efisien dalam satu platform.';
+        $aboutBody =
+            $landingContent['about_body'] ??
+            'Semua proses servis kendaraan dikelola lebih efisien dalam satu platform.';
         $contactEmail = $landingContent['contact_email'] ?? 'hello@revauto.id';
         $contactPhone = $landingContent['contact_phone'] ?? '-';
         $contactAddress = $landingContent['contact_address'] ?? '-';
 
-        $globalFallbackImage = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"><rect width="100%" height="100%" fill="#0f172a"/><rect x="40" y="40" width="1520" height="820" rx="24" fill="#1e293b" stroke="#334155" stroke-width="4"/><text x="50%" y="47%" fill="#93c5fd" font-family="Arial, sans-serif" font-size="72" text-anchor="middle">RevAuto</text><text x="50%" y="58%" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="38" text-anchor="middle">Bengkel Modern</text></svg>');
+        $globalFallbackImage =
+            'data:image/svg+xml;utf8,' .
+            rawurlencode(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"><rect width="100%" height="100%" fill="#0f172a"/><rect x="40" y="40" width="1520" height="820" rx="24" fill="#1e293b" stroke="#334155" stroke-width="4"/><text x="50%" y="47%" fill="#93c5fd" font-family="Arial, sans-serif" font-size="72" text-anchor="middle">RevAuto</text><text x="50%" y="58%" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="38" text-anchor="middle">Bengkel Modern</text></svg>',
+            );
     @endphp
 
     <!-- Navbar -->
@@ -270,7 +297,8 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <!-- Fullscreen Background Image -->
-        <img src="https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Sports Car" class="car-bg">
+        <img src="https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+            alt="Sports Car" class="car-bg">
 
         {{-- <img src="https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Bengkel RevAuto" class="car-bg" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';"> --}}
 
@@ -310,42 +338,60 @@
             <div class="row align-items-center">
                 <!-- Images Left -->
                 <div class="col-lg-6 mb-5 mb-lg-0 relative">
-                    <img src="https://images.unsplash.com/photo-1613214150148-52ba71ab523b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Area kerja bengkel" class="about-image-main" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
-                    <img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Peralatan servis kendaraan" class="about-image-secondary" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
+                    <img src="https://images.unsplash.com/photo-1613214150148-52ba71ab523b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                        alt="Area kerja bengkel" class="about-image-main"
+                        onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
+                    <img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                        alt="Peralatan servis kendaraan" class="about-image-secondary"
+                        onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
                 </div>
                 <!-- Text Right -->
                 <div class="col-lg-6 lg:pl-16">
                     <p class="text-blue-500 font-bold tracking-widest uppercase mb-2 text-sm">About Us</p>
-                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">Redefining The Workshop & <br>Showroom Experience</h2>
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">Redefining The
+                        Workshop & <br>Showroom Experience</h2>
                     <p class="text-slate-400 mb-8 leading-relaxed">
-                        At our facility, we redefine the car ownership and maintenance experience with exceptional service, cutting-edge diagnostic tools, and customer-focused solutions tailored to your vehicle's needs.
+                        At our facility, we redefine the car ownership and maintenance experience with exceptional
+                        service, cutting-edge diagnostic tools, and customer-focused solutions tailored to your
+                        vehicle's needs.
                     </p>
 
-                    <p class="text-blue-500 font-bold tracking-widest uppercase mb-2 text-sm">Tentang {{ $brand }}</p>
-                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">{{ $aboutTitle }}</h2>
+                    <p class="text-blue-500 font-bold tracking-widest uppercase mb-2 text-sm">Tentang
+                        {{ $brand }}</p>
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white">{{ $aboutTitle }}
+                    </h2>
                     <p class="text-slate-400 mb-8 leading-relaxed">{{ $aboutBody }}</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                         <div class="flex items-center text-sm text-slate-300 font-medium">
-                            <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
+                            <div
+                                class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">
+                                ✓</div>
                             Pengerjaan Transparan
                         </div>
                         <div class="flex items-center text-sm text-slate-300 font-medium">
-                            <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
+                            <div
+                                class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">
+                                ✓</div>
                             Mekanik Berpengalaman
                         </div>
                         <div class="flex items-center text-sm text-slate-300 font-medium">
-                            <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
+                            <div
+                                class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">
+                                ✓</div>
                             Layanan Servis Lengkap
                         </div>
                         <div class="flex items-center text-sm text-slate-300 font-medium">
-                            <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">✓</div>
+                            <div
+                                class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 shrink-0">
+                                ✓</div>
                             Sparepart Original
                         </div>
                     </div>
 
                     <div class="flex items-center border-l border-slate-700 pl-6">
-                        <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center mr-3">
+                        <div
+                            class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center mr-3">
                             TEL
                         </div>
                         <div>
@@ -373,72 +419,140 @@
                     <button class="hover:text-blue-400 pb-4">Spare Parts</button>
                 </div>
                 <div class="flex gap-2">
-                    <button class="px-4 py-1.5 rounded-full border border-blue-500 text-blue-400 text-xs font-semibold">Latest</button>
-                    <button class="px-4 py-1.5 rounded-full border border-slate-700 text-slate-400 hover:text-white text-xs font-semibold">Popular</button>
+                    <button
+                        class="px-4 py-1.5 rounded-full border border-blue-500 text-blue-400 text-xs font-semibold">Latest</button>
+                    <button
+                        class="px-4 py-1.5 rounded-full border border-slate-700 text-slate-400 hover:text-white text-xs font-semibold">Popular</button>
                 </div>
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Layanan Unggulan {{ $brand }}</h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Layanan Unggulan {{ $brand }}
+                </h2>
 
-            <div class="mb-10 border-b border-slate-800 pb-4">
-                <p class="text-slate-400 m-0">Daftar layanan aktif yang tersedia di bengkel {{ $brand }}.</p>
+                <div class="mb-10 border-b border-slate-800 pb-4">
+                    <p class="text-slate-400 m-0">Daftar layanan aktif yang tersedia di bengkel {{ $brand }}.
+                    </p>
 
-            </div>
+                </div>
 
-            <!-- Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Cards Dynamic -->
-                @forelse ($services as $service)
-                @php
-                    $serviceQuery = trim(($service->nama_servis ?? 'servis mobil') . ' ' . ($service->kategori ?? '') . ' car mechanic workshop');
-                    $serviceImage = 'https://loremflickr.com/900/600/' . rawurlencode($serviceQuery) . '?lock=' . ($service->id_jenis ?? crc32($serviceQuery));
-                    $serviceTitle = htmlspecialchars(trim($service->nama_servis ?? 'Layanan Servis'), ENT_QUOTES, 'UTF-8');
-                    $serviceFallback = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600"><rect width="100%" height="100%" fill="#0f172a"/><rect x="28" y="28" width="844" height="544" rx="22" fill="#1e293b" stroke="#334155" stroke-width="4"/><text x="50%" y="46%" fill="#93c5fd" font-family="Arial, sans-serif" font-size="46" text-anchor="middle">RevAuto</text><text x="50%" y="58%" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="30" text-anchor="middle">' . $serviceTitle . '</text></svg>');
-                @endphp
-                <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 hover:border-blue-500 transition-all duration-300 group">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">{{ $service->nama_servis }}</h3>
-                            <p class="text-xs text-slate-400">{{ \Illuminate\Support\Str::limit($service->deskripsi, 60) }}</p>
+                <!-- Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Cards Dynamic -->
+                    @forelse ($services as $service)
+                        @php
+                            $serviceTitle = htmlspecialchars(
+                                trim($service->nama_servis ?? 'Layanan Servis'),
+                                ENT_QUOTES,
+                                'UTF-8',
+                            );
+
+                            // fallback HARUS didefinisikan dulu
+                            $serviceFallback =
+                                'data:image/svg+xml;utf8,' .
+                                rawurlencode(
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600"><rect width="100%" height="100%" fill="#0f172a"/><rect x="28" y="28" width="844" height="544" rx="22" fill="#1e293b" stroke="#334155" stroke-width="4"/><text x="50%" y="46%" fill="#93c5fd" font-family="Arial, sans-serif" font-size="46" text-anchor="middle">RevAuto</text><text x="50%" y="58%" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="30" text-anchor="middle">' .
+                                        $serviceTitle .
+                                        '</text></svg>',
+                                );
+
+                            // mapping gambar
+                            $images = [
+                                'kampas rem' =>
+                                    'https://www.roojai.co.id/wp-content/uploads/2022/07/ganti-kampas-rem-mobil-2.jpg',
+                                'overhaul' => 'https://www.roojai.co.id/wp-content/uploads/2021/10/Overhaul-mesin.jpg',
+                                'turun mesin' =>
+                                    'https://www.roojai.co.id/wp-content/uploads/2021/10/Overhaul-mesin.jpg',
+                                'tune up' =>
+                                    'https://otoklix-production.s3.amazonaws.com/uploads/2021/12/manfaat-tune-up-mobil.jpg',
+                                'service cvt' =>
+                                    'https://otoklix-production.s3.amazonaws.com/uploads/2021/12/manfaat-tune-up-mobil.jpg',
+                                'ganti oli' =>
+                                    'https://otoklix-production.s3.amazonaws.com/uploads/2024/02/cara-mengganti-oli-mobil.jpg',
+                                'servis rem' =>
+                                    'https://www.indoparts.id/assets/images/tips/original/c594b_c594bfe545639c73315a8298605af1c9.jpg',
+                                'perbaikan mesin' =>
+                                    'https://cdn.antaranews.com/cache/1200x800/2020/01/22/shutterstock_139236137.jpg',
+
+                                'servis berkala' => 
+                                    'https://cdn.carsome.id/news/service-berkala-mobil-itu-penting.jpg'
+                            ];
+
+                            // default pakai fallback dulu
+                            $serviceImage = $serviceFallback;
+
+                            foreach ($images as $key => $img) {
+                                if (str_contains(strtolower($service->nama_servis), $key)) {
+                                    $serviceImage = $img;
+                                    break;
+                                }
+                            }
+                        @endphp
+                        <div
+                            class="bg-slate-800 rounded-2xl p-5 border border-slate-700 hover:border-blue-500 transition-all duration-300 group">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-white text-lg">{{ $service->nama_servis }}</h3>
+                                    <p class="text-xs text-slate-400">
+                                        {{ \Illuminate\Support\Str::limit($service->deskripsi, 60) }}</p>
+                                </div>
+                                <span class="text-slate-500 text-xs">Layanan</span>
+                            </div>
+                            <div class="h-32 flex items-center justify-center my-4 overflow-hidden relative">
+                                <div
+                                    class="absolute w-20 h-20 bg-blue-500/30 rounded-full blur-xl group-hover:bg-blue-400/40 transition-all">
+                                </div>
+                                <img src="{{ $serviceImage }}" alt="{{ $service->nama_servis }}"
+                                    class="service-thumb transform group-hover:scale-105 transition-transform duration-500"
+                                    onerror="this.onerror=null;this.src='{{ $serviceFallback }}';">
+                            </div>
+                            <div
+                                class="flex justify-between text-[11px] text-slate-400 mb-4 border-b border-slate-700 pb-4">
+                                <span class="flex items-center gap-1">Estimasi: {{ $service->estimasi_waktu }}
+                                    jam</span>
+                                <span class="flex items-center gap-1">{{ $service->kategori ?? 'Servis Umum' }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <p class="font-bold text-xl text-white">Rp
+                                    {{ number_format($service->harga_jasa, 0, ',', '.') }}</p>
+                                <a href="{{ Auth::check() ? route('customer.orders.create') : route('login') }}"
+                                    class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 no-underline">
+                                    Booking
+                                </a>
+                            </div>
                         </div>
-                        <span class="text-slate-500 text-xs">Layanan</span>
-                    </div>
-                    <div class="h-32 flex items-center justify-center my-4 overflow-hidden relative">
-                        <div class="absolute w-20 h-20 bg-blue-500/30 rounded-full blur-xl group-hover:bg-blue-400/40 transition-all"></div>
-                        <img src="{{ $serviceImage }}" alt="{{ $service->nama_servis }}" class="service-thumb transform group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='{{ $serviceFallback }}';">
-                    </div>
-                    <div class="flex justify-between text-[11px] text-slate-400 mb-4 border-b border-slate-700 pb-4">
-                        <span class="flex items-center gap-1">Estimasi: {{ $service->estimasi_waktu }} jam</span>
-                        <span class="flex items-center gap-1">{{ $service->kategori ?? 'Servis Umum' }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="font-bold text-xl text-white">Rp {{ number_format($service->harga_jasa, 0, ',', '.') }}</p>
-                        <a href="{{ Auth::check() ? route('customer.orders.create') : route('login') }}" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 no-underline">
-                            Booking
-                        </a>
-                    </div>
+                    @empty
+                        <p class="text-slate-400">Belum ada layanan tersedia saat ini.</p>
+                    @endforelse
                 </div>
-                @empty
-                    <p class="text-slate-400">Belum ada layanan tersedia saat ini.</p>
-                @endforelse
             </div>
-        </div>
     </section>
 
     <!-- Middle Banner Overlay -->
     <section class="relative h-[400px] flex items-center overflow-hidden bg-black">
         <!-- Abstract Circles -->
         <div class="absolute top-0 left-0 w-full h-full">
-            <div class="absolute -top-[50%] -left-[10%] w-[500px] h-[500px] rounded-full border border-slate-800/50 bg-slate-900/20"></div>
-            <div class="absolute -bottom-[50%] right-[10%] w-[600px] h-[600px] rounded-full border border-slate-800/50 bg-slate-900/30"></div>
+            <div
+                class="absolute -top-[50%] -left-[10%] w-[500px] h-[500px] rounded-full border border-slate-800/50 bg-slate-900/20">
+            </div>
+            <div
+                class="absolute -bottom-[50%] right-[10%] w-[600px] h-[600px] rounded-full border border-slate-800/50 bg-slate-900/30">
+            </div>
         </div>
-        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="White Car Dark" class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+            alt="White Car Dark"
+            class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
 
-        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="White Car Dark" class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]" onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
+        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+            alt="White Car Dark"
+            class="absolute bottom-0 right-0 h-[80%] object-contain transform scale-110 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]"
+            onerror="this.onerror=null;this.src='{{ $globalFallbackImage }}';">
 
         <div class="container relative z-10">
             <div class="max-w-xl">
                 <h2 class="text-4xl font-extrabold text-white mb-4">Servis Presisi untuk Kendaraan Anda</h2>
-                <p class="text-slate-400 mb-8">Mulai dari diagnosa cepat hingga pengerjaan detail, semua layanan RevAuto dirancang untuk menjaga performa kendaraan tetap optimal.</p>
-                <a href="#contact" class="btn-glow border-white hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]">Hubungi Tim Kami</a>
+                <p class="text-slate-400 mb-8">Mulai dari diagnosa cepat hingga pengerjaan detail, semua layanan
+                    RevAuto dirancang untuk menjaga performa kendaraan tetap optimal.</p>
+                <a href="#contact"
+                    class="btn-glow border-white hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]">Hubungi
+                    Tim Kami</a>
             </div>
         </div>
     </section>
@@ -458,7 +572,8 @@
                             <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
                             <p class="text-slate-300 text-sm leading-relaxed mb-4">"{{ $testimonial['quote'] }}"</p>
                             <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full bg-slate-600 mr-3 flex items-center justify-center text-xs text-white">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-slate-600 mr-3 flex items-center justify-center text-xs text-white">
                                     {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($testimonial['name'], 0, 2)) }}
                                 </div>
                                 <div>
@@ -486,7 +601,8 @@
                 <!-- Col 1 -->
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
+                        <div
+                            class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
                             @
                         </div>
                         <div>
@@ -498,7 +614,8 @@
                 <!-- Col 2 -->
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
+                        <div
+                            class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
                             TEL
                         </div>
                         <div>
@@ -510,7 +627,8 @@
                 <!-- Col 3 -->
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
+                        <div
+                            class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
                             CS
                         </div>
                         <div>
@@ -522,7 +640,8 @@
                 <!-- Col 4 -->
                 <div class="col-lg-3 col-md-6 mb-6">
                     <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
+                        <div
+                            class="w-10 h-10 border border-slate-700 rounded-lg flex items-center justify-center shrink-0 text-white">
                             LOC
                         </div>
                         <div>
@@ -534,7 +653,8 @@
             </div>
 
             <div class="flex flex-col md:flex-row justify-between items-center border-t border-slate-800 pt-8">
-                <p class="text-xs text-slate-500 mb-4 md:mb-0">&copy; {{ now()->year }} {{ $brand }}. All rights reserved.</p>
+                <p class="text-xs text-slate-500 mb-4 md:mb-0">&copy; {{ now()->year }} {{ $brand }}. All
+                    rights reserved.</p>
                 <div class="flex gap-2">
                     <div class="px-3 py-1 bg-slate-800 text-xs text-slate-300 font-bold rounded">VISA</div>
                     <div class="px-3 py-1 bg-slate-800 text-xs text-slate-300 font-bold rounded">MC</div>
@@ -558,5 +678,5 @@
         });
     </script>
 </body>
-</html>
 
+</html>
